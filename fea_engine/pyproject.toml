@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fea_engine"
+version = "1.0.0"
+description = "A small, additive, from-scratch structural finite element analysis package (linear/nonlinear statics and dynamics, contact, plasticity, Gmsh-driven geometry)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Structural Mechanics & Computational Engineering Lab" },
+]
+dependencies = [
+    "numpy>=1.22",
+    "scipy>=1.8",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Programming Language :: Python :: 3",
+]
+
+[project.optional-dependencies]
+plot = ["matplotlib"]
+meshio = ["meshio"]
+dev = ["pytest", "pytest-cov"]
+docs = ["sphinx", "sphinx-rtd-theme", "myst-parser"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
