@@ -115,6 +115,7 @@ div[align=center]{text-align:center;padding:10px 0}div[align=center] h1{margin-t
 <img alt="SciPy" src="https://img.shields.io/badge/SciPy-1.8+-0054a6?style=for-the-badge" />
 <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-optional-ee4c2c?style=for-the-badge" />
 <img alt="license" src="https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge" /></p>
+<p><a href="https://github.com/abhi2k16/fea-rom-computation-suite"><strong>🔗 github.com/abhi2k16/fea-rom-computation-suite</strong></a> &nbsp;|&nbsp; <a href="#s-2">⬇️ Clone</a> &nbsp;|&nbsp; <a href="#s-3">🚀 Quick start</a></p>
 </div>
 <h2>🧭 Contents</h2>
 <table>
@@ -201,6 +202,30 @@ run time (the <code>fea</code> extra only installs it for the examples and tests
 </ul>
 <p><a id="s-2"></a></p>
 <h2>⚙️ Install</h2>
+<p><strong>Repository:</strong> <a href="https://github.com/abhi2k16/fea-rom-computation-suite">https://github.com/abhi2k16/fea-rom-computation-suite</a></p>
+<h3>Clone the repository</h3>
+<p>Requires <a href="https://git-scm.com/downloads">Git</a> and Python 3.9 or newer.</p>
+<div class="hl"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/abhi2k16/fea-rom-computation-suite.git
+<span class="nb">cd</span><span class="w"> </span>fea-rom-computation-suite
+</code></pre></div>
+
+<p>Using SSH instead (if you have a key set up with GitHub):</p>
+<div class="hl"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:abhi2k16/fea-rom-computation-suite.git
+</code></pre></div>
+
+<p>Create an isolated environment (recommended), then install both packages in editable mode so changes to the source take effect immediately:</p>
+<div class="hl"><pre><span></span><code><span class="c1"># Linux / macOS</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+
+<span class="c1"># Windows PowerShell</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+.venv<span class="se">\S</span>cripts<span class="se">\A</span>ctivate.ps1
+</code></pre></div>
+
+<p>If PowerShell refuses to run the activation script, run <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> once, or use Anaconda: <code>conda create -n fea-rom python=3.11</code> then <code>conda activate fea-rom</code>.</p>
+<p>To update an existing clone later: <code>git pull</code> from the repository folder.</p>
+<h3>Install the packages</h3>
 <div class="hl"><pre><span></span><code>pip install -e fea_engine
 pip install -e rom_engine
 </code></pre></div>

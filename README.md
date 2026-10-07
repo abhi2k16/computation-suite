@@ -12,6 +12,8 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-optional-ee4c2c?style=for-the-badge)
 ![license](https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge)
 
+[**🔗 github.com/abhi2k16/fea-rom-computation-suite**](https://github.com/abhi2k16/fea-rom-computation-suite) &nbsp;|&nbsp; [⬇️ Clone](#s-2) &nbsp;|&nbsp; [🚀 Quick start](#s-3)
+
 </div>
 
 ## 🧭 Contents
@@ -70,6 +72,41 @@ run time (the `fea` extra only installs it for the examples and tests).
 <a id="s-2"></a>
 
 ## ⚙️ Install
+
+**Repository:** <https://github.com/abhi2k16/fea-rom-computation-suite>
+
+### Clone the repository
+
+Requires [Git](https://git-scm.com/downloads) and Python 3.9 or newer.
+
+```bash
+git clone https://github.com/abhi2k16/fea-rom-computation-suite.git
+cd fea-rom-computation-suite
+```
+
+Using SSH instead (if you have a key set up with GitHub):
+
+```bash
+git clone git@github.com:abhi2k16/fea-rom-computation-suite.git
+```
+
+Create an isolated environment (recommended), then install both packages in editable mode so changes to the source take effect immediately:
+
+```bash
+# Linux / macOS
+python -m venv .venv
+source .venv/bin/activate
+
+# Windows PowerShell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+If PowerShell refuses to run the activation script, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or use Anaconda: `conda create -n fea-rom python=3.11` then `conda activate fea-rom`.
+
+To update an existing clone later: `git pull` from the repository folder.
+
+### Install the packages
 
 ```
 pip install -e fea_engine
