@@ -25,3 +25,14 @@ Thumbs.db
 htmlcov/
 *.docx
 *.html
+
+# Local-only docs, reviews and stray images
+fea_engine/docs/
+rom_engine/docs/
+module_review_*.md
+review_pytorch_differentiable_pde_rans.md
+tensormesh_comparative_analysis.md
+/fea_package_validation.png
+/fea_engine/hyperelastic_neo_hookean.png
+/fea_engine/plasticity_j2_uniaxial_loop.png
+/fea_engine/shell_verification.png
