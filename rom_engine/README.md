@@ -1,4 +1,31 @@
+<div align="center">
+
 # rom_engine
+
+**Reduced-order modeling for structural analysis: POD, Galerkin, affine, frequency-domain, state-space, nonlinear**
+
+![version](https://img.shields.io/badge/version-0.1.0-7c3aed?style=for-the-badge)
+![status](https://img.shields.io/badge/status-alpha-f59e0b?style=for-the-badge)
+![python](https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge)
+![NumPy](https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge)
+![SciPy](https://img.shields.io/badge/SciPy-1.8+-0054a6?style=for-the-badge)
+![PyTorch](https://img.shields.io/badge/PyTorch-optional-ee4c2c?style=for-the-badge)
+![license](https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge)
+
+</div>
+
+## 🧭 Contents
+
+| | |
+|---|---|
+| 🎯 [Design principle: fea_engine-agnostic core](#s-1) | 🧪 [Running the tests](#s-6) |
+| ✅ [What's implemented (linear core)](#s-2) | 🧪 [Running the examples](#s-7) |
+| ⚙️ [Installation](#s-3) | ⚠️ [A certified-bound caveat (read before using `scm.py`)](#s-8) |
+| 🚀 [Quick start](#s-4) | 🔢 [A dtype note (why this matters more than it sounds)](#s-9) |
+| 🗂️ [Package layout](#s-5) | 🗺️ [Roadmap](#s-10) |
+
+---
+
 
 A small, from-scratch reduced-order-modeling (ROM) package for
 structural engineering analysis. It is the companion package to
@@ -6,7 +33,9 @@ structural engineering analysis. It is the companion package to
 full-order finite element models, rom_engine compresses and
 accelerates them.
 
-## Design principle: fea_engine-agnostic core
+<a id="s-1"></a>
+
+## 🎯 Design principle: fea_engine-agnostic core
 
 `rom_engine`'s library code (`pod.py`, `galerkin.py`, `affine.py`,
 `frequency.py`) never imports `fea_engine`. Every function and class
@@ -44,7 +73,9 @@ a system this package (or any FE code) can assemble directly. See
 `docs/loewner_modal_identification_roadmap.md` for the full design
 background.
 
-## What's implemented (linear core)
+<a id="s-2"></a>
+
+## ✅ What's implemented (linear core)
 
 | Module | Purpose |
 |---|---|
@@ -96,7 +127,9 @@ measures this directly (see below) -- roughly a 200x speedup on a
 120-element two-region cantilever, at a maximum tip-deflection error
 under 0.2% across held-out parameter points.
 
-## Installation
+<a id="s-3"></a>
+
+## ⚙️ Installation
 
 ```bash
 pip install -e .              # core (numpy, scipy only)
@@ -104,7 +137,9 @@ pip install -e ".[fea]"       # + fea_engine, for running tests/examples
 pip install -e ".[dev]"       # + pytest, for running the test suite
 ```
 
-## Quick start
+<a id="s-4"></a>
+
+## 🚀 Quick start
 
 ```python
 import numpy as np
@@ -200,7 +235,9 @@ amplitudes, omegas, Z_hist, converged = solve_nnm_backbone(
     n_points=20, domain="q_l", master_mode=0)               # domain="q_nl" for PolynomialModalROM
 ```
 
-## Package layout
+<a id="s-5"></a>
+
+## 🗂️ Package layout
 
 ```
 rom_engine/
@@ -278,7 +315,9 @@ rom_engine/
     └── mode_shape_vibration_recovery.py   # full-field mode shapes + time-domain recovery
 ```
 
-## Running the tests
+<a id="s-6"></a>
+
+## 🧪 Running the tests
 
 ```bash
 pip install -e ".[fea,dev]"
@@ -446,7 +485,9 @@ see the `loewner`/`screening` bullet below for details:
   validation step, not a blocker, in
   `docs/nonlinear_surrogate_rom_roadmap.md` Section 11.
 
-## Running the examples
+<a id="s-7"></a>
+
+## 🧪 Running the examples
 
 ```bash
 pip install -e ".[fea]"
@@ -500,7 +541,9 @@ model forward in time from an observed initial condition and compares
 against a direct full-order time integration -- demonstrating the
 identified model is actually usable, not just numerically close.
 
-## A certified-bound caveat (read before using `scm.py`)
+<a id="s-8"></a>
+
+## ⚠️ A certified-bound caveat (read before using `scm.py`)
 
 `SingularValueLowerBound`'s certification guarantee is rigorous and
 holds unconditionally (proven in `test_scm.py`, demonstrated in
@@ -526,7 +569,9 @@ The classical "natural-norm" SCM (Chen et al. 2010) exists specifically
 to close this gap with a smarter, problem-adapted norm; re-implementing
 it is noted as optional future work below rather than attempted here.
 
-## A dtype note (why this matters more than it sounds)
+<a id="s-9"></a>
+
+## 🔢 A dtype note (why this matters more than it sounds)
 
 Every array-ingesting method in `pod.py`/`galerkin.py`/`affine.py`
 used to hardcode `np.asarray(x, dtype=float)`. That was invisible for
@@ -543,7 +588,9 @@ complex_solve`) asserting the imaginary/phase-lag part of a damped
 response is actually present, specifically to keep this bug from
 silently reappearing.
 
-## Roadmap
+<a id="s-10"></a>
+
+## 🗺️ Roadmap
 
 The 5-phase nonlinear-surrogate-ROM plan in
 `docs/nonlinear_surrogate_rom_roadmap.md` is now fully implemented and

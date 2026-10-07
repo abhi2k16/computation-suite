@@ -1,4 +1,32 @@
+<div align="center">
+
 # computation-suite
+
+**From-scratch finite element analysis and reduced-order modeling in Python**
+
+![fea_engine](https://img.shields.io/badge/fea__engine-1.0.0-2563eb?style=for-the-badge)
+![rom_engine](https://img.shields.io/badge/rom__engine-0.1.0-7c3aed?style=for-the-badge)
+![python](https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge)
+![NumPy](https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge)
+![SciPy](https://img.shields.io/badge/SciPy-1.8+-0054a6?style=for-the-badge)
+![PyTorch](https://img.shields.io/badge/PyTorch-optional-ee4c2c?style=for-the-badge)
+![license](https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge)
+
+</div>
+
+## 🧭 Contents
+
+| | |
+|---|---|
+| 📦 [Packages](#s-1) | 📚 [Documentation](#s-7) |
+| ⚙️ [Install](#s-2) | 🗂️ [Repository layout](#s-8) |
+| 🚀 [Quick start](#s-3) | ✅ [Tests](#s-9) |
+| 🔄 [A typical workflow](#s-4) | ⚠️ [Notes and limits](#s-10) |
+| 🖥️ [CPU, multi-core and GPU](#s-5) | 📄 [License](#s-11) |
+| 🧪 [Examples](#s-6) |  |
+
+---
+
 
 A from-scratch, NumPy/SciPy-native finite element and reduced-order modeling
 toolkit for structural mechanics, with an optional PyTorch layer for GPU
@@ -8,7 +36,9 @@ Every result is checked against an independent reference: a closed-form
 solution, a second numerical method, or a conservation law. Nothing here is
 a wrapper around a commercial solver.
 
-## Packages
+<a id="s-1"></a>
+
+## 📦 Packages
 
 | Package | Purpose |
 |---|---|
@@ -37,7 +67,9 @@ run time (the `fea` extra only installs it for the examples and tests).
 - **Training tools:** optimal Latin hypercube sampling, dataset coverage diagnostics, comparison metrics.
 - **Research-grade (PyTorch):** neural operators, parameterised latent ODEs, reduced-basis operators, differentiable correction, ensemble uncertainty. Treat these as prototypes.
 
-## Install
+<a id="s-2"></a>
+
+## ⚙️ Install
 
 ```
 pip install -e fea_engine
@@ -73,7 +105,9 @@ on your hardware. A plain `import fea_engine` or `import rom_engine` never
 needs torch or matplotlib. See `USER_GUIDE.md` for known torch problems
 (Pascal GPUs, the OpenMP error on Windows with Anaconda).
 
-## Quick start
+<a id="s-3"></a>
+
+## 🚀 Quick start
 
 A 0.4 x 0.2 m steel plate, clamped on the left and loaded on the right:
 
@@ -114,7 +148,9 @@ x_full, q = rom.solve_static()  # 650 unknowns reduced to 6
 `snaps`), natural frequencies, a nonlinear beam, affine sweeps, frequency
 response and balanced truncation, each with the output it printed.
 
-## A typical workflow
+<a id="s-4"></a>
+
+## 🔄 A typical workflow
 
 1. **Full-order model (`fea_engine`):** mesh, material, element, loads, constraints, solve. Check one result against a hand calculation or analytic solution.
 2. **Snapshots:** solve at a handful of load levels or parameter values (`solve_batched` reuses one factorisation for many loads).
@@ -122,7 +158,9 @@ response and balanced truncation, each with the output it printed.
 4. **Verify:** compare the reduced answer with a full-order solve at points not used for training. The packages report energy captured, residuals and, for some methods, certified error bounds.
 5. **Use online:** run the small reduced model thousands of times for design sweeps, optimisation or uncertainty studies.
 
-## CPU, multi-core and GPU
+<a id="s-5"></a>
+
+## 🖥️ CPU, multi-core and GPU
 
 ```python
 sys = FESystem(mesh, elem, thickness=0.02, backend="torch", device="cuda")   # GPU solve
@@ -139,7 +177,9 @@ own threads; multi-core use comes from the BLAS library NumPy links against.
 Details, measured examples and a "when does a GPU help" table are in the
 "Multi-core, CPU and GPU (PyTorch) usage" section of `USER_GUIDE.md`.
 
-## Examples
+<a id="s-6"></a>
+
+## 🧪 Examples
 
 | Where | What |
 |---|---|
@@ -152,7 +192,9 @@ Details, measured examples and a "when does a GPU help" table are in the
 Run an example from its package folder, for instance
 `cd fea_engine && python examples/main.py`.
 
-## Documentation
+<a id="s-7"></a>
+
+## 📚 Documentation
 
 | File | Contents |
 |---|---|
@@ -166,7 +208,9 @@ Run an example from its package folder, for instance
 | `hpc_translation_roadmap.html` | Plan for porting the numerical core to HPC. |
 | `module_review_*.md` | Review notes. |
 
-## Repository layout
+<a id="s-8"></a>
+
+## 🗂️ Repository layout
 
 ```text
 computation-suite/
@@ -181,7 +225,9 @@ computation-suite/
 
 Both packages use the standard `src/` layout and are pip-installable.
 
-## Tests
+<a id="s-9"></a>
+
+## ✅ Tests
 
 ```
 cd fea_engine  && pytest tests/ -q
@@ -193,7 +239,9 @@ suites compare against analytic solutions, independent implementations and
 theorems (for example passivity and certified bounds); `rom_engine/docs/testing_methodology.md`
 describes the approach.
 
-## Notes and limits
+<a id="s-10"></a>
+
+## ⚠️ Notes and limits
 
 - **Units:** the packages are unit-agnostic. Use one consistent system, such as SI.
 - **Reduced results:** always compare a reduced result with at least one full-order solve before relying on it.
@@ -201,7 +249,9 @@ describes the approach.
 - **Research-grade modules** in `rom_engine` (neural operator, latent ODE, reduced-basis operator, ensemble UQ, differentiable correction) are prototypes.
 - **Gmsh:** Gmsh-based geometry support has been removed; use the structured mesh generators, `meshio`, or mesh files from external tools.
 
-## License
+<a id="s-11"></a>
+
+## 📄 License
 
 Both packages declare the MIT license in their `pyproject.toml`. There is no
 `LICENSE` file in this folder yet; add one before publishing.

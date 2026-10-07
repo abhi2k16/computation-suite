@@ -1,4 +1,29 @@
+<div align="center">
+
 # fea_engine
+
+**Finite element analysis for structural mechanics: linear, nonlinear, dynamic, contact, plasticity**
+
+![version](https://img.shields.io/badge/version-1.0.0-2563eb?style=for-the-badge)
+![status](https://img.shields.io/badge/status-beta-f59e0b?style=for-the-badge)
+![python](https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge)
+![NumPy](https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge)
+![SciPy](https://img.shields.io/badge/SciPy-1.8+-0054a6?style=for-the-badge)
+![PyTorch](https://img.shields.io/badge/PyTorch-optional-ee4c2c?style=for-the-badge)
+![license](https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge)
+
+</div>
+
+## 🧭 Contents
+
+| | |
+|---|---|
+| 🗂️ [Package layout](#s-1) | 🪜 [Implementation steps](#s-4) |
+| 🔀 [How a problem flows through the modules](#s-2) | 🧰 [General-purpose extensions (Phases 1-7)](#s-5) |
+| 📚 [Module reference](#s-3) | ⚠️ [Known limitations (by design, not oversights)](#s-6) |
+
+---
+
 
 A small, from-scratch finite element package for structural mechanics —
 static, dynamic, and (as of Module 8) geometrically nonlinear static —
@@ -12,24 +37,27 @@ independent reference (closed-form beam/plate theory, a previously
 validated script, or a second numerical method) — see `main.py`, which
 doubles as a regression test.
 
-## Package layout
+<a id="s-1"></a>
 
-**Restructuring note:** this package started as a flat, single-directory
-development layout (`fea_package/`, one file per module, run via
-`sys.path.insert` from whatever script needed it). It has since been
-reorganized into a standard `src/`-layout, pip-installable package
-(`pip install -e .`) named `fea_engine`, with the one large
-`element.py` split into a small `elements/` subpackage (one file per
-element family) purely for navigability. **No solver logic changed
-during this restructuring** — every class and function was moved
-verbatim and diffed byte-for-byte against the original before and
-after the move; only file organization, import paths, and packaging
-metadata changed. Some code snippets elsewhere in this README predate
-the restructuring and may still show the old flat import style
-(`from fea_engine import element as elmod`) — the mapping is
-mechanical: `element.X` → `elements.X` for any element class,
-`config.Material/Section/PlasticMaterial1D/D_*` → `material.*`, and
-`config.RayleighDamping/ModalDamping` → `damping.*`.
+## 🗂️ Package layout
+
+> [!NOTE]
+> **Restructuring note:** this package started as a flat, single-directory
+> development layout (`fea_package/`, one file per module, run via
+> `sys.path.insert` from whatever script needed it). It has since been
+> reorganized into a standard `src/`-layout, pip-installable package
+> (`pip install -e .`) named `fea_engine`, with the one large
+> `element.py` split into a small `elements/` subpackage (one file per
+> element family) purely for navigability. **No solver logic changed
+> during this restructuring** — every class and function was moved
+> verbatim and diffed byte-for-byte against the original before and
+> after the move; only file organization, import paths, and packaging
+> metadata changed. Some code snippets elsewhere in this README predate
+> the restructuring and may still show the old flat import style
+> (`from fea_engine import element as elmod`) — the mapping is
+> mechanical: `element.X` → `elements.X` for any element class,
+> `config.Material/Section/PlasticMaterial1D/D_*` → `material.*`, and
+> `config.RayleighDamping/ModalDamping` → `damping.*`.
 
 ```
 fea_engine/                     (project root)
@@ -97,7 +125,9 @@ objects and derived quantities than the original static-only design
 required; `nonlinear_solver.py` is the newest, added when the package
 was extended past linear elasticity for the first time.
 
-## How a problem flows through the modules
+<a id="s-2"></a>
+
+## 🔀 How a problem flows through the modules
 
 ```
 config          mesh              element             solver
@@ -125,7 +155,9 @@ dynamics solution strategies to `solver.py` without touching
 
 ---
 
-## Module reference
+<a id="s-3"></a>
+
+## 📚 Module reference
 
 ### `config.py` — materials, sections, constitutive matrices, damping
 
@@ -1272,7 +1304,9 @@ test after any change to the package.
 
 ---
 
-## Implementation steps
+<a id="s-4"></a>
+
+## 🪜 Implementation steps
 
 ### A. Any static problem
 
@@ -1588,7 +1622,9 @@ parameter set.
 
 ---
 
-## General-purpose extensions (Phases 1-7)
+<a id="s-5"></a>
+
+## 🧰 General-purpose extensions (Phases 1-7)
 
 `docs/general_purpose_extensions_roadmap.md` researches and phases
 seven general-purpose gaps (higher-order elements, shells, 3-D
@@ -1950,7 +1986,9 @@ Phases 8-10's own later additions.
 
 ---
 
-## Known limitations (by design, not oversights)
+<a id="s-6"></a>
+
+## ⚠️ Known limitations (by design, not oversights)
 
 - **Structured/mapped meshes only** — no unstructured/Delaunay
   generation. Fine for the simple geometries this package targets.

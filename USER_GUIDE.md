@@ -1,4 +1,31 @@
+<div align="center">
+
 # computation-suite user guide: `fea_engine` and `rom_engine`
+
+**Getting started, concepts, worked examples, multi-core and GPU usage, performance**
+
+![fea_engine](https://img.shields.io/badge/fea__engine-1.0.0-2563eb?style=for-the-badge)
+![rom_engine](https://img.shields.io/badge/rom__engine-0.1.0-7c3aed?style=for-the-badge)
+![python](https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge)
+![NumPy](https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge)
+![SciPy](https://img.shields.io/badge/SciPy-1.8+-0054a6?style=for-the-badge)
+![PyTorch](https://img.shields.io/badge/PyTorch-optional-ee4c2c?style=for-the-badge)
+![license](https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge)
+
+</div>
+
+## 🧭 Contents
+
+| | |
+|---|---|
+| 🚀 [Get Started](#s-2) | 📘 [API Reference](#s-32) |
+| 💡 [Concepts](#s-6) | ⚡ [Multi-core, CPU and GPU (PyTorch) usage](#s-35) |
+| 📖 [User Guide](#s-11) | 📈 [Performance](#s-42) |
+| 🖼️ [Example Gallery](#s-26) | 🧭 [Where to go deeper](#s-43) |
+| 🔬 [Advanced capabilities (research-grade)](#s-29) |  |
+
+---
+
 
 A fast, from-scratch, NumPy/SciPy-native finite element and reduced-order
 modeling toolkit — with an entirely optional PyTorch layer for GPU
@@ -10,7 +37,9 @@ illustrative estimate. Structured the way a documentation site would lay
 it out: Get Started, Concepts, User Guide, Example Gallery, API
 Reference, Multi-core/CPU/GPU usage, Performance, and pointers for going deeper.
 
-## Core strengths
+<a id="s-1"></a>
+
+## 💪 Core strengths
 
 - **Two packages, one clean boundary.** `fea_engine` is a full-order
   finite element solver (statics, dynamics, linear and nonlinear
@@ -46,9 +75,13 @@ Reference, Multi-core/CPU/GPU usage, Performance, and pointers for going deeper.
 
 ---
 
-# Get Started
+<a id="s-2"></a>
 
-## Installation
+# 🚀 Get Started
+
+<a id="s-3"></a>
+
+## ⚙️ Installation
 
 ```bash
 cd fea_engine
@@ -57,12 +90,13 @@ pip install -e ".[plot]"         # + matplotlib, for mesh.py's plot_*
 pip install -e ".[dev]"          # + pytest/pytest-cov, to run the test suite
 ```
 
-**Note:** Gmsh-backed geometry/visualization support (`geometry/gmsh_engine.py`,
-`visualization/gmsh_plot.py`, formerly installed via a `.[gmsh]` extra) has
-been removed from `fea_engine` entirely -- it required a system libGLU
-library that could not be reliably provided, and no verified example or
-result in this package depended on it. `mesh.py`'s structured mesh
-generation and matplotlib `plot_*` functions remain the supported path.
+> [!NOTE]
+> **Note:** Gmsh-backed geometry/visualization support (`geometry/gmsh_engine.py`,
+> `visualization/gmsh_plot.py`, formerly installed via a `.[gmsh]` extra) has
+> been removed from `fea_engine` entirely -- it required a system libGLU
+> library that could not be reliably provided, and no verified example or
+> result in this package depended on it. `mesh.py`'s structured mesh
+> generation and matplotlib `plot_*` functions remain the supported path.
 
 ```bash
 cd rom_engine
@@ -103,7 +137,9 @@ PyTorch both load their own OpenMP runtime in the same process — set
 `KMP_DUPLICATE_LIB_OK=TRUE` as a quick workaround, or use a dedicated
 fresh environment.
 
-## Quickstart
+<a id="s-4"></a>
+
+## ⚡ Quickstart
 
 Every `fea_engine` problem is the same four objects, wired together:
 
@@ -142,8 +178,9 @@ assemble/load/BC/solve — is the whole package. Everything else is a
 variation on it: a different mesh generator, a different element, a
 different `solve_*` call.
 
-**Shortcut for the common cases:** `geometry.py` collapses the
-mesh+element+`FESystem` setup into one call:
+> [!TIP]
+> **Shortcut for the common cases:** `geometry.py` collapses the
+> mesh+element+`FESystem` setup into one call:
 
 ```python
 from fea_engine.geometry import build_system
@@ -171,7 +208,9 @@ x_full, q_reduced = rom.solve_static()
 The full worked version of this, with real snapshots and real numbers,
 is in "ROM: Linear Workflow" under the User Guide below.
 
-## Verify Install
+<a id="s-5"></a>
+
+## ✅ Verify Install
 
 ```bash
 python -c "import fea_engine; print(fea_engine.__version__)"
@@ -196,7 +235,11 @@ cd ../rom_engine && python examples/two_region_beam_rom.py
 
 ---
 
-# Concepts
+<a id="s-6"></a>
+
+# 💡 Concepts
+
+<a id="s-7"></a>
 
 ## `fea_engine`: what it is, and when to reach for it
 
@@ -225,6 +268,8 @@ solid. That's also why it's a good base for `rom_engine` to sit on top
 of: `FESystem` always exposes the same `K`, `M`, `C`, `F`
 matrices/vectors regardless of the physics underneath.
 
+<a id="s-8"></a>
+
 ## `rom_engine`: what it is, and the one design decision that matters most
 
 `rom_engine` compresses and accelerates full-order structural models.
@@ -237,7 +282,9 @@ convenient way to *get* those matrices in this repository (it's the
 package used to build every validation fixture and example in
 `rom_engine`'s own test suite).
 
-## The offline/online split
+<a id="s-9"></a>
+
+## 🔀 The offline/online split
 
 Every reduction technique in `rom_engine` is organized around the same
 idea: do the expensive work (a handful of full-order solves, building a
@@ -248,7 +295,9 @@ small reduced system, never touching the full-order model again. The
 221.8x speedup measured in "ROM: Linear Workflow" below is what that
 split buys you in practice.
 
-## The torch switch: NumPy-core, PyTorch-optional
+<a id="s-10"></a>
+
+## 🔥 The torch switch: NumPy-core, PyTorch-optional
 
 Both packages treat `torch` as strictly opt-in. The rule that shows up
 everywhere it's used: any function that needs only ordinary linear
@@ -273,9 +322,13 @@ correction layer in both packages.
 
 ---
 
-# User Guide
+<a id="s-11"></a>
 
-## Meshes: three front ends, one contract
+# 📖 User Guide
+
+<a id="s-12"></a>
+
+## 🕸️ Meshes: three front ends, one contract
 
 Every generator returns a `Mesh(nodes, elements, dim)` (or
 `MultiBlockMesh` if more than one element topology is present) — plain
@@ -293,17 +346,20 @@ m3 = box_mesh(Lx=1.0, Ly=0.1, Lz=0.1, nx=20, ny=4, nz=4)   # 3-D hex8 block
 m4 = rectangle_with_hole_mesh_quarter(a=2.0, b=1.0, R=0.3, nr=8, ntheta=12)  # mapped hole approximation
 ```
 
-**Removed:** this section previously also documented a second,
-Gmsh-driven front end (`geometry.gmsh_engine`, for genuinely
-unstructured/curved meshes and `generate_from_step()` CAD import from
-STEP/IGES/BREP files). That front end has been removed from the package
-entirely -- it required `pip install gmsh` plus a system libGLU library
-that could not be reliably provided, and no verified example or result
-in this package depended on it. See `fea_engine/README.md`'s "Removed:
-Gmsh support" section for the fuller note. The structured `mesh.py`
-front end above is now the only supported meshing path.
+> [!WARNING]
+> **Removed:** this section previously also documented a second,
+> Gmsh-driven front end (`geometry.gmsh_engine`, for genuinely
+> unstructured/curved meshes and `generate_from_step()` CAD import from
+> STEP/IGES/BREP files). That front end has been removed from the package
+> entirely -- it required `pip install gmsh` plus a system libGLU library
+> that could not be reliably provided, and no verified example or result
+> in this package depended on it. See `fea_engine/README.md`'s "Removed:
+> Gmsh support" section for the fuller note. The structured `mesh.py`
+> front end above is now the only supported meshing path.
 
-## Elements and quadrature: choosing an element
+<a id="s-13"></a>
+
+## 🧱 Elements and quadrature: choosing an element
 
 | Element | Module | Dim | DOF/node | Use for |
 |---|---|---|---|---|
@@ -322,7 +378,9 @@ Every registered element is also available by string name via
 useful if you're picking an element type at runtime rather than
 importing the class directly.
 
-## Boundary conditions and loads
+<a id="s-14"></a>
+
+## 📌 Boundary conditions and loads
 
 Boundary conditions and loads attach directly to the `FESystem`/`Mesh`
 pair, not to a separate object: `sys.fix_dofs(node_ids, dof_indices)`
@@ -333,7 +391,9 @@ distributed load types (`TimeHistoryLoad`, `HarmonicLoad`, `PSDLoad`)
 are covered in "Time Integration" and "Solvers" below, since which load
 type you use is tied to which `solve_*` call you're driving.
 
-## Solvers
+<a id="s-15"></a>
+
+## 🧮 Solvers
 
 All of the recipes below assume `sys = FESystem(mesh, elem,
 thickness=...)` and `sys.assemble_stiffness(D)` have already run.
@@ -421,7 +481,9 @@ F0_unit = psd_load.force_vector(sys.n_dof, sys.npn)
 S_out, sigma = sys.solve_random_vibration(freqs_hz, psd_input, F0_unit, output_dof=target_dof)
 ```
 
-## Time integration
+<a id="s-16"></a>
+
+## 🕒 Time integration
 
 **Implicit and explicit transients (impact, earthquake, general
 transients):**
@@ -509,7 +571,9 @@ drivers below — `commit_all_states()` is called automatically once per
 step internally. See `fea_engine/docs/consolidated_future_roadmap.md`
 for the corotational-shell extension and the full derivation.
 
-## Nonlinear analysis
+<a id="s-17"></a>
+
+## 🌀 Nonlinear analysis
 
 Four drivers in `nonlinear_solver.py`, all calling the same
 `assemble_internal_force()`/`assemble_tangent_stiffness()` machinery
@@ -547,21 +611,24 @@ lambda_seq = [0.0, 0.5, 1.0, 0.5, 0.0, -0.5, -1.0, 0.0]
 load_factors, U_hist = solve_nonlinear_static(sys, mat, load_factors=lambda_seq)
 ```
 
-**If a step won't converge:** the first three drivers above (plus
-`solve_nonlinear_koiter_newton`/`solve_nonlinear_static_koiter_newton`)
-accept `line_search=True` (the default) to automatically retry a
-non-converging step with Armijo backtracking before raising, and
-`du_tol=`/`energy_tol=` to add displacement-increment/energy-error
-convergence checks on top of the default force-residual one. Both are
-opt-in extras layered onto the existing behavior, not replacements for
-it — see `fea_engine/README.md`'s "Newton-solver robustness knobs" note
-for the full detail.
+> [!TIP]
+> **If a step won't converge:** the first three drivers above (plus
+> `solve_nonlinear_koiter_newton`/`solve_nonlinear_static_koiter_newton`)
+> accept `line_search=True` (the default) to automatically retry a
+> non-converging step with Armijo backtracking before raising, and
+> `du_tol=`/`energy_tol=` to add displacement-increment/energy-error
+> convergence checks on top of the default force-residual one. Both are
+> opt-in extras layered onto the existing behavior, not replacements for
+> it — see `fea_engine/README.md`'s "Newton-solver robustness knobs" note
+> for the full detail.
 
 See `fea_engine/README.md` sections I–L for contact (penalty and exact
 Lagrange-multiplier formulations) and the full nonlinear driver
 selection guidance.
 
-## Batched workflows: iterative solvers and adaptive mesh refinement
+<a id="s-18"></a>
+
+## 📦 Batched workflows: iterative solvers and adaptive mesh refinement
 
 Two independent large-model capabilities, both opt-in (the direct solve
 above remains the default and is unaffected by either).
@@ -647,7 +714,9 @@ alternative estimator; `marking="threshold"`/`"equidistribution"` the
 alternative marking strategies; pass `tol=` instead of relying on
 `max_refinements` to stop once the estimated error meets a target.
 
-## Differentiability and GPU backends
+<a id="s-19"></a>
+
+## 🔥 Differentiability and GPU backends
 
 The static-solve `backend="torch"`/`device=` switch above extends to
 nonlinear tangents and nonlinear transient drivers — genuinely useful
@@ -691,7 +760,9 @@ equilibrium residual, calibrated either through an adjoint
 (implicit-differentiation) backward pass or explicit residual
 minimization.
 
-## ROM: linear workflow (FOM → POD → Galerkin → optional affine sweep)
+<a id="s-20"></a>
+
+## 🧩 ROM: linear workflow (FOM → POD → Galerkin → optional affine sweep)
 
 This is the pattern to learn first for `rom_engine` — everything else
 either specializes it (frequency-domain, nonlinear) or complements it
@@ -810,7 +881,9 @@ That's the whole point of the affine path: sub-2%-error answers, over
 two hundred times faster than reassembling and re-solving the full
 model at every query.
 
-## ROM: frequency-domain and certified bounds
+<a id="s-21"></a>
+
+## 🧩 ROM: frequency-domain and certified bounds
 
 `A(omega) = -omega^2*M + i*omega*C + K` is exactly an affine-in-`omega`
 system, so `FrequencyROM` is `affine.py` + `galerkin.py` composed for
@@ -853,7 +926,9 @@ mathematical property of the underlying method, documented in `scm.py`
 — read that module's docstring before leaning on it far from your
 reference point).
 
-## ROM: classical structural-dynamics / systems-and-control MOR
+<a id="s-22"></a>
+
+## 🧩 ROM: classical structural-dynamics / systems-and-control MOR
 
 Four more methods, added to reproduce Besselink et al. (2013)'s own
 head-to-head comparison of model-reduction techniques from structural
@@ -947,7 +1022,9 @@ assertion, not in the underlying math) — see
 systems too small for a GPU to help (see `torch_linalg.py`'s own module
 docstring).
 
-## ROM: non-intrusive identification (no `M`/`C`/`K` required)
+<a id="s-23"></a>
+
+## 🧩 ROM: non-intrusive identification (no `M`/`C`/`K` required)
 
 `LoewnerROM` identifies modal parameters (frequencies, damping ratios,
 mode shapes) from **sampled complex frequency-response data alone** —
@@ -970,7 +1047,9 @@ plate model matching a published benchmark) — see
 `rom_engine/examples/plate_modal_identification.py` and
 `mode_shape_vibration_recovery.py`.
 
-## ROM: nonlinear structural ROMs
+<a id="s-24"></a>
+
+## 🧩 ROM: nonlinear structural ROMs
 
 For geometrically nonlinear structures (large-deflection beams/plates),
 `rom_engine` combines an intrusive linear modal basis with a
@@ -1071,7 +1150,9 @@ general-purpose explanation of every ROM formulation route in the
 package (including these), and `rom_engine/README.md` for the module-
 level API.
 
-## Choosing a ROM method
+<a id="s-25"></a>
+
+## 🧭 Choosing a ROM method
 
 | You have... | Reach for... |
 |---|---|
@@ -1087,7 +1168,9 @@ level API.
 
 ---
 
-# Example Gallery
+<a id="s-26"></a>
+
+# 🖼️ Example Gallery
 
 Runnable, end-to-end scripts, grouped by workflow.
 
@@ -1100,7 +1183,9 @@ prints its own validation numbers, and saves a plot; see each folder's
 own `fea_README.md`/`rom_README.md` for the full script-by-script
 breakdown.
 
-## Structural mechanics
+<a id="s-27"></a>
+
+## 🏗️ Structural mechanics
 
 - **Cantilever statics/modal/transient** — `fea_engine/examples/main.py`
   runs 8 problems end to end against closed-form references; the
@@ -1116,7 +1201,9 @@ breakdown.
 
 See `fea_engine/examples/` for the full, runnable set.
 
-## Reduced-order modeling
+<a id="s-28"></a>
+
+## 📉 Reduced-order modeling
 
 - **`two_region_beam_rom.py`** — the affine-decomposition parametric
   sweep from "ROM: linear workflow" above; run it yourself for the full
@@ -1138,7 +1225,9 @@ The classical-MOR methods (mode acceleration, `KrylovROM`,
 
 ---
 
-# Advanced capabilities (research-grade)
+<a id="s-29"></a>
+
+# 🔬 Advanced capabilities (research-grade)
 
 Everything above is deliberately the "everyday" path — the capability
 set you'd reach for building and analyzing an ordinary structural model.
@@ -1151,7 +1240,9 @@ read the module docstrings and `fea_engine/docs/
 consolidated_future_roadmap.md` for the full derivations and validation
 detail before building on any of them.
 
-## Differentiable correction / data calibration
+<a id="s-30"></a>
+
+## 🎛️ Differentiable correction / data calibration
 
 The idea of wrapping a whole nonlinear solve as a differentiable layer
 so a trainable additive correction term can be calibrated end-to-end
@@ -1189,7 +1280,9 @@ training loops, the topology-optimization adjoint-sensitivity path below
 this guide's own sandbox session for the same reason as elsewhere in
 this guide.
 
-## Architecture upgrades (batched assembly, GPU dispatch, topology optimization)
+<a id="s-31"></a>
+
+## 🏛️ Architecture upgrades (batched assembly, GPU dispatch, topology optimization)
 
 Six additive `fea_engine` modules inspired by TensorMesh's own
 GPU-native architecture, each independently opt-in.
@@ -1229,10 +1322,14 @@ items 135/136 for the full record.
 
 ---
 
-# API Reference
+<a id="s-32"></a>
+
+# 📘 API Reference
 
 A compact pointer table — the full per-function reference lives in each
 package's own `README.md`.
+
+<a id="s-33"></a>
 
 ## `fea_engine`
 
@@ -1251,6 +1348,8 @@ package's own `README.md`.
 | `torch_sparse_solver.py`, `autograd_tangent.py` | The `backend="torch"`/`method="autograd"` dispatch points |
 | `differentiable.py` | The full-order differentiable-correction layer (see "Advanced capabilities") |
 | `mesh_transform.py`, `vectorized_assembly.py`, `backend_dispatch.py`, `batched_solve.py`, `topopt.py`, `mixed_assembly.py` | The architecture-upgrade modules (see "Advanced capabilities") |
+
+<a id="s-34"></a>
 
 ## `rom_engine`
 
@@ -1277,11 +1376,15 @@ package's own `README.md`.
 
 ---
 
-# Multi-core, CPU and GPU (PyTorch) usage
+<a id="s-35"></a>
+
+# ⚡ Multi-core, CPU and GPU (PyTorch) usage
 
 Where the time goes decides what to tune. Read this section before you
 reach for a GPU: for the model sizes in most examples above, **more CPU
 threads or a better solver choice help more than a GPU does**.
+
+<a id="s-36"></a>
 
 ## 1. What actually runs in parallel
 
@@ -1297,6 +1400,8 @@ threads or a better solver choice help more than a GPU does**.
 So "use multiple cores" means three different knobs: BLAS threads
 (dense math), `n_jobs` (independent sweep points), and separate
 processes (independent models or parameter cases that you launch yourself).
+
+<a id="s-37"></a>
 
 ## 2. Setting the number of CPU threads (NumPy / SciPy)
 
@@ -1348,6 +1453,8 @@ Rules of thumb:
 - If you also run several processes at once (`n_jobs`, several scripts, several Streamlit users), set threads per process so that `processes x threads <= physical cores`. Oversubscription slows everything down.
 - On a laptop leave one core free so the machine stays responsive.
 
+<a id="s-38"></a>
+
 ## 3. PyTorch on the CPU
 
 ```python
@@ -1363,6 +1470,8 @@ U = sys.solve_static()
 - `backend="auto"` picks for you at solve time: SciPy for small or non-SPD systems, torch CG for SPD systems with more than `5000` free DOF (`AUTO_DOF_THRESHOLD` in `fea_engine.backend_dispatch`). Call `solve_static(verbose=True)` to print which backend was chosen and why.
 - Threads used by NumPy (Section 2) and by torch (`torch.set_num_threads`) are separate settings. Set both if you mix the two.
 - Default precision of the torch routines is float64, the same as NumPy.
+
+<a id="s-39"></a>
 
 ## 4. PyTorch on a GPU
 
@@ -1462,6 +1571,8 @@ with its own `CUDA_VISIBLE_DEVICES`.
 - **`import torch` fails on a machine without an NVIDIA driver:** you installed the default CUDA-linked wheel. Install the CPU wheel instead.
 - **Results differ in the last digits between SciPy and torch:** expected (different summation order and algorithms). The test suite compares with tolerances, for example about `1e-6` relative for the CG paths.
 
+<a id="s-40"></a>
+
 ## 5. Running the dashboard with several cores or a GPU
 
 The dashboard reads the core count before NumPy loads:
@@ -1478,6 +1589,8 @@ streamlit run streamlit_app.py
 - All users of one Streamlit server share its CPU cores, so set cores per server to match the number of simultaneous users.
 - The in-browser real-time ROM viewer runs on the user's own machine and needs no server cores while sliders move.
 
+<a id="s-41"></a>
+
 ## 6. Quick decision guide
 
 | You want to... | Do this |
@@ -1493,7 +1606,9 @@ streamlit run streamlit_app.py
 
 ---
 
-# Performance
+<a id="s-42"></a>
+
+# 📈 Performance
 
 Every number below came from an actual run against a real model in this
 repository (see the linked section for the full script/context) —
@@ -1519,7 +1634,9 @@ every number above.
 
 ---
 
-# Where to go deeper
+<a id="s-43"></a>
+
+# 🧭 Where to go deeper
 
 - `fea_engine/README.md` — the full module reference, every validation,
   every design decision.
