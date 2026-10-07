@@ -1,0 +1,425 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>computation-suite</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--bg:#0b1220;--panel:#131c2e;--panel2:#1b2740;--line:#26344f;--tx:#e5edf7;--dim:#94a3b8;--cy:#22d3ee;--pu:#a78bfa;--pk:#e879f9;--gr:#34d399;--am:#fbbf24;--rd:#f87171;--bl:#60a5fa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+#side{position:fixed;top:0;left:0;bottom:0;width:270px;overflow:auto;background:linear-gradient(180deg,#0f172a,#131c2e);border-right:1px solid var(--line);padding:14px 12px}
+#side a{display:block;color:var(--tx);text-decoration:none;padding:3px 8px;border-radius:6px;font-size:13px;font-weight:600}#side a.sm{color:var(--dim);font-weight:400;padding-left:18px}#side a:hover{background:var(--panel2);color:var(--cy)}
+#main{margin-left:270px;padding:26px 44px 90px;max-width:1180px}
+h1{font-size:30px;background:linear-gradient(90deg,var(--cy),var(--pu),var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:46px}
+h2{border-left:5px solid var(--cy);padding-left:10px;margin-top:38px}h3{border-left:4px solid var(--pu);padding-left:10px;margin-top:28px}h4{color:var(--pk)}
+a{color:var(--cy)}code{background:#0f1a30;border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:.88em;color:#bde9ff}
+pre{background:#0f1a30;border:1px solid var(--line);border-left:4px solid var(--cy);border-radius:10px;padding:12px 14px;overflow:auto}pre code{background:none;border:0;padding:0;color:inherit}
+.hl{background:#0f1a30;border-radius:10px;margin:10px 0}.hl pre{border:1px solid var(--line);border-left:4px solid var(--cy);margin:0}
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #49483e }
+.hl { background: #272822; color: #F8F8F2 }
+.hl .c { color: #959077 } /* Comment */
+.hl .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.hl .esc { color: #F8F8F2 } /* Escape */
+.hl .g { color: #F8F8F2 } /* Generic */
+.hl .k { color: #66D9EF } /* Keyword */
+.hl .l { color: #AE81FF } /* Literal */
+.hl .n { color: #F8F8F2 } /* Name */
+.hl .o { color: #FF4689 } /* Operator */
+.hl .x { color: #F8F8F2 } /* Other */
+.hl .p { color: #F8F8F2 } /* Punctuation */
+.hl .ch { color: #959077 } /* Comment.Hashbang */
+.hl .cm { color: #959077 } /* Comment.Multiline */
+.hl .cp { color: #959077 } /* Comment.Preproc */
+.hl .cpf { color: #959077 } /* Comment.PreprocFile */
+.hl .c1 { color: #959077 } /* Comment.Single */
+.hl .cs { color: #959077 } /* Comment.Special */
+.hl .gd { color: #FF4689 } /* Generic.Deleted */
+.hl .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.hl .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #FF4689 } /* Generic.Error */
+.hl .gh { color: #F8F8F2 } /* Generic.Heading */
+.hl .gi { color: #A6E22E } /* Generic.Inserted */
+.hl .go { color: #66D9EF } /* Generic.Output */
+.hl .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.hl .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #959077 } /* Generic.Subheading */
+.hl .gt { color: #66D9EF } /* Generic.Traceback */
+.hl .kc { color: #66D9EF } /* Keyword.Constant */
+.hl .kd { color: #66D9EF } /* Keyword.Declaration */
+.hl .kn { color: #FF4689 } /* Keyword.Namespace */
+.hl .kp { color: #66D9EF } /* Keyword.Pseudo */
+.hl .kr { color: #66D9EF } /* Keyword.Reserved */
+.hl .kt { color: #66D9EF } /* Keyword.Type */
+.hl .ld { color: #E6DB74 } /* Literal.Date */
+.hl .m { color: #AE81FF } /* Literal.Number */
+.hl .s { color: #E6DB74 } /* Literal.String */
+.hl .na { color: #A6E22E } /* Name.Attribute */
+.hl .nb { color: #A6E22E } /* Name.Builtin */
+.hl .nc { color: #A6E22E } /* Name.Class */
+.hl .no { color: #66D9EF } /* Name.Constant */
+.hl .nd { color: #A6E22E } /* Name.Decorator */
+.hl .ni { color: #F8F8F2 } /* Name.Entity */
+.hl .ne { color: #A6E22E } /* Name.Exception */
+.hl .nf { color: #A6E22E } /* Name.Function */
+.hl .nl { color: #F8F8F2 } /* Name.Label */
+.hl .nn { color: #F8F8F2 } /* Name.Namespace */
+.hl .nx { color: #A6E22E } /* Name.Other */
+.hl .py { color: #F8F8F2 } /* Name.Property */
+.hl .nt { color: #FF4689 } /* Name.Tag */
+.hl .nv { color: #F8F8F2 } /* Name.Variable */
+.hl .ow { color: #FF4689 } /* Operator.Word */
+.hl .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.hl .w { color: #F8F8F2 } /* Text.Whitespace */
+.hl .mb { color: #AE81FF } /* Literal.Number.Bin */
+.hl .mf { color: #AE81FF } /* Literal.Number.Float */
+.hl .mh { color: #AE81FF } /* Literal.Number.Hex */
+.hl .mi { color: #AE81FF } /* Literal.Number.Integer */
+.hl .mo { color: #AE81FF } /* Literal.Number.Oct */
+.hl .sa { color: #E6DB74 } /* Literal.String.Affix */
+.hl .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.hl .sc { color: #E6DB74 } /* Literal.String.Char */
+.hl .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.hl .sd { color: #E6DB74 } /* Literal.String.Doc */
+.hl .s2 { color: #E6DB74 } /* Literal.String.Double */
+.hl .se { color: #AE81FF } /* Literal.String.Escape */
+.hl .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.hl .si { color: #E6DB74 } /* Literal.String.Interpol */
+.hl .sx { color: #E6DB74 } /* Literal.String.Other */
+.hl .sr { color: #E6DB74 } /* Literal.String.Regex */
+.hl .s1 { color: #E6DB74 } /* Literal.String.Single */
+.hl .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.hl .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.hl .fm { color: #A6E22E } /* Name.Function.Magic */
+.hl .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.hl .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.hl .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.hl .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.hl .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+table{border-collapse:collapse;width:100%;margin:12px 0;background:var(--panel);border-radius:10px;overflow:hidden;display:block;overflow-x:auto}th{background:linear-gradient(90deg,#1b2740,#25345a);text-align:left}
+th,td{border-bottom:1px solid var(--line);padding:7px 10px;vertical-align:top}tr:hover td{background:#17223a}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 14px;margin:8px 0 18px}summary{cursor:pointer;color:var(--cy)}
+blockquote{border-left:4px solid var(--pu);margin:12px 0;padding:4px 14px;background:var(--panel);border-radius:0 8px 8px 0;color:var(--dim)}
+.callout{border-radius:10px;padding:8px 14px;margin:14px 0;border:1px solid;border-left-width:5px}.callout p{margin:4px 0}.callout .ct{font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.06em}
+.callout.note{background:#10243a;border-color:var(--bl)}.callout.note .ct{color:var(--bl)}.callout.tip{background:#0f2a22;border-color:var(--gr)}.callout.tip .ct{color:var(--gr)}
+.callout.warning{background:#2e2410;border-color:var(--am)}.callout.warning .ct{color:var(--am)}.callout.important{background:#2a1530;border-color:var(--pk)}.callout.important .ct{color:var(--pk)}
+div[align=center]{text-align:center;padding:10px 0}div[align=center] h1{margin-top:6px;font-size:38px}img{max-width:100%}hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+@media(max-width:900px){#side{display:none}#main{margin-left:0;padding:16px}}
+</style></head><body><nav id="side"><a class="sm" href="#s-1">📦 Packages</a><a class="sm" href="#s-2">⚙️ Install</a><a class="sm" href="#s-3">🚀 Quick start</a><a class="sm" href="#s-4">🔄 A typical workflow</a><a class="sm" href="#s-5">🖥️ CPU, multi-core and GPU</a><a class="sm" href="#s-6">🧪 Examples</a><a class="sm" href="#s-7">📚 Documentation</a><a class="sm" href="#s-8">🗂️ Repository layout</a><a class="sm" href="#s-9">✅ Tests</a><a class="sm" href="#s-10">⚠️ Notes and limits</a><a class="sm" href="#s-11">📄 License</a></nav><div id="main"><div align="center">
+<h1>computation-suite</h1>
+<p><strong>From-scratch finite element analysis and reduced-order modeling in Python</strong></p>
+<p><img alt="fea_engine" src="https://img.shields.io/badge/fea__engine-1.0.0-2563eb?style=for-the-badge" />
+<img alt="rom_engine" src="https://img.shields.io/badge/rom__engine-0.1.0-7c3aed?style=for-the-badge" />
+<img alt="python" src="https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge" />
+<img alt="NumPy" src="https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge" />
+<img alt="SciPy" src="https://img.shields.io/badge/SciPy-1.8+-0054a6?style=for-the-badge" />
+<img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-optional-ee4c2c?style=for-the-badge" />
+<img alt="license" src="https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge" /></p>
+</div>
+<h2>🧭 Contents</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>📦 <a href="#s-1">Packages</a></td>
+<td>📚 <a href="#s-7">Documentation</a></td>
+</tr>
+<tr>
+<td>⚙️ <a href="#s-2">Install</a></td>
+<td>🗂️ <a href="#s-8">Repository layout</a></td>
+</tr>
+<tr>
+<td>🚀 <a href="#s-3">Quick start</a></td>
+<td>✅ <a href="#s-9">Tests</a></td>
+</tr>
+<tr>
+<td>🔄 <a href="#s-4">A typical workflow</a></td>
+<td>⚠️ <a href="#s-10">Notes and limits</a></td>
+</tr>
+<tr>
+<td>🖥️ <a href="#s-5">CPU, multi-core and GPU</a></td>
+<td>📄 <a href="#s-11">License</a></td>
+</tr>
+<tr>
+<td>🧪 <a href="#s-6">Examples</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>A from-scratch, NumPy/SciPy-native finite element and reduced-order modeling
+toolkit for structural mechanics, with an optional PyTorch layer for GPU
+acceleration and automatic differentiation.</p>
+<p>Every result is checked against an independent reference: a closed-form
+solution, a second numerical method, or a conservation law. Nothing here is
+a wrapper around a commercial solver.</p>
+<p><a id="s-1"></a></p>
+<h2>📦 Packages</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="fea_engine/README.md"><code>fea_engine</code></a></td>
+<td>Full-order finite element package: static, dynamic and geometrically nonlinear analysis, with extensible materials, elements, loads and solvers.</td>
+</tr>
+<tr>
+<td><a href="rom_engine/README.md"><code>rom_engine</code></a></td>
+<td>Reduced-order modeling built on top of <code>fea_engine</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The two work together: build K, M and F with <code>fea_engine</code>, then hand those
+plain arrays to <code>rom_engine</code>. <code>rom_engine</code> needs nothing from <code>fea_engine</code> at
+run time (the <code>fea</code> extra only installs it for the examples and tests).</p>
+<h3>What <code>fea_engine</code> covers</h3>
+<ul>
+<li><strong>Elements:</strong> trusses (linear, large-displacement, plastic); 2-D and 3-D beams (Euler-Bernoulli, corotational, geometrically exact Reissner); plane stress/strain triangles and quadrilaterals (linear and quadratic); 3-D solids (hexahedra and tetrahedra, linear and quadratic, B-bar); Mindlin plates; MITC shells (linear, corotational, director-based); contact elements (gap, node-to-segment, with friction).</li>
+<li><strong>Analyses:</strong> static, linear buckling, modal, harmonic / frequency sweep, random vibration (PSD), implicit and explicit transient, nonlinear static with load stepping, displacement control, arc-length and Koiter-Newton, nonlinear transient (Newmark-Newton).</li>
+<li><strong>Nonlinearity:</strong> large displacement and rotation, J2 plasticity (isotropic and kinematic hardening), Neo-Hookean hyperelasticity, penalty and Lagrange-multiplier contact.</li>
+<li><strong>Mesh and loads:</strong> structured mesh generators (lines, rectangles, boxes, with holes and notches), graded meshes, multi-block meshes, mesh file I/O (<code>meshio</code>), edge and face pressure loads by quadrature, adaptive refinement with error estimators.</li>
+<li><strong>Performance and GPU:</strong> vectorised assembly, sparse and iterative solvers (CG with Jacobi/SSOR preconditioning), batched multi-load solves, torch CPU/GPU solve backends, autograd tangents, topology optimisation.</li>
+</ul>
+<h3>What <code>rom_engine</code> covers</h3>
+<ul>
+<li><strong>Projection ROMs:</strong> POD basis (optionally mass-weighted) and Galerkin reduction for static, modal and transient problems; affine parametric decomposition for fast parameter sweeps.</li>
+<li><strong>Frequency-domain ROMs:</strong> modal/POD/greedy bases, frequency response, random-vibration response, and certified error bounds (SCM).</li>
+<li><strong>Systems-and-control reduction:</strong> balanced truncation (plain and frequency-weighted), singular perturbation, optimal Hankel-norm approximation, Krylov and second-order (SOAR) moment matching, passivity checks.</li>
+<li><strong>Non-intrusive identification:</strong> Loewner-pencil modal identification with cross-ROM stability screening.</li>
+<li><strong>Nonlinear structural ROMs:</strong> RBF-surrogate and polynomial (ICE-style) models, intrusive projection of nonlinear internal forces, membrane expansion, nonlinear normal mode backbone curves.</li>
+<li><strong>Training tools:</strong> optimal Latin hypercube sampling, dataset coverage diagnostics, comparison metrics.</li>
+<li><strong>Research-grade (PyTorch):</strong> neural operators, parameterised latent ODEs, reduced-basis operators, differentiable correction, ensemble uncertainty. Treat these as prototypes.</li>
+</ul>
+<p><a id="s-2"></a></p>
+<h2>⚙️ Install</h2>
+<div class="hl"><pre><span></span><code>pip install -e fea_engine
+pip install -e rom_engine
+</code></pre></div>
+
+<p>With the optional extras (plotting, tests, and the <code>fea</code> link for the ROM examples):</p>
+<div class="hl"><pre><span></span><code>pip install -e "fea_engine[plot,dev]"
+pip install -e "rom_engine[fea,dev]"
+</code></pre></div>
+
+<p>Python 3.9 or newer. Required: NumPy 1.22+ and SciPy 1.8+.</p>
+<p>Check the install:</p>
+<div class="hl"><pre><span></span><code>python -c "import fea_engine, rom_engine; print(fea_engine.__version__, rom_engine.__version__)"
+</code></pre></div>
+
+<p><strong>Optional dependencies</strong></p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Install</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plotting</td>
+<td><code>matplotlib</code> (the <code>plot</code> extra of <code>fea_engine</code>)</td>
+</tr>
+<tr>
+<td>Mesh file I/O</td>
+<td><code>pip install meshio</code></td>
+</tr>
+<tr>
+<td>PyTorch, CPU only</td>
+<td><code>pip install torch --index-url https://download.pytorch.org/whl/cpu</code></td>
+</tr>
+<tr>
+<td>PyTorch, NVIDIA GPU</td>
+<td><code>pip install torch --index-url https://download.pytorch.org/whl/cu126</code> (match the <code>cuXXX</code> to your driver)</td>
+</tr>
+</tbody>
+</table>
+<p>There is no generic <code>[torch]</code> extra on purpose, because the right wheel depends
+on your hardware. A plain <code>import fea_engine</code> or <code>import rom_engine</code> never
+needs torch or matplotlib. See <code>USER_GUIDE.md</code> for known torch problems
+(Pascal GPUs, the OpenMP error on Windows with Anaconda).</p>
+<p><a id="s-3"></a></p>
+<h2>🚀 Quick start</h2>
+<p>A 0.4 x 0.2 m steel plate, clamped on the left and loaded on the right:</p>
+<div class="hl"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fea_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Material</span><span class="p">,</span> <span class="n">D_plane_stress</span><span class="p">,</span> <span class="n">Quad4PlaneStress</span><span class="p">,</span> <span class="n">FESystem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fea_engine.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">rectangle_mesh</span>
+
+<span class="n">mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="n">E</span><span class="o">=</span><span class="mf">2.1e11</span><span class="p">,</span> <span class="n">nu</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">7850.0</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">rectangle_mesh</span><span class="p">(</span><span class="n">Lx</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">Ly</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">sys</span> <span class="o">=</span> <span class="n">FESystem</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">Quad4PlaneStress</span><span class="p">(),</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">assemble_stiffness</span><span class="p">(</span><span class="n">D_plane_stress</span><span class="p">(</span><span class="n">mat</span><span class="p">),</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+
+<span class="n">tip</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">nodes_on_line</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">add_nodal_force</span><span class="p">(</span><span class="n">tip</span><span class="p">,</span> <span class="n">dof_index</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">total_force</span><span class="o">=-</span><span class="mf">20000.0</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">fix_dofs</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">nodes_on_line</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="n">U</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">solve_static</span><span class="p">()</span>          <span class="c1"># mean tip deflection about -1.797e-4 m</span>
+</code></pre></div>
+
+<p>Every <code>fea_engine</code> problem has the same shape: <strong>material, mesh, element,
+<code>FESystem</code>, then assemble, apply loads and constraints, solve.</strong> Swap the
+element or the <code>solve_*</code> call and the rest stays the same.</p>
+<p>Then reduce it:</p>
+<div class="hl"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">PodBasis</span><span class="p">,</span> <span class="n">GalerkinROM</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">assemble_mass</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">rho</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="c1"># snaps: columns are full-order solutions at several load levels</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">PodBasis</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">snaps</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
+<span class="n">rom</span> <span class="o">=</span> <span class="n">GalerkinROM</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">reduce_system</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">K</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">F</span><span class="p">)</span>
+<span class="n">x_full</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">rom</span><span class="o">.</span><span class="n">solve_static</span><span class="p">()</span>  <span class="c1"># 650 unknowns reduced to 6</span>
+</code></pre></div>
+
+<p><code>API_REFERENCE.md</code> has the complete runnable versions (including how to build
+<code>snaps</code>), natural frequencies, a nonlinear beam, affine sweeps, frequency
+response and balanced truncation, each with the output it printed.</p>
+<p><a id="s-4"></a></p>
+<h2>🔄 A typical workflow</h2>
+<ol>
+<li><strong>Full-order model (<code>fea_engine</code>):</strong> mesh, material, element, loads, constraints, solve. Check one result against a hand calculation or analytic solution.</li>
+<li><strong>Snapshots:</strong> solve at a handful of load levels or parameter values (<code>solve_batched</code> reuses one factorisation for many loads).</li>
+<li><strong>Reduce (<code>rom_engine</code>):</strong> POD basis, then Galerkin projection. For parameter sweeps add <code>AffineDecomposition</code>; for dynamics try modal or frequency-domain ROMs.</li>
+<li><strong>Verify:</strong> compare the reduced answer with a full-order solve at points not used for training. The packages report energy captured, residuals and, for some methods, certified error bounds.</li>
+<li><strong>Use online:</strong> run the small reduced model thousands of times for design sweeps, optimisation or uncertainty studies.</li>
+</ol>
+<p><a id="s-5"></a></p>
+<h2>🖥️ CPU, multi-core and GPU</h2>
+<div class="hl"><pre><span></span><code><span class="n">sys</span> <span class="o">=</span> <span class="n">FESystem</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"torch"</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">"cuda"</span><span class="p">)</span>   <span class="c1"># GPU solve</span>
+</code></pre></div>
+
+<p>SciPy is the default and torch/CUDA are opt-in. Neither package schedules its
+own threads; multi-core use comes from the BLAS library NumPy links against.</p>
+<ul>
+<li><strong>CPU threads:</strong> set <code>OMP_NUM_THREADS</code>, <code>OPENBLAS_NUM_THREADS</code> and <code>MKL_NUM_THREADS</code> before NumPy is imported.</li>
+<li><strong><code>run.py</code>:</strong> runs any script with a chosen core count without editing it (see the docstring at the top of <code>run.py</code>).</li>
+<li><strong>GPU:</strong> only pays off for large sparse systems; small models are usually faster on the CPU. <code>backend="auto"</code> chooses for you above 5000 free DOF.</li>
+<li><strong>Sweeps:</strong> the frequency/amplitude sweeps in <code>rom_engine.attractor</code> accept <code>n_jobs=</code> for multi-process execution.</li>
+</ul>
+<p>Details, measured examples and a "when does a GPU help" table are in the
+"Multi-core, CPU and GPU (PyTorch) usage" section of <code>USER_GUIDE.md</code>.</p>
+<p><a id="s-6"></a></p>
+<h2>🧪 Examples</h2>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fea_engine/examples/main.py</code></td>
+<td>Eight problems run end to end against closed-form references.</td>
+</tr>
+<tr>
+<td><code>fea_engine/examples/gallery/</code></td>
+<td>Cantilever beam, hyperelasticity, Hertzian contact, plasticity, modal analysis, topology optimisation (with a README).</td>
+</tr>
+<tr>
+<td><code>fea_engine/examples/</code></td>
+<td>Buckling, arc-length snap-through, 3-D frames, shells, higher-order elements, sparse vs dense timing, SciPy vs torch benchmark.</td>
+</tr>
+<tr>
+<td><code>rom_engine/examples/gallery/</code></td>
+<td>POD basis, parametric Galerkin ROM, greedy frequency training, balanced truncation, nonlinear modal ROM, dataset diagnostics (with a README).</td>
+</tr>
+<tr>
+<td><code>rom_engine/examples/</code></td>
+<td>Two-region beam affine sweep, frequency sweep, certified bounds, mode-shape recovery, plate modal identification.</td>
+</tr>
+</tbody>
+</table>
+<p>Run an example from its package folder, for instance
+<code>cd fea_engine &amp;&amp; python examples/main.py</code>.</p>
+<p><a id="s-7"></a></p>
+<h2>📚 Documentation</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="USER_GUIDE.html">USER_GUIDE.md</a></td>
+<td>Getting started, concepts, a tour of every capability with worked examples, multi-core and GPU usage, performance numbers.</td>
+</tr>
+<tr>
+<td><a href="API_REFERENCE.html">API_REFERENCE.md</a></td>
+<td>Every public class, function and method with signature and purpose, a task-to-API map, and eight executed examples.</td>
+</tr>
+<tr>
+<td><code>fea_engine/README.md</code>, <code>rom_engine/README.md</code></td>
+<td>Full module references and validation records.</td>
+</tr>
+<tr>
+<td><code>fea_engine/docs/</code></td>
+<td>Roadmaps and implementation notes (nonlinear FEM, shells, mesh grading, meshing alternatives, TensorMesh analysis).</td>
+</tr>
+<tr>
+<td><code>rom_engine/docs/</code></td>
+<td>Roadmaps and design notes (classical MOR, frequency-domain ROM, error bounds and greedy training, Loewner identification, nonlinear surrogate ROMs, differentiable correction, testing methodology).</td>
+</tr>
+<tr>
+<td><code>fea_engine_Technical_Notes.*</code>, <code>rom_engine_Technical_Notes.*</code></td>
+<td>Technical notes (Word and PDF).</td>
+</tr>
+<tr>
+<td><code>fea_engine_rom_engine_coupling.html</code></td>
+<td>How the two packages couple and the torch-optional pattern.</td>
+</tr>
+<tr>
+<td><code>hpc_translation_roadmap.html</code></td>
+<td>Plan for porting the numerical core to HPC.</td>
+</tr>
+<tr>
+<td><code>module_review_*.md</code></td>
+<td>Review notes.</td>
+</tr>
+</tbody>
+</table>
+<p><a id="s-8"></a></p>
+<h2>🗂️ Repository layout</h2>
+<div class="hl"><pre><span></span><code>computation-suite/
+  fea_engine/            finite element package   (src/, tests/, examples/, docs/)
+  rom_engine/            reduced-order modeling   (src/, tests/, examples/, docs/)
+  run.py                 run any script with a chosen number of CPU cores
+  USER_GUIDE.md
+  API_REFERENCE.md
+  module_review_*.md
+  *_Technical_Notes.*
+</code></pre></div>
+
+<p>Both packages use the standard <code>src/</code> layout and are pip-installable.</p>
+<p><a id="s-9"></a></p>
+<h2>✅ Tests</h2>
+<div class="hl"><pre><span></span><code>cd fea_engine  &amp;&amp; pytest tests/ -q
+cd rom_engine  &amp;&amp; pytest tests/ -q
+</code></pre></div>
+
+<p>Tests that need PyTorch skip themselves when it is not installed. The test
+suites compare against analytic solutions, independent implementations and
+theorems (for example passivity and certified bounds); <code>rom_engine/docs/testing_methodology.md</code>
+describes the approach.</p>
+<p><a id="s-10"></a></p>
+<h2>⚠️ Notes and limits</h2>
+<ul>
+<li><strong>Units:</strong> the packages are unit-agnostic. Use one consistent system, such as SI.</li>
+<li><strong>Reduced results:</strong> always compare a reduced result with at least one full-order solve before relying on it.</li>
+<li><strong>Torch coverage is selective:</strong> <code>backend="torch"</code> currently affects <code>solve_static()</code> and a few named routines; modal, buckling and the explicit transient drivers stay SciPy/NumPy-only.</li>
+<li><strong>Research-grade modules</strong> in <code>rom_engine</code> (neural operator, latent ODE, reduced-basis operator, ensemble UQ, differentiable correction) are prototypes.</li>
+<li><strong>Gmsh:</strong> Gmsh-based geometry support has been removed; use the structured mesh generators, <code>meshio</code>, or mesh files from external tools.</li>
+</ul>
+<p><a id="s-11"></a></p>
+<h2>📄 License</h2>
+<p>Both packages declare the MIT license in their <code>pyproject.toml</code>. There is no
+<code>LICENSE</code> file in this folder yet; add one before publishing.</p></div></body></html>

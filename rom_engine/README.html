@@ -1,0 +1,980 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>rom_engine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--bg:#0b1220;--panel:#131c2e;--panel2:#1b2740;--line:#26344f;--tx:#e5edf7;--dim:#94a3b8;--cy:#22d3ee;--pu:#a78bfa;--pk:#e879f9;--gr:#34d399;--am:#fbbf24;--rd:#f87171;--bl:#60a5fa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+#side{position:fixed;top:0;left:0;bottom:0;width:270px;overflow:auto;background:linear-gradient(180deg,#0f172a,#131c2e);border-right:1px solid var(--line);padding:14px 12px}
+#side a{display:block;color:var(--tx);text-decoration:none;padding:3px 8px;border-radius:6px;font-size:13px;font-weight:600}#side a.sm{color:var(--dim);font-weight:400;padding-left:18px}#side a:hover{background:var(--panel2);color:var(--cy)}
+#main{margin-left:270px;padding:26px 44px 90px;max-width:1180px}
+h1{font-size:30px;background:linear-gradient(90deg,var(--cy),var(--pu),var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:46px}
+h2{border-left:5px solid var(--cy);padding-left:10px;margin-top:38px}h3{border-left:4px solid var(--pu);padding-left:10px;margin-top:28px}h4{color:var(--pk)}
+a{color:var(--cy)}code{background:#0f1a30;border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:.88em;color:#bde9ff}
+pre{background:#0f1a30;border:1px solid var(--line);border-left:4px solid var(--cy);border-radius:10px;padding:12px 14px;overflow:auto}pre code{background:none;border:0;padding:0;color:inherit}
+.hl{background:#0f1a30;border-radius:10px;margin:10px 0}.hl pre{border:1px solid var(--line);border-left:4px solid var(--cy);margin:0}
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #49483e }
+.hl { background: #272822; color: #F8F8F2 }
+.hl .c { color: #959077 } /* Comment */
+.hl .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.hl .esc { color: #F8F8F2 } /* Escape */
+.hl .g { color: #F8F8F2 } /* Generic */
+.hl .k { color: #66D9EF } /* Keyword */
+.hl .l { color: #AE81FF } /* Literal */
+.hl .n { color: #F8F8F2 } /* Name */
+.hl .o { color: #FF4689 } /* Operator */
+.hl .x { color: #F8F8F2 } /* Other */
+.hl .p { color: #F8F8F2 } /* Punctuation */
+.hl .ch { color: #959077 } /* Comment.Hashbang */
+.hl .cm { color: #959077 } /* Comment.Multiline */
+.hl .cp { color: #959077 } /* Comment.Preproc */
+.hl .cpf { color: #959077 } /* Comment.PreprocFile */
+.hl .c1 { color: #959077 } /* Comment.Single */
+.hl .cs { color: #959077 } /* Comment.Special */
+.hl .gd { color: #FF4689 } /* Generic.Deleted */
+.hl .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.hl .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.hl .gr { color: #FF4689 } /* Generic.Error */
+.hl .gh { color: #F8F8F2 } /* Generic.Heading */
+.hl .gi { color: #A6E22E } /* Generic.Inserted */
+.hl .go { color: #66D9EF } /* Generic.Output */
+.hl .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.hl .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #959077 } /* Generic.Subheading */
+.hl .gt { color: #66D9EF } /* Generic.Traceback */
+.hl .kc { color: #66D9EF } /* Keyword.Constant */
+.hl .kd { color: #66D9EF } /* Keyword.Declaration */
+.hl .kn { color: #FF4689 } /* Keyword.Namespace */
+.hl .kp { color: #66D9EF } /* Keyword.Pseudo */
+.hl .kr { color: #66D9EF } /* Keyword.Reserved */
+.hl .kt { color: #66D9EF } /* Keyword.Type */
+.hl .ld { color: #E6DB74 } /* Literal.Date */
+.hl .m { color: #AE81FF } /* Literal.Number */
+.hl .s { color: #E6DB74 } /* Literal.String */
+.hl .na { color: #A6E22E } /* Name.Attribute */
+.hl .nb { color: #A6E22E } /* Name.Builtin */
+.hl .nc { color: #A6E22E } /* Name.Class */
+.hl .no { color: #66D9EF } /* Name.Constant */
+.hl .nd { color: #A6E22E } /* Name.Decorator */
+.hl .ni { color: #F8F8F2 } /* Name.Entity */
+.hl .ne { color: #A6E22E } /* Name.Exception */
+.hl .nf { color: #A6E22E } /* Name.Function */
+.hl .nl { color: #F8F8F2 } /* Name.Label */
+.hl .nn { color: #F8F8F2 } /* Name.Namespace */
+.hl .nx { color: #A6E22E } /* Name.Other */
+.hl .py { color: #F8F8F2 } /* Name.Property */
+.hl .nt { color: #FF4689 } /* Name.Tag */
+.hl .nv { color: #F8F8F2 } /* Name.Variable */
+.hl .ow { color: #FF4689 } /* Operator.Word */
+.hl .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.hl .w { color: #F8F8F2 } /* Text.Whitespace */
+.hl .mb { color: #AE81FF } /* Literal.Number.Bin */
+.hl .mf { color: #AE81FF } /* Literal.Number.Float */
+.hl .mh { color: #AE81FF } /* Literal.Number.Hex */
+.hl .mi { color: #AE81FF } /* Literal.Number.Integer */
+.hl .mo { color: #AE81FF } /* Literal.Number.Oct */
+.hl .sa { color: #E6DB74 } /* Literal.String.Affix */
+.hl .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.hl .sc { color: #E6DB74 } /* Literal.String.Char */
+.hl .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.hl .sd { color: #E6DB74 } /* Literal.String.Doc */
+.hl .s2 { color: #E6DB74 } /* Literal.String.Double */
+.hl .se { color: #AE81FF } /* Literal.String.Escape */
+.hl .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.hl .si { color: #E6DB74 } /* Literal.String.Interpol */
+.hl .sx { color: #E6DB74 } /* Literal.String.Other */
+.hl .sr { color: #E6DB74 } /* Literal.String.Regex */
+.hl .s1 { color: #E6DB74 } /* Literal.String.Single */
+.hl .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.hl .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.hl .fm { color: #A6E22E } /* Name.Function.Magic */
+.hl .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.hl .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.hl .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.hl .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.hl .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+table{border-collapse:collapse;width:100%;margin:12px 0;background:var(--panel);border-radius:10px;overflow:hidden;display:block;overflow-x:auto}th{background:linear-gradient(90deg,#1b2740,#25345a);text-align:left}
+th,td{border-bottom:1px solid var(--line);padding:7px 10px;vertical-align:top}tr:hover td{background:#17223a}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 14px;margin:8px 0 18px}summary{cursor:pointer;color:var(--cy)}
+blockquote{border-left:4px solid var(--pu);margin:12px 0;padding:4px 14px;background:var(--panel);border-radius:0 8px 8px 0;color:var(--dim)}
+.callout{border-radius:10px;padding:8px 14px;margin:14px 0;border:1px solid;border-left-width:5px}.callout p{margin:4px 0}.callout .ct{font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.06em}
+.callout.note{background:#10243a;border-color:var(--bl)}.callout.note .ct{color:var(--bl)}.callout.tip{background:#0f2a22;border-color:var(--gr)}.callout.tip .ct{color:var(--gr)}
+.callout.warning{background:#2e2410;border-color:var(--am)}.callout.warning .ct{color:var(--am)}.callout.important{background:#2a1530;border-color:var(--pk)}.callout.important .ct{color:var(--pk)}
+div[align=center]{text-align:center;padding:10px 0}div[align=center] h1{margin-top:6px;font-size:38px}img{max-width:100%}hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+@media(max-width:900px){#side{display:none}#main{margin-left:0;padding:16px}}
+</style></head><body><nav id="side"><a class="sm" href="#s-1">🎯 Design principle: fea_engine-agnostic core</a><a class="sm" href="#s-2">✅ What's implemented (linear core)</a><a class="sm" href="#s-3">⚙️ Installation</a><a class="sm" href="#s-4">🚀 Quick start</a><a class="sm" href="#s-5">🗂️ Package layout</a><a class="sm" href="#s-6">🧪 Running the tests</a><a class="sm" href="#s-7">🧪 Running the examples</a><a class="sm" href="#s-8">⚠️ A certified-bound caveat (read before using scm.py)</a><a class="sm" href="#s-9">🔢 A dtype note (why this matters more than it sounds)</a><a class="sm" href="#s-10">🗺️ Roadmap</a></nav><div id="main"><div align="center">
+<h1>rom_engine</h1>
+<p><strong>Reduced-order modeling for structural analysis: POD, Galerkin, affine, frequency-domain, state-space, nonlinear</strong></p>
+<p><img alt="version" src="https://img.shields.io/badge/version-0.1.0-7c3aed?style=for-the-badge" />
+<img alt="status" src="https://img.shields.io/badge/status-alpha-f59e0b?style=for-the-badge" />
+<img alt="python" src="https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge" />
+<img alt="NumPy" src="https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge" />
+<img alt="SciPy" src="https://img.shields.io/badge/SciPy-1.8+-0054a6?style=for-the-badge" />
+<img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-optional-ee4c2c?style=for-the-badge" />
+<img alt="license" src="https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge" /></p>
+</div>
+<h2>🧭 Contents</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🎯 <a href="#s-1">Design principle: fea_engine-agnostic core</a></td>
+<td>🧪 <a href="#s-6">Running the tests</a></td>
+</tr>
+<tr>
+<td>✅ <a href="#s-2">What's implemented (linear core)</a></td>
+<td>🧪 <a href="#s-7">Running the examples</a></td>
+</tr>
+<tr>
+<td>⚙️ <a href="#s-3">Installation</a></td>
+<td>⚠️ <a href="#s-8">A certified-bound caveat (read before using <code>scm.py</code>)</a></td>
+</tr>
+<tr>
+<td>🚀 <a href="#s-4">Quick start</a></td>
+<td>🔢 <a href="#s-9">A dtype note (why this matters more than it sounds)</a></td>
+</tr>
+<tr>
+<td>🗂️ <a href="#s-5">Package layout</a></td>
+<td>🗺️ <a href="#s-10">Roadmap</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>A small, from-scratch reduced-order-modeling (ROM) package for
+structural engineering analysis. It is the companion package to
+<a href="../fea_engine"><code>fea_engine</code></a>: fea_engine assembles and solves
+full-order finite element models, rom_engine compresses and
+accelerates them.</p>
+<p><a id="s-1"></a></p>
+<h2>🎯 Design principle: fea_engine-agnostic core</h2>
+<p><code>rom_engine</code>'s library code (<code>pod.py</code>, <code>galerkin.py</code>, <code>affine.py</code>,
+<code>frequency.py</code>) never imports <code>fea_engine</code>. Every function and class
+works on plain <code>numpy</code> arrays -- a stiffness matrix <code>K</code>, a mass matrix
+<code>M</code>, a load vector <code>F</code>, a matrix of snapshot vectors. This means
+rom_engine works with matrices assembled by fea_engine, by any other FE
+code, or by a hand-built toy model -- it makes no assumptions about
+where <code>K</code>/<code>M</code>/<code>F</code> came from. Complex-valued arrays (needed by
+<code>frequency.py</code>'s <code>A(omega) = -omega^2*M + i*omega*C + K</code>) are handled
+transparently throughout -- every array-ingesting method infers
+real-vs-complex dtype from its input rather than forcing <code>float</code>.</p>
+<p><code>fea_engine</code> is used in exactly one place in this package: as the
+source of realistic, physically meaningful test fixtures
+(<code>tests/fea_fixtures.py</code>) and worked examples (<code>examples/</code>). Every
+correctness check in this package's test suite is validated against a
+real fea_engine structural model -- a cantilever beam, a two-region
+beam with independent material properties -- not just against
+synthetic matrices, so the numbers in the test output mean something
+physically, not just algebraically.</p>
+<h3>Intrusive vs. non-intrusive</h3>
+<p>Every module above (<code>pod</code>/<code>galerkin</code>/<code>affine</code>/<code>frequency</code>/<code>greedy</code>/<code>scm</code>)
+is <strong>intrusive</strong>: each is handed the actual system matrices <code>K</code>/<code>M</code>/<code>C</code>
+(or an affine decomposition of them). <code>loewner.py</code>/<code>screening.py</code> are
+the package's first <strong>non-intrusive</strong> capability: <code>LoewnerROM.fit()</code>
+identifies natural frequencies, damping ratios, and mode shapes
+directly from sampled complex frequency-response data <code>x(omega)</code> --
+it never sees <code>K</code>, <code>M</code>, or <code>C</code>, and its signature makes that a checked
+property, not just a design intent (see <code>test_loewner.py</code>). This makes
+it usable on real measured/experimental vibration data or a
+proprietary/black-box model's exported harmonic response, not just on
+a system this package (or any FE code) can assemble directly. See
+<code>docs/loewner_modal_identification_roadmap.md</code> for the full design
+background.</p>
+<p><a id="s-2"></a></p>
+<h2>✅ What's implemented (linear core)</h2>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pod.py</code></td>
+<td>Proper Orthogonal Decomposition: extract a reduced basis from a matrix of snapshot vectors. Standard (Euclidean/SVD) and mass-weighted (M-orthonormal, via a Cholesky-based algorithm) variants; truncate by explicit rank or an energy-capture threshold.</td>
+</tr>
+<tr>
+<td><code>galerkin.py</code></td>
+<td>Intrusive Galerkin projection: project a full-order linear system <code>(K, M, F)</code> onto a reduced basis and solve the reduced system (static: <code>K_r q = F_r</code>; modal: reduced generalized eigenproblem).</td>
+</tr>
+<tr>
+<td><code>affine.py</code></td>
+<td>Affine parametric decomposition: <code>K(mu) = theta_1(mu)*K_1 + ... + theta_Q(mu)*K_Q</code>, projected onto a reduced basis ONCE offline so that new parameter queries cost <code>O(Q * n_modes^2)</code> instead of a full reassembly + solve.</td>
+</tr>
+<tr>
+<td><code>frequency.py</code></td>
+<td>Intrusive frequency-domain ROM: <code>A(omega) = -omega^2*M + i*omega*C + K</code> is exactly an affine-in-omega system, so <code>FrequencyROM</code> composes <code>affine.py</code> + <code>galerkin.py</code> (rather than duplicating their algebra) for fast harmonic-response sweeps, with either a modal or a POD-on-FRF-snapshots basis. Also provides an efficient exact residual (<code>residual_norm()</code>) and a coercivity-constant-free error indicator (<code>hierarchical_error_indicator()</code>), used by <code>greedy.py</code>.</td>
+</tr>
+<tr>
+<td><code>greedy.py</code></td>
+<td>Weak-greedy adaptive training for <code>FrequencyROM</code>: instead of a fixed training-frequency grid, adaptively picks which frequencies to full-order-solve at, spending that budget where the current basis is weakest -- using the hierarchical indicator instead of a classical coercivity-bound estimator, because the literature documents that approach as weak exactly near resonance.</td>
+</tr>
+<tr>
+<td><code>scm.py</code></td>
+<td>The one genuinely <strong>certified</strong> (rigorously provable, not just a heuristic) error bound in this package: <code>SingularValueLowerBound</code> lower-bounds <code>sigma_min(A(omega))</code> from a handful of offline reference points via a Weyl/Mirsky matrix-perturbation inequality, turning <code>residual_norm()</code> into a true a posteriori bound (<code>certified_error_bound()</code>) rather than an estimate. Deliberately a SIMPLIFIED SCM-family method, not the classical LP-based (natural-norm) Successive Constraint Method -- see the caveats below.</td>
+</tr>
+<tr>
+<td><code>scm_lp.py</code></td>
+<td>The genuine classical LP-based Successive Constraint Method (Huynh, Rozza, Sen, Patera 2007): <code>LPSingularValueLowerBound</code> (same API as <code>scm.py</code>'s <code>SingularValueLowerBound</code> -- <code>from_affine()</code>, <code>add_reference()</code>, <code>lower_bound()</code>, <code>upper_bound()</code>, <code>greedy_train()</code>) bounds <code>sigma_min(A(omega))^2 = lambda_min(A(omega)^H A(omega))</code> via a genuine online linear program (<code>scipy.optimize.linprog</code>, HiGHS) built from offline-selected reference/control points, exposed as <code>certified_error_bound_lp()</code>. Squaring turns the problem into a real, symmetric, PSD eigenvalue problem, sidestepping a literature-acknowledged derivation ambiguity the sharper natural-norm variant has for complex, non-Hermitian operators like this package's <code>A(omega)</code> -- see the caveats below and <code>docs/phase4_error_bounds_greedy_roadmap.md</code> Section 9.</td>
+</tr>
+<tr>
+<td><code>metrics.py</code></td>
+<td>Generic, method-agnostic comparison metrics: <code>modal_assurance_criterion()</code> (MAC) -- scale- and phase-invariant collinearity between two mode-shape vectors -- and <code>r_squared()</code> -- the coefficient of determination, used by the nonlinear-ROM roadmap's validation but not tied to it.</td>
+</tr>
+<tr>
+<td><code>loewner.py</code></td>
+<td><strong>Non-intrusive</strong> modal parameter identification: <code>LoewnerROM.fit()</code> builds a Loewner pencil (Mayo &amp; Antoulas 2007) directly from sampled complex frequency-response data and solves a generalized eigenproblem for natural frequencies/damping ratios, never touching <code>K</code>/<code>M</code>/<code>C</code>. <code>.reconstruct_mode_shapes()</code> recovers full mode shapes from multi-DOF response data.</td>
+</tr>
+<tr>
+<td><code>screening.py</code></td>
+<td>Automated cross-ROM stability screening for <code>LoewnerROM</code>: <code>screen_physical_modes()</code> builds many <code>LoewnerROM</code>s from independent random interpolation-frequency subsets and keeps only the eigenpairs that recur, tightly clustered, across most of them -- separating genuine physical modes from an oversized interpolation order's spurious numerical artifacts.</td>
+</tr>
+<tr>
+<td><code>sampling.py</code></td>
+<td>Generalized Optimal Latin Hypercube Sampling (OLHS) design-of-experiments core: <code>optimal_lhs()</code> (general-purpose, unit-hypercube, best-of-<code>n_iter</code> maximin selection) and <code>modal_force_samples()</code> (a thin rescaling into the per-mode training-load convention a nonlinear-ROM training strategy needs). Phase 1 of <code>docs/nonlinear_surrogate_rom_roadmap.md</code>.</td>
+</tr>
+<tr>
+<td><code>nonlinear_rom.py</code></td>
+<td>Hybrid nonlinear structural ROM: an intrusive linear modal basis plus a non-intrusive, black-box regression of the nonlinear reduced restoring force. <code>MultiFidelitySurrogate</code> (RBF fit of <code>F_nl(q_l)</code>, 4 kernels each with an analytic Jacobian -- the MFS-NLROM/He et al. 2023 approach) and <code>PolynomialModalROM</code> (Nash-form quadratic+cubic fit of <code>F_nl(q_nl)</code> + Newton solve -- the ICE/Shi &amp; Mei/STEP family, with <code>ICEROM</code>/<code>ShiMeiROM</code>/<code>EnforcedDisplacementROM</code> convenience constructors), both implementing the shared <code>ReducedForceModel</code> protocol. <code>AppliedLoadStrategy</code>/<code>EnforcedDisplacementStrategy</code> generate training data via a caller-supplied <code>fom_solver</code> callable. Phase 2 of <code>docs/nonlinear_surrogate_rom_roadmap.md</code>.</td>
+</tr>
+<tr>
+<td><code>nonlinear_dynamics.py</code></td>
+<td>Generalized reduced nonlinear time integration: <code>integrate_newmark_surrogate()</code> separates the Newmark-beta predictor/corrector METHOD from the MODEL (any <code>nonlinear_rom.ReducedForceModel</code>). Four selectable <code>correction</code> modes. <code>"none"</code> is the cheapest baseline. <code>"fixed_point"</code> (ported from this project's own validated <code>mfs-nlrom-beam</code> prototype) is the default since 2026-09-24. <code>"sign_deviation"</code> reconstructs the MFS-NLROM paper's Eq. 32 idea but is known to diverge on strongly nonlinear problems (its <code>sign(qddot)</code> factor reverses the correction for decelerating modes), so it is kept only for reproducing that paper. <code>"newton"</code> (<code>domain="q_nl"</code> only) runs full Newton-Raphson each step. Phase 4 of <code>docs/nonlinear_surrogate_rom_roadmap.md</code>.</td>
+</tr>
+<tr>
+<td><code>nnm.py</code></td>
+<td>Multi-harmonic-balance (HBM) + Alternating Frequency-Time (AFT) nonlinear normal mode (NNM) backbone continuation. <code>HarmonicBalanceSystem</code> assembles the linear-in-<code>Z</code> operator <code>A(omega)</code> (real cos/sin block form, deliberately mirroring <code>frequency.FrequencyROM</code>'s own complex <code>A(omega)</code>) for any <code>nonlinear_rom.ReducedForceModel</code> via AFT. Two continuation drivers: <code>solve_nnm_backbone()</code> Newton-continues via NATURAL-PARAMETER (prescribed-amplitude) continuation, simple and fast for the common non-folding (monotonically hardening/softening) case; <code>solve_nnm_backbone_arclength()</code> (Phase 6 addendum) instead uses Keller (1977) PSEUDO-ARCLENGTH continuation -- a secant-predictor + augmented-Newton-corrector scheme with an omega-rescaling fix for a real mixed-units step-size issue -- able to trace THROUGH a genuine amplitude fold, where natural-parameter continuation cannot. Built from first-principles HBM/AFT theory (no literal prototype to port from) and validated against <code>frequency.FrequencyROM</code> (exact <code>n_harmonics=1</code> cross-check), an independent scipy-ODE Duffing-oscillator backbone, an analytic unit-circle fold-turning proof, an exact-reduction check on a 2-mode coupled system, and a REAL fea_engine clamped-clamped beam backbone measured via time-integration + FFT period. Step 5 of <code>docs/nonlinear_surrogate_rom_roadmap.md</code>; pseudo-arclength continuation is that document's Section 11 (Phase 6) addendum.</td>
+</tr>
+<tr>
+<td><code>state_space.py</code></td>
+<td>Converts a second-order structural system <code>(M, C, K)</code> plus an explicit INPUT map <code>B</code> and OUTPUT map <code>Cout</code> into first-order state-space form -- <code>to_state_space(..., form="E")</code> (descriptor, no <code>M</code>-inversion) or <code>form="A"</code> (explicit ODE form, one dense <code>M</code>-solve). The shared prerequisite <code>krylov.py</code> and <code>balanced_truncation.py</code> both need.</td>
+</tr>
+<tr>
+<td><code>mode_correction.py</code></td>
+<td>Mode acceleration + modal truncation augmentation (Besselink et al. 2013, eqs. 13-20): cheap, closed-form corrections that recover the STATIC contribution a truncated modal basis leaves out, using one extra full-order static solve. <code>mode_acceleration_response()</code> corrects post-hoc; <code>augmented_basis()</code> folds the correction into the basis for use with the existing <code>GalerkinROM</code>. Both proved (and tested) to reproduce the exact full-order static solution to machine precision.</td>
+</tr>
+<tr>
+<td><code>krylov.py</code></td>
+<td>Krylov-subspace moment matching (Besselink et al. 2013, eqs. 21-36): <code>arnoldi_basis()</code> builds a block-Arnoldi basis via one reused LU factorization; <code>KrylovROM.from_MCK()</code> projects onto it. One-sided (Galerkin, default) matches the transfer function's Taylor moments EXACTLY at the expansion point <code>s0</code>, with accuracy degrading away from it -- expected, not a flaw. Two-sided (Petrov-Galerkin, <code>from_MCK(..., two_sided=True)</code>) via <code>two_sided_arnoldi_bases()</code> matches roughly TWICE as many moments at the same reduced order, at the cost of a documented biorthogonalization fragility that raises <code>ValueError</code> rather than degrading silently. <code>KrylovROM.is_stable()</code> checks (does not assume) stability either way, since moment matching gives no a priori guarantee.</td>
+</tr>
+<tr>
+<td><code>soar.py</code></td>
+<td>SOAR (Second-Order Arnoldi, Bai &amp; Su 2005): <code>soar_basis()</code> builds an orthonormal basis of the second-order Krylov subspace (<code>r_1=K0^-1 B</code>, <code>r_j=A1 r_{j-1}+A2 r_{j-2}</code>) directly from <code>(M,C,K)</code>, NEVER forming the <code>2*n_dof</code> first-order pencil <code>krylov.py</code> needs; <code>SOARROM.from_MCK()</code> projects <code>M/C/K/B/Cout</code> onto it -- an ordinary Galerkin projection, which is exactly what makes <code>passivity.py</code>'s second-order-Galerkin passivity theorem apply, unlike <code>krylov.py</code>'s first-order <code>KrylovROM</code>. Only SOAR is implemented, deliberately not TOAR (the further numerical stabilization of SOAR's own known fragility) -- mitigated instead via full reorthogonalization, matching <code>krylov.py</code>'s own <code>arnoldi_basis()</code>. A real self-caught bug (feeding orthonormalized rather than raw vectors into the two-term recurrence silently capped moment-matching accuracy at moment 1 regardless of basis size) was found and fixed during development -- see the module's own docstring. Validated: exact moment matching through moment <code>k-1</code> for a <code>k</code>-vector basis (synthetic system, at <code>s0=0</code> and a nonzero complex <code>s0</code>); on a real fea_engine beam with a 3-DOF block port, <code>SOARROM(k)</code> measurably OUTPERFORMS <code>KrylovROM(2k)</code> (same total reduced-state count) at small <code>k</code>; and, the actual motivation, <code>SOARROM</code> stays passive at every tested order and expansion point (unlike <code>KrylovROM</code>, which has no such guarantee). A genuine, honestly-reported SOAR fragility: for a SINGLE-DOF port on this beam's well-separated eigenvalues, the raw recursion collapses toward the dominant mode like inverse power iteration, plateauing the basis size well below any requested <code>k</code> -- exactly why real SOAR/TOAR usage favors block ports, confirmed directly (the same block port does not plateau). Phase 5 addendum of <code>docs/frequency_domain_rom_roadmap.md</code> (Section 8).</td>
+</tr>
+<tr>
+<td><code>random_vibration.py</code></td>
+<td>PSD (power spectral density) random-vibration response: <code>psd_response(rom_freq, freqs_hz, psd_input, F0_pattern, output_dofs)</code> reuses <code>FrequencyROM.frequency_response()</code> to compute <code>S_out(f) = \|H(f)\|^2 * S_in(f)</code> and the response RMS, mirroring <code>fea_engine</code>'s own already-validated <code>solve_random_vibration()</code> formula exactly (a single <code>output_dofs</code> int matches its signature 1:1; an array-like of several DOFs is a small generalization). Phase 6 of <code>docs/frequency_domain_rom_roadmap.md</code>.</td>
+</tr>
+<tr>
+<td><code>balanced_truncation.py</code></td>
+<td>Balanced truncation (Besselink et al. 2013, eqs. 37-58): <code>controllability_gramian()</code>/<code>observability_gramian()</code> solve the two Lyapunov equations (scipy's dense Bartels-Stewart solver); <code>hankel_singular_values()</code> uses the numerically preferred square-root method; <code>BalancedTruncationROM.from_MCK()</code> balances and truncates. The one method that stays accurate globally (not just near one point) because it uses where the ports are. <code>is_stable()</code> is a genuine theorem here (unlike <code>krylov.py</code>); <code>h_infinity_error_bound()</code> gives a real, checked a priori worst-case error bound <code>krylov.py</code> has no equivalent of. See the module's own docstring for a practical scale note (modally pre-truncate a raw FE model before balancing it). <code>SingularPerturbationROM</code> (singular perturbation approximation / residualization, Liu &amp; Anderson 1989) is a sibling reduction in the SAME module with an IDENTICAL API (<code>from_MCK()</code>, <code>transfer_function()</code>, <code>frequency_response()</code>, <code>h_infinity_error_bound()</code>, <code>is_stable()</code>), reusing the SAME balancing transform (<code>hankel_singular_values(..., return_transform=True)</code>) rather than recomputing anything. Where ordinary <code>BalancedTruncationROM</code> simply discards the truncated ("fast") balanced states -- exact at <code>s=infinity</code>, generally wrong at DC/<code>s=0</code> -- SPA instead holds them at algebraic quasi-steady-state (derivative=0, not state=0) and solves the resulting Schur-complement system, giving a nonzero <code>D_r</code> (always exactly 0 for ordinary BT here) that makes it exact at DC instead: the state-space analogue of what <code>mode_correction.py</code> already does for a plain modal basis. Both share the exact same a priori H-infinity error bound and stability-preservation guarantee; on the same real fea_engine damped-cantilever fixture at <code>r=10</code>, SPA's DC-gain error measures 1.7e-13 relative (machine precision -- an algebraic identity) vs. ordinary BT's 3.4e-5 relative at the same <code>r</code>, roughly 8 orders of magnitude worse, without costing BT's own whole-sweep accuracy (max relative error 1.7e-4 across the frequency sweep at <code>r=10</code>, comparable to ordinary BT's). Prefer <code>BalancedTruncationROM</code> when high-frequency accuracy matters most; prefer <code>SingularPerturbationROM</code> when DC/near-static-load accuracy matters most -- the choice is about WHERE the reduced model is exact, not which is "better" overall. <code>FrequencyWeightedBalancedTruncationROM</code> (Enns 1984) is a third sibling with the same <code>from_MCK()</code>/<code>transfer_function()</code>/<code>frequency_response()</code>/<code>is_stable()</code> API shape, plus <code>lowpass_weight(wc)</code>/<code>bandpass_weight(omega_n, zeta=0.1)</code> convenience constructors for the input/output weight filters <code>Wi(s)</code>/<code>Wo(s)</code>. Where ordinary BT ranks states by importance UNIFORMLY across all frequencies, this class weights the controllability/observability Gramians by <code>Wi</code>/<code>Wo</code> BEFORE balancing (<code>frequency_weighted_gramians()</code>, <code>frequency_weighted_hankel_singular_values()</code>), ranking states by importance in a CHOSEN band instead; with <code>Wi=Wo=None</code> it reduces EXACTLY to ordinary <code>BalancedTruncationROM</code> (a regression test, sharing the same <code>_balance_from_gramians()</code> balancing step factored out of <code>hankel_singular_values()</code> -- zero behavior change to the unweighted path). This is a genuine trade-off, not a free improvement: on the same fixture at <code>r=6</code>, targeting the beam's third natural frequency with <code>bandpass_weight(omega3, zeta=0.2)</code> as an output weight, it is 14.0x MORE accurate than ordinary BT IN the targeted band (max relative error 0.238 vs 3.33 -- ordinary BT essentially fails to represent this mode at all at <code>r=6</code>) but ~5.3x LESS accurate FAR from it, near the dominant first mode (1.9e-3 vs 3.6e-4) -- both measured directly on the same (r, zeta), not just cited from theory; the effect held across most of a small parameter sweep, not uniformly at every combination tried. Unlike <code>BalancedTruncationROM</code>/<code>SingularPerturbationROM</code>, stability is NOT unconditionally guaranteed here -- a real, literature-documented limitation of Enns' two-sided (both <code>Wi</code> and <code>Wo</code> given) construction. One-sided weighting (only <code>Wi</code> or only <code>Wo</code>) preserved stability at every tested <code>r</code> (4, 6, 8, 10); two-sided weighting, genuinely checked (not assumed) across <code>r</code> in {4,6,8,10,12} on the same fixture, came out stable at <code>r=4,10,12</code> and UNSTABLE at <code>r=6,8</code> -- so <code>is_stable()</code> on this class must be called and checked per-use (like <code>krylov.KrylovROM.is_stable()</code>), not treated as a theorem-backed guard. It deliberately does NOT expose <code>h_infinity_error_bound()</code>: the classical a priori bound formula applies to the UNWEIGHTED Hankel singular values specifically, and a frequency-weighted a priori bound exists in the literature but wasn't independently verified here -- the same honest-omission choice <code>KrylovROM</code> already makes (confirmed by a <code>hasattr</code> test).</td>
+</tr>
+<tr>
+<td><code>passivity.py</code></td>
+<td>Passivity diagnostics, usable against ANY of this package's frequency-response-producing classes (<code>FrequencyROM</code>, <code>KrylovROM</code>, <code>BalancedTruncationROM</code>, <code>SingularPerturbationROM</code>, <code>FrequencyWeightedBalancedTruncationROM</code>) -- plain functions, not a ROM class: <code>velocity_transfer_function(H_disp, omega_array)</code> converts an already-computed DISPLACEMENT frequency response to a VELOCITY (mobility) one via multiplication by <code>i*omega</code> (velocity is the time-derivative of displacement, so no new state-space "velocity output" plumbing is needed); <code>passivity_margin(H_vel)</code> returns <code>Re[H_vel(i*omega)]</code> at each frequency; <code>is_passive(H_vel, tol=0.0)</code> checks it stays <code>&gt;= -tol</code> everywhere. Originally scoped as coprime-factorization/passivity-preserving balanced truncation, but the standard construction needs an algebraic Riccati equation requiring <code>D + D^T</code> invertible, and this package's structural systems always have <code>D=0</code> (no direct feedthrough) -- singular. Pivoted instead to a closed-form result: for a collocated force-in/velocity-out system, the mechanical energy <code>E = 0.5 qdot^T M qdot + 0.5 q^T K q</code> satisfies the KYP/positive-real dissipation inequality <code>dE/dt &lt;= y^T u</code> exactly whenever <code>M</code>, <code>K</code> are SPD and <code>C</code> is PSD -- properties this package already assumes everywhere -- so <code>galerkin.py</code>/<code>frequency.py</code>'s existing second-order Galerkin reduction ALREADY provably preserves passivity, for any basis, with no Riccati equation needed. Validated in <code>test_passivity.py</code>: the full-order fea_engine fixture is passive (sanity check); a modally-reduced <code>FrequencyROM</code> stays passive at every tested basis size; and a sweep of the state-space (first-order) reduction methods found 8 of 9 checks passive but ONE genuine violation -- <code>FrequencyWeightedBalancedTruncationROM</code> at <code>r=14</code> with a bandpass output weight -- concrete evidence that first-order reduction carries no passivity-preservation guarantee, unlike second-order Galerkin projection.</td>
+</tr>
+<tr>
+<td><code>hankel_norm.py</code></td>
+<td>Optimal Hankel norm approximation (Adamjan-Arov-Krein theory; explicit realization due to Glover 1984): <code>OptimalHankelNormROM.from_MCK()</code> builds, in ONE application of the AAK formulas (reusing <code>balanced_truncation.hankel_singular_values()</code> for the balancing step), an order-<code>r</code> model with <code>\|\|G-G_r\|\|_Hankel = sigma_(r+1)</code> EXACTLY -- the true minimum over EVERY possible order-<code>r</code> system (stable or not), a stronger optimality claim (in the Hankel-norm sense) than <code>BalancedTruncationROM</code>'s own a priori H-infinity bound. SISO only (a scalar division in the derivation -- raises <code>ValueError</code> for MIMO systems rather than guessing at an unverified generalization, matching <code>scm_lp.py</code>/<code>passivity.py</code>'s precedent). A genuine numerical fragility was found via deliberate stress-testing BEFORE the module was written (unreliable when <code>sigma_(r+1)</code> is very small relative to the largest Hankel singular value, and no simple a priori quantity -- including <code>cond(Gamma)</code> -- reliably predicted it), so EVERY construction runs an always-on EMPIRICAL self-check instead (<code>numerically_reliable</code>/<code>measured_hankel_norm_error</code>, comparing the theoretical <code>sigma_(r+1)</code> against the independently-measured Hankel norm of the error system <code>G-G_r</code>, itself computed via the same already-validated <code>hankel_singular_values()</code>), warning loudly rather than failing silently. Validated on the real fea_engine cantilever fixture (<code>test_hankel_norm.py</code>): the core AAK optimality claim was checked DIRECTLY (<code>OptimalHankelNormROM</code>'s Hankel-norm error <code>&lt;=</code> <code>BalancedTruncationROM</code>'s own at the same <code>r</code>, at every tested <code>r</code>), and the self-check machinery was shown to both agree with theory to near machine precision in the reliable regime AND correctly flag a genuinely unreliable case reproduced on this fixture (a 15-mode pre-reduction at <code>r=4</code>, vs. the 6-mode pre-reduction the reliable tests use). An honest finding, not assumed favorably: Hankel-norm optimality did NOT translate into better sup-norm/relative frequency-response accuracy than ordinary <code>BalancedTruncationROM</code> at the same <code>r</code> on this fixture (mirrors <code>FrequencyWeightedBalancedTruncationROM</code>'s own honest trade-off reporting). <code>h_infinity_error_bound()</code> is deliberately NOT exposed (the tight L-infinity bound needs an additional recursive correction step not independently re-derived here) -- the same honest-omission precedent <code>KrylovROM</code>/<code>FrequencyWeightedBalancedTruncationROM</code> already set.</td>
+</tr>
+</tbody>
+</table>
+<h3>Why these three together</h3>
+<p>A parametric structural model -- say, a beam whose two halves have
+independently uncertain or design-varying material stiffness -- needs
+many solves at different parameter values (a sweep, an optimization
+loop, an uncertainty-quantification run). The three modules chain
+together to make that cheap:</p>
+<ol>
+<li><strong>POD</strong> turns a handful of full-order solves into a small basis
+   that captures how the structure actually deforms.</li>
+<li><strong>Galerkin projection</strong> turns the full-order system into a tiny
+   one, on that basis.</li>
+<li><strong>Affine decomposition</strong> exploits the fact that ordinary linear
+   elasticity is exactly linear in a scaling modulus/rigidity, so the
+   expensive "project the big matrices onto the small basis" step only
+   needs to happen once -- ever -- no matter how many parameter values
+   are later queried.</li>
+</ol>
+<p>The result: a full re-assembly + solve of a real fea_engine model
+costs single-digit milliseconds; the corresponding reduced query costs
+microseconds. <code>examples/two_region_beam_rom.py</code> demonstrates and
+measures this directly (see below) -- roughly a 200x speedup on a
+120-element two-region cantilever, at a maximum tip-deflection error
+under 0.2% across held-out parameter points.</p>
+<p><a id="s-3"></a></p>
+<h2>⚙️ Installation</h2>
+<div class="hl"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="w">              </span><span class="c1"># core (numpy, scipy only)</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[fea]"</span><span class="w">       </span><span class="c1"># + fea_engine, for running tests/examples</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span><span class="w">       </span><span class="c1"># + pytest, for running the test suite</span>
+</code></pre></div>
+
+<p><a id="s-4"></a></p>
+<h2>🚀 Quick start</h2>
+<div class="hl"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">PodBasis</span><span class="p">,</span> <span class="n">GalerkinROM</span><span class="p">,</span> <span class="n">AffineDecomposition</span>
+
+<span class="c1"># K, M, F below are plain numpy arrays -- from fea_engine, or anywhere else.</span>
+
+<span class="c1"># 1. POD from a set of snapshot vectors (e.g. static solves at several</span>
+<span class="c1">#    training loads or parameter values), mass-weighted if M is given:</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">PodBasis</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">snapshots</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+
+<span class="c1"># 2. Galerkin-project and solve the reduced system:</span>
+<span class="n">rom</span> <span class="o">=</span> <span class="n">GalerkinROM</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span><span class="o">.</span><span class="n">reduce_system</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">M</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="n">F</span><span class="p">)</span>
+<span class="n">x_full</span><span class="p">,</span> <span class="n">q_reduced</span> <span class="o">=</span> <span class="n">rom</span><span class="o">.</span><span class="n">solve_static</span><span class="p">()</span>
+<span class="n">freq_hz</span><span class="p">,</span> <span class="n">mode_shapes_full</span><span class="p">,</span> <span class="n">mode_shapes_reduced</span> <span class="o">=</span> <span class="n">rom</span><span class="o">.</span><span class="n">solve_modal</span><span class="p">()</span>
+
+<span class="c1"># 3. Affine decomposition for fast many-query parameter sweeps, when</span>
+<span class="c1">#    K(mu) = theta_1(mu)*K_1 + theta_2(mu)*K_2 + ...:</span>
+<span class="n">affine</span> <span class="o">=</span> <span class="n">AffineDecomposition</span><span class="p">([</span><span class="n">K1</span><span class="p">,</span> <span class="n">K2</span><span class="p">],</span> <span class="n">theta_func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">mu</span><span class="p">:</span> <span class="p">[</span><span class="n">mu</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mu</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">affine</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">V</span><span class="p">)</span>                       <span class="c1"># offline, once</span>
+<span class="k">for</span> <span class="n">mu</span> <span class="ow">in</span> <span class="n">many_parameter_values</span><span class="p">:</span>
+    <span class="n">K_r</span> <span class="o">=</span> <span class="n">affine</span><span class="o">.</span><span class="n">assemble_reduced</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>          <span class="c1"># online, cheap</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">K_r</span><span class="p">,</span> <span class="n">rom</span><span class="o">.</span><span class="n">project_vector</span><span class="p">(</span><span class="n">F</span><span class="p">))</span>
+
+<span class="c1"># 4. Frequency-domain ROM: A(omega) = -omega^2*M + i*omega*C + K,</span>
+<span class="c1">#    fast harmonic sweeps via the SAME affine machinery under the hood.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrequencyROM</span>
+<span class="n">rom_freq</span> <span class="o">=</span> <span class="n">FrequencyROM</span><span class="o">.</span><span class="n">from_MCK</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">basis</span><span class="o">.</span><span class="n">V</span><span class="p">,</span> <span class="n">rayleigh</span><span class="o">=</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">))</span>  <span class="c1"># or C=C_matrix</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">rom_freq</span><span class="o">.</span><span class="n">frequency_response</span><span class="p">(</span><span class="n">omega_array</span><span class="p">,</span> <span class="n">F</span><span class="p">)</span>   <span class="c1"># (n_omega, n_dof) complex</span>
+
+<span class="c1"># 5. Greedy training: instead of a fixed training-frequency grid, adaptively</span>
+<span class="c1">#    pick which frequencies to solve at, based on a cheap error indicator:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">greedy_train_frequency_basis</span>
+<span class="n">basis</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">greedy_train_frequency_basis</span><span class="p">(</span>
+    <span class="n">candidate_omegas</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">rayleigh</span><span class="o">=</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">),</span> <span class="n">max_modes</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># 6. A genuinely CERTIFIED error bound (not just an estimate), from a</span>
+<span class="c1">#    handful of offline reference points -- see the caveats below before</span>
+<span class="c1">#    relying on this for anything beyond a narrow band around a reference:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">SingularValueLowerBound</span><span class="p">,</span> <span class="n">certified_error_bound</span>
+<span class="n">scm</span> <span class="o">=</span> <span class="n">SingularValueLowerBound</span><span class="o">.</span><span class="n">from_affine</span><span class="p">(</span><span class="n">rom_freq</span><span class="o">.</span><span class="n">affine</span><span class="p">)</span>
+<span class="n">scm</span><span class="o">.</span><span class="n">add_reference</span><span class="p">(</span><span class="n">omega_of_interest</span><span class="p">)</span>              <span class="c1"># offline, one SVD</span>
+<span class="n">bound</span> <span class="o">=</span> <span class="n">certified_error_bound</span><span class="p">(</span><span class="n">rom_freq</span><span class="p">,</span> <span class="n">scm</span><span class="p">,</span> <span class="n">omega_of_interest</span><span class="p">,</span> <span class="n">F</span><span class="p">)</span>  <span class="c1"># online, cheap</span>
+
+<span class="c1"># 7. NON-INTRUSIVE modal identification: given only sampled complex</span>
+<span class="c1">#    response data x(omega) (measured, or from any solver) at two</span>
+<span class="c1">#    disjoint interpolation-frequency sets -- no M/C/K required:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">LoewnerROM</span><span class="p">,</span> <span class="n">screen_physical_modes</span><span class="p">,</span> <span class="n">modal_assurance_criterion</span>
+<span class="n">rom_id</span> <span class="o">=</span> <span class="n">LoewnerROM</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">omega_alpha</span><span class="p">,</span> <span class="n">omega_beta</span><span class="p">,</span> <span class="n">x_alpha</span><span class="p">,</span> <span class="n">x_beta</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rom_id</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">rom_id</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span>                        <span class="c1"># identified frequencies [Hz], damping ratios</span>
+<span class="n">mode_shapes</span> <span class="o">=</span> <span class="n">rom_id</span><span class="o">.</span><span class="n">reconstruct_mode_shapes</span><span class="p">(</span><span class="n">X_beta_multi</span><span class="p">,</span> <span class="n">omega_beta</span><span class="o">=</span><span class="n">omega_beta</span><span class="p">)</span>
+
+<span class="c1"># Automated screening removes spurious eigenpairs from an oversized</span>
+<span class="c1"># interpolation order by cross-checking many random ROMs:</span>
+<span class="n">physical</span> <span class="o">=</span> <span class="n">screen_physical_modes</span><span class="p">(</span><span class="n">freq_pool</span><span class="p">,</span> <span class="n">x_pool</span><span class="p">,</span> <span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="p">,</span>
+                                  <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="c1"># 8. NONLINEAR reduced-force model: fit a black-box surrogate of the</span>
+<span class="c1">#    nonlinear modal restoring force from sampled training data (here,</span>
+<span class="c1">#    an RBF fit against the linear modal displacement q_l -- the</span>
+<span class="c1">#    MFS-NLROM approach), then use it in place of a full-order</span>
+<span class="c1">#    nonlinear internal-force evaluation:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiFidelitySurrogate</span><span class="p">,</span> <span class="n">AppliedLoadStrategy</span>
+<span class="n">strategy</span> <span class="o">=</span> <span class="n">AppliedLoadStrategy</span><span class="p">(</span><span class="n">target_fracs</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span> <span class="n">reference_scale</span><span class="o">=</span><span class="n">thickness</span><span class="p">,</span>
+                                <span class="n">n_samples</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">q_l</span><span class="p">,</span> <span class="n">q_nl</span><span class="p">,</span> <span class="n">F_nl</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">M_ff</span><span class="p">,</span> <span class="n">basis_freqs_hz</span><span class="p">,</span> <span class="n">mode_shape_peaks</span><span class="p">,</span> <span class="n">fom_solver</span><span class="p">)</span>
+<span class="n">surrogate</span> <span class="o">=</span> <span class="n">MultiFidelitySurrogate</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">"cubic"</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">q_l</span><span class="p">,</span> <span class="n">F_nl</span><span class="p">)</span>
+<span class="n">F_nl_pred</span> <span class="o">=</span> <span class="n">surrogate</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">q_l_new</span><span class="p">)</span>             <span class="c1"># closed-form, no Newton-Raphson</span>
+<span class="n">J</span> <span class="o">=</span> <span class="n">surrogate</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">q_l_new</span><span class="p">)</span>                    <span class="c1"># analytic dF_nl/dq_l</span>
+
+<span class="c1"># Or the polynomial/ICE family (Nash-form, fit against q_nl instead):</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolynomialModalROM</span>
+<span class="n">poly_rom</span> <span class="o">=</span> <span class="n">PolynomialModalROM</span><span class="p">(</span><span class="n">n_modes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">basis_freqs_hz</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">q_nl</span><span class="p">,</span> <span class="n">F_nl</span><span class="p">)</span>
+<span class="n">q_solution</span><span class="p">,</span> <span class="n">converged</span> <span class="o">=</span> <span class="n">poly_rom</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">F_ext</span><span class="o">=</span><span class="n">F_ext</span><span class="p">,</span> <span class="n">Lambda</span><span class="o">=</span><span class="n">Lambda</span><span class="p">)</span>  <span class="c1"># Newton solve</span>
+
+<span class="c1"># 9. Reduced NONLINEAR TIME INTEGRATION: Newmark-beta on the modal</span>
+<span class="c1">#    equation of motion, using EITHER model above as the nonlinear</span>
+<span class="c1">#    force -- Newton-free by default (correction="fixed_point"):</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">integrate_newmark_surrogate</span>
+<span class="n">C_r</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">zeta</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">basis_freqs_hz</span><span class="p">)</span>   <span class="c1"># e.g. Rayleigh-calibrated modal damping</span>
+<span class="n">t</span><span class="p">,</span> <span class="n">q_nl_hist</span><span class="p">,</span> <span class="n">q_l_hist</span><span class="p">,</span> <span class="n">F_nl_hist</span> <span class="o">=</span> <span class="n">integrate_newmark_surrogate</span><span class="p">(</span>
+    <span class="n">Lambda</span><span class="p">,</span> <span class="n">C_r</span><span class="p">,</span> <span class="n">surrogate</span><span class="p">,</span> <span class="n">F_ext</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>          <span class="c1"># free decay</span>
+    <span class="n">q0</span><span class="o">=</span><span class="n">q_nl0</span><span class="p">,</span> <span class="n">qdot0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">q_nl0</span><span class="p">),</span>
+    <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="n">n_steps</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"q_l"</span><span class="p">)</span>        <span class="c1"># domain="q_nl" for PolynomialModalROM</span>
+
+<span class="c1"># 10. NNM BACKBONE CONTINUATION: trace frequency-vs-amplitude for the</span>
+<span class="c1">#     autonomous (unforced, undamped) periodic-orbit family of a given</span>
+<span class="c1">#     master mode, using EITHER nonlinear force model above via AFT:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rom_engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">HarmonicBalanceSystem</span><span class="p">,</span> <span class="n">solve_nnm_backbone</span>
+<span class="n">hb</span> <span class="o">=</span> <span class="n">HarmonicBalanceSystem</span><span class="p">(</span><span class="n">Lambda</span><span class="p">,</span> <span class="n">n_harmonics</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>          <span class="c1"># C_r=None -&gt; undamped backbone</span>
+<span class="n">amplitudes</span><span class="p">,</span> <span class="n">omegas</span><span class="p">,</span> <span class="n">Z_hist</span><span class="p">,</span> <span class="n">converged</span> <span class="o">=</span> <span class="n">solve_nnm_backbone</span><span class="p">(</span>
+    <span class="n">hb</span><span class="p">,</span> <span class="n">surrogate</span><span class="p">,</span> <span class="n">q_amplitude_range</span><span class="o">=</span><span class="p">(</span><span class="n">a_min</span><span class="p">,</span> <span class="n">a_max</span><span class="p">),</span>
+    <span class="n">n_points</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">"q_l"</span><span class="p">,</span> <span class="n">master_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>               <span class="c1"># domain="q_nl" for PolynomialModalROM</span>
+</code></pre></div>
+
+<p><a id="s-5"></a></p>
+<h2>🗂️ Package layout</h2>
+<div class="hl"><pre><span></span><code>rom_engine/
+├── pyproject.toml
+├── docs/
+│   ├── frequency_domain_rom_roadmap.md              # research + design doc for frequency.py
+│   ├── phase4_error_bounds_greedy_roadmap.md        # research + design doc for greedy.py
+│   ├── loewner_modal_identification_roadmap.md      # research + design doc for loewner.py/screening.py
+│   ├── nonlinear_surrogate_rom_roadmap.md           # research + design doc for sampling.py/nonlinear_rom.py/...
+│   ├── classical_mor_roadmap.md                     # research + design doc for state_space/mode_correction/krylov/balanced_truncation.py
+│   └── testing_methodology.md                       # how/why this package is validated
+├── src/rom_engine/
+│   ├── __init__.py       # re-exports PodBasis, GalerkinROM, AffineDecomposition, FrequencyROM, ...
+│   ├── pod.py
+│   ├── galerkin.py
+│   ├── affine.py
+│   ├── frequency.py
+│   ├── greedy.py
+│   ├── scm.py
+│   ├── scm_lp.py          # LPSingularValueLowerBound, certified_error_bound_lp()
+│   ├── metrics.py        # modal_assurance_criterion(), r_squared()
+│   ├── loewner.py         # NON-INTRUSIVE: LoewnerROM
+│   ├── screening.py       # NON-INTRUSIVE: screen_physical_modes()
+│   ├── sampling.py        # optimal_lhs(), modal_force_samples()
+│   ├── nonlinear_rom.py   # MultiFidelitySurrogate, PolynomialModalROM, TrainingStrategy
+│   ├── nonlinear_dynamics.py  # integrate_newmark_surrogate()
+│   ├── nnm.py             # HarmonicBalanceSystem, solve_nnm_backbone(), solve_nnm_backbone_arclength()
+│   ├── state_space.py     # to_state_space(), StateSpaceSystem
+│   ├── mode_correction.py # mode_acceleration_correction/response(), augmented_basis()
+│   ├── krylov.py          # arnoldi_basis(), two_sided_arnoldi_bases(), KrylovROM
+│   ├── soar.py            # soar_basis(), SOARROM (second-order-structure-preserving Krylov)
+│   ├── balanced_truncation.py  # controllability/observability_gramian(), hankel_singular_values(), BalancedTruncationROM, SingularPerturbationROM, FrequencyWeightedBalancedTruncationROM, lowpass_weight(), bandpass_weight()
+│   ├── passivity.py       # velocity_transfer_function(), passivity_margin(), is_passive()
+│   ├── hankel_norm.py     # OptimalHankelNormROM
+│   └── random_vibration.py     # psd_response()
+├── tests/
+│   ├── fea_fixtures.py    # fea_engine-based fixtures (cantilever, damped cantilever, clamped-clamped nonlinear beam, ...)
+│   ├── loewner_fixtures.py  # synthetic mass-spring-damper fixture for loewner/screening
+│   ├── plate_fixtures.py    # the paper's "Example 1" plate FE model (fea_engine-independent)
+│   ├── test_pod.py
+│   ├── test_galerkin.py
+│   ├── test_affine.py
+│   ├── test_frequency.py
+│   ├── test_greedy.py
+│   ├── test_scm.py
+│   ├── test_scm_lp.py
+│   ├── test_metrics.py
+│   ├── test_loewner.py
+│   ├── test_screening.py
+│   ├── test_plate_fixtures.py
+│   ├── test_loewner_plate.py
+│   ├── test_sampling.py
+│   ├── test_nonlinear_rom.py       # kernels, models, synthetic training strategies
+│   ├── test_nonlinear_rom_fea.py   # real fea_engine clamped-clamped Beam2DCorotational validation
+│   ├── test_nonlinear_dynamics.py      # Newmark bookkeeping, correction modes, closed-form/scipy-ODE checks
+│   ├── test_nonlinear_dynamics_fea.py  # real fea_engine free-decay validation
+│   ├── test_nnm.py       # AFT bookkeeping, FrequencyROM cross-check, Duffing backbone, domain translation
+│   ├── test_nnm_fea.py   # real fea_engine clamped-clamped beam backbone validation
+│   ├── test_state_space.py          # toy + real-fixture pole checks, form="E"/"A" equivalence
+│   ├── test_mode_correction.py      # exact-static-reproduction proofs, refusal on degenerate q_cor
+│   ├── test_krylov.py               # near/far-from-s0 accuracy, is_stable() self-consistency
+│   ├── test_soar.py                 # exact moment matching, block-port vs. KrylovROM at same state count, passivity
+│   ├── test_balanced_truncation.py  # whole-sweep accuracy, stability theorem, H-infinity bound check
+│   ├── test_singular_perturbation.py  # SPA DC-gain exactness vs. ordinary BT, shared H-infinity bound, stability, whole-sweep accuracy
+│   ├── test_frequency_weighted_bt.py  # unweighted-reduction regression, in-band/out-of-band trade-off, one-/two-sided stability, missing h_infinity_error_bound()
+│   ├── test_passivity.py            # full-order + modally-reduced FrequencyROM passivity, 8/9-passive-1-violation sweep across Krylov/BT/SPA/FW-BT
+│   ├── test_hankel_norm.py          # AAK optimality vs BT verified directly, self-check reliability (agrees when reliable, flags known-unreliable case), SISO restriction, honest accuracy trade-off finding
+│   └── test_random_vibration.py     # PSD S_out/sigma_out vs fea_engine's solve_random_vibration(), on/off resonance
+└── examples/
+    ├── two_region_beam_rom.py             # POD + Galerkin + affine offline/online walkthrough
+    ├── frequency_sweep_cantilever.py      # frequency-domain ROM walkthrough
+    ├── greedy_frequency_training.py       # adaptive vs. uniform training-frequency selection
+    ├── certified_bound_cantilever.py      # certified SCM-family bound: guarantee + honest reach
+    ├── plate_modal_identification.py      # non-intrusive ID on a real plate FE model (air/water)
+    └── mode_shape_vibration_recovery.py   # full-field mode shapes + time-domain recovery
+</code></pre></div>
+
+<p><a id="s-6"></a></p>
+<h2>🧪 Running the tests</h2>
+<div class="hl"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[fea,dev]"</span>
+pytest<span class="w"> </span>tests/<span class="w"> </span>-v
+</code></pre></div>
+
+<p>All 251 tests pass. The intrusive modules (below) are validated against
+real fea_engine models (not synthetic matrices); the non-intrusive
+<code>loewner</code>/<code>screening</code> modules are validated against BOTH a synthetic
+mass-spring fixture and two real, materially different structural
+models (a real fea_engine damped cantilever, and a from-scratch
+867-DOF plate FE model matching a published paper's own benchmark) --
+see the <code>loewner</code>/<code>screening</code> bullet below for details:</p>
+<ul>
+<li><strong>POD</strong>: mass-weighted POD exactly recovers the true eigenspace of a
+  cantilever beam (subspace principal angles = 1.0, machine precision);
+  standard POD is confirmed to differ from mass-weighted POD (not just
+  a relabeling); POD rank matches the known rank of an
+  independent-load-case snapshot set; energy-threshold truncation and
+  reconstruction-error monotonicity checked on both real and synthetic
+  data.</li>
+<li><strong>Galerkin</strong>: a full-rank basis exactly reproduces the full-order
+  static solve; a POD basis exactly reproduces the response to any load
+  in the span of its training loads; modal frequencies from a basis
+  built from STATIC (not eigenmode) snapshots are shown to converge
+  towards the true fea_engine modal frequencies as basis rank grows.</li>
+<li><strong>Affine</strong>: the full-order affine reconstruction matches an
+  independent fea_engine per-block reassembly to ~1e-16 relative error
+  across multiple random parameter draws; the "project-then-sum" and
+  "sum-then-project" orders are confirmed algebraically identical; the
+  reduced online query is measured (not assumed) to be ~1800x faster
+  than full reassembly on a 3200-dof model.</li>
+<li><strong>Frequency</strong>: <code>FrequencyROM</code> matches fea_engine's own
+  <code>solve_harmonic()</code>/<code>solve_frequency_sweep()</code> both near a resonance
+  (the hard, near-singular case) and off resonance; accuracy improves
+  with basis rank; a POD-on-FRF-snapshots basis is validated as a real
+  alternative to a modal basis at a held-out frequency; a dedicated
+  regression test confirms the complex <code>theta(omega) = i*omega</code> damping
+  term survives (guards against the dtype bug described below); the
+  proportional-damping 2-term collapse is confirmed algebraically
+  identical to the general 3-term <code>{M,C,K}</code> form; a reduced sweep is
+  measured substantially faster than fea_engine's own full sweep;
+  <code>residual_norm()</code>'s efficient (<code>assemble_action</code>-based) computation
+  is confirmed to match an independently, slowly computed residual;
+  the hierarchical error indicator is confirmed to be large exactly
+  where the true error (vs. fea_engine) is large, and small where it's
+  small, not just plausible-looking.</li>
+<li><strong>Greedy</strong>: greedy-selected training frequencies are confirmed to
+  cluster measurably closer to the model's real resonances than a
+  uniform-random baseline; a greedy-trained basis is confirmed to beat
+  EVERY one of 7 differently-phased uniform-grid bases at the same
+  rank (same full-order-solve budget) on a held-out, resonance-
+  concentrated test set -- the actual justification for greedy's
+  extra complexity, checked rather than assumed.</li>
+<li><strong>SCM (certified bound)</strong>: <code>lower_bound()</code> is confirmed to NEVER
+  exceed the true <code>sigma_min(A(omega))</code> (direct SVD ground truth) at
+  300 swept frequencies including exact resonance -- the actual
+  certification property, not just a plausibility check; a finite
+  <code>certified_error_bound()</code> is confirmed to NEVER undershoot the true
+  error against fea_engine's own <code>solve_harmonic()</code>; the bound is
+  confirmed EXACT (not just non-violating) precisely at its own
+  reference point; and, honestly, its practical "useful radius" for
+  this real beam's stiffness matrix is directly measured (not
+  asserted away) at roughly <code>1e-7</code> relative frequency from a
+  reference -- see the caveat below.</li>
+<li><strong>Loewner / screening (non-intrusive)</strong>: <code>LoewnerROM.fit()</code>'s
+  signature is confirmed to structurally reject M/C/K (no such
+  parameter exists to pass), not just avoid using them by convention;
+  identified frequencies/damping match closed-form ground truth on a
+  synthetic mass-spring fixture (max error ~0.002%) AND a real
+  fea_engine damped cantilever (max error ~0.13%); <code>reconstruct_mode_shapes()</code>
+  recovers true mode shapes with MAC &gt; 0.99 on the synthetic fixture;
+  <code>screen_physical_modes()</code> is confirmed to actually reject spurious
+  eigenpairs from a deliberately oversized interpolation order
+  (screened count converges exactly to the true mode count while the
+  raw single-ROM count does not), with same-seed reproducibility and
+  different-seed convergence to the same physical-mode set both
+  checked directly; on the 867-DOF plate FE model (matching a published
+  paper's own "Example 1" benchmark, air- and water-loaded), the full
+  identify-then-screen pipeline matches 6/7 (air) and 7/7 (water) true
+  modes to within 3% frequency error and MAC &gt; 0.7.</li>
+<li><strong>Sampling (<code>optimal_lhs</code>/<code>modal_force_samples</code>)</strong>: every design
+  returned is confirmed to be a genuine Latin Hypercube (exactly one
+  sample per stratum along each dimension, not just "looks spread
+  out"); more candidate iterations is confirmed to NEVER make the
+  maximin space-filling score worse (a guaranteed same-seed inequality,
+  not a "usually helps" claim); <code>modal_force_samples()</code>'s sampled
+  per-mode displacement targets are confirmed to land inside the
+  requested fraction-of-reference-scale range, independently per mode.</li>
+<li><strong><code>r_squared</code></strong>: confirmed to equal exactly 1 for a perfect
+  prediction, exactly 0 for the constant-mean baseline (its own
+  defining property), and a genuinely NEGATIVE value for a fit worse
+  than that baseline -- not clipped to <code>[0, 1]</code>, since a negative R^2
+  is a real, meaningful outcome a nonlinear-ROM fit can produce.</li>
+<li><strong><code>nonlinear_rom</code> (nonlinear ROM)</strong>: every kernel's analytic <code>dpsi/dR</code>
+  is confirmed to match a finite-difference check of <code>psi</code>, and to
+  vanish at <code>R=0</code> (no singularity in <code>jacobian()</code>'s direction term);
+  <code>MultiFidelitySurrogate</code> and <code>PolynomialModalROM</code> both recover known
+  synthetic cubic/Nash-form ground-truth functions to R² &gt; 0.999, with
+  their analytic Jacobians confirmed against finite differences and
+  <code>PolynomialModalROM</code>'s Newton solve confirmed to recover a known
+  displacement from its own predicted equilibrium force; both
+  <code>TrainingStrategy</code> variants are validated end-to-end against a
+  hand-built synthetic nonlinear (cubic-spring) full-order model AND
+  -- the strongest check -- against a REAL fea_engine clamped-clamped
+  <code>Beam2DCorotational</code> model (<code>test_nonlinear_rom_fea.py</code>), where both
+  model families reach held-out R² &gt; 0.95 (RBF) / &gt; 0.99 (polynomial)
+  on genuinely nonlinear training data generated by fea_engine's own
+  <code>solve_nonlinear_static()</code>.</li>
+<li><strong><code>nonlinear_dynamics</code> (reduced nonlinear time integration)</strong>: with a
+  zero or exactly-linear force model, <code>integrate_newmark_surrogate()</code>
+  reduces EXACTLY to plain linear Newmark regardless of <code>correction</code>
+  mode (<code>fixed_point</code> to near machine precision, since it Picard-
+  iterates to convergence even for a linear residual); a <code>q_l</code>-domain
+  linear force model is checked against an independent
+  <code>scipy.integrate.solve_ivp</code> reference after analytically inverting
+  the Eq. 9-11 domain relation; a genuinely nonlinear (cubic-spring)
+  case is checked against <code>scipy.integrate.solve_ivp</code> for all three
+  correction modes with no blow-up, confirming <code>fixed_point</code> is at
+  least as accurate as <code>none</code> (the documented motivation for its extra
+  cost). The strongest check: a REAL fea_engine clamped-clamped
+  <code>Beam2DCorotational</code> free-decay run, compared against
+  <code>nonlinear_solver.solve_nonlinear_transient()</code> as full-order ground
+  truth (<code>test_nonlinear_dynamics_fea.py</code>) -- both <code>MultiFidelitySurrogate</code>
+  and <code>PolynomialModalROM</code>, trained via <code>AppliedLoadStrategy</code>, reproduce
+  the true response's short-window (~2 period) trajectory (R² &gt; 0.9)
+  and amplitude-decay envelope, with the expected, honestly-reported
+  phase-drift-driven degradation over the full 8-period window (a
+  known property of fitted-vs-exact nonlinear force models, not a bug
+  -- see the module's own docstring).</li>
+<li><strong><code>nnm</code> (NNM backbone continuation)</strong>: the AFT trigonometric
+  transform is confirmed exactly invertible (<code>Tinv @ T = I</code>) and
+  self-consistent (<code>apply_A</code>/<code>apply_dA_domega</code> match their own dense
+  matrix forms, and <code>dA_domega</code> matches a finite-difference check);
+  at <code>n_harmonics=1</code>, <code>HarmonicBalanceSystem</code>'s real cos/sin solve is
+  confirmed to EXACTLY reproduce <code>frequency.FrequencyROM</code>'s own
+  complex FRF solve (real/imaginary parts) at several frequencies --
+  a genuine cross-module consistency check <code>frequency.py</code> didn't
+  previously have; <code>solve_nnm_backbone()</code> on a synthetic Duffing
+  oscillator matches an INDEPENDENT <code>scipy.integrate.solve_ivp</code> +
+  peak-measured-period ground truth to &lt;1% across 6 amplitude points,
+  reproduces the expected hardening trend, and gives matching answers
+  whether <code>jacobian="analytic"</code> or a numerical fallback is used; the
+  <code>domain="q_l"</code> translation is confirmed against a closed-form
+  effective-stiffness linear limit to ~3e-11 relative error. The
+  strongest check: a REAL fea_engine clamped-clamped
+  <code>Beam2DCorotational</code> backbone, with an INDEPENDENT ground truth
+  measured the same way this project's earlier <code>mfs-nlrom-beam</code>
+  prototype validated its own backbone (undamped free-vibration time
+  integration + FFT-based period measurement, not a second HBM solve)
+  -- both <code>MultiFidelitySurrogate</code> and <code>PolynomialModalROM</code> backbones
+  match that independent measurement to &lt;10% at every point, correctly
+  reproduce the hardening trend, and sit above the linear natural
+  frequency (<code>test_nnm_fea.py</code>). The Phase 6 addendum,
+  <code>solve_nnm_backbone_arclength()</code> (pseudo-arclength continuation, for
+  backbones with a genuine amplitude fold), is validated separately:
+  an analytic fold with total certainty (the unit circle <code>x^2+y^2=1</code>,
+  traced through both <code>x=+-1</code> folds at machine-precision residual);
+  agreement with <code>solve_nnm_backbone()</code> to &lt;1e-3 relative on a
+  non-folding Duffing backbone; and an exact reduction to the
+  closed-form single-DOF Duffing relation on a 2-mode coupled system's
+  invariant planar branch. A fully characterized, hand-verified fold on
+  a real multi-mode NNM backbone was explored but not conclusively
+  established within scope -- reported honestly as a natural next
+  validation step, not a blocker, in
+  <code>docs/nonlinear_surrogate_rom_roadmap.md</code> Section 11.</li>
+</ul>
+<p><a id="s-7"></a></p>
+<h2>🧪 Running the examples</h2>
+<div class="hl"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[fea]"</span>
+python<span class="w"> </span>examples/two_region_beam_rom.py
+python<span class="w"> </span>examples/frequency_sweep_cantilever.py
+python<span class="w"> </span>examples/greedy_frequency_training.py
+python<span class="w"> </span>examples/certified_bound_cantilever.py
+python<span class="w"> </span>examples/plate_modal_identification.py
+python<span class="w"> </span>examples/mode_shape_vibration_recovery.py
+</code></pre></div>
+
+<p><code>two_region_beam_rom.py</code> builds a two-region cantilever beam in
+fea_engine, trains a POD basis from 10 full-order static solves,
+projects the affine stiffness components onto it, then validates the
+ROM against 8 held-out full-order solves and times a 500-point
+parameter sweep against full reassembly.</p>
+<p><code>frequency_sweep_cantilever.py</code> builds a damped cantilever in
+fea_engine, builds a <code>FrequencyROM</code> from 20 undamped mode shapes,
+sweeps 400 frequencies and compares against fea_engine's own
+<code>solve_frequency_sweep()</code> (both overall and right at the resonance
+peak), then repeats the comparison with a same-rank POD-on-FRF-
+snapshots basis instead.</p>
+<p><code>greedy_frequency_training.py</code> compares a greedy-trained basis against
+a uniform-grid basis at the SAME rank (same full-order-solve budget)
+on a damped cantilever, printing which frequencies each strategy
+actually trained on and how each performs on a held-out test set
+concentrated near the model's real resonances.</p>
+<p><code>certified_bound_cantilever.py</code> builds <code>SingularValueLowerBound</code> on
+the same damped cantilever, proves the certification guarantee holds
+across a 400-point sweep including exact resonance (and confirms the
+end-to-end <code>certified_error_bound()</code> never undershoots the true error
+against fea_engine's own solve), then measures and reports the bound's
+practical "useful radius" honestly -- it is narrow for this model, and
+the script says so directly rather than only showing favorable cases.</p>
+<p><code>plate_modal_identification.py</code> builds the paper's "Example 1"
+simply-supported plate FE model (867 DOF, air- and water-loaded),
+generates synthetic response data at the paper's own Table-1 sensor
+locations, and runs the full non-intrusive <code>LoewnerROM.fit()</code> +
+<code>screen_physical_modes()</code> pipeline on ONLY that data -- reporting and
+plotting identified vs. true frequency/damping for both loading cases.</p>
+<p><code>mode_shape_vibration_recovery.py</code> goes one step further on a synthetic
+mass-spring-damper system: recovers FULL-FIELD mode shapes (Eq. 28
+applied at every DOF, not just a few sensors) purely from response data
++ the identified ROM eigenvectors, then propagates the identified modal
+model forward in time from an observed initial condition and compares
+against a direct full-order time integration -- demonstrating the
+identified model is actually usable, not just numerically close.</p>
+<p><a id="s-8"></a></p>
+<h2>⚠️ A certified-bound caveat (read before using <code>scm.py</code>)</h2>
+<p><code>SingularValueLowerBound</code>'s certification guarantee is rigorous and
+holds unconditionally (proven in <code>test_scm.py</code>, demonstrated in
+<code>certified_bound_cantilever.py</code>): its <code>lower_bound()</code> never exceeds
+the true <code>sigma_min(A(omega))</code>, so a finite <code>certified_error_bound()</code>
+is always a valid upper bound on the true error. But for this real
+beam's stiffness matrix, the bound's simplified (raw spectral-norm,
+Lipschitz-triangle-inequality) construction is only <em>informative</em>
+within roughly <code>1e-7</code> relative frequency of an offline reference point
+-- because <code>||K||_2</code> (~1e11-1e12) is many orders of magnitude larger
+than <code>sigma_min(A(omega))</code> itself (~1e3), so the perturbation term
+swamps the bound almost immediately away from an exact match. This is
+a genuine, literature-anticipated property of this simplified method
+(not a bug -- see <code>scm.py</code>'s module docstring), and is measurably
+narrower than the &gt;1%-of-first-resonance spacing that suffices for
+<code>greedy.py</code>'s (uncertified) hierarchical-indicator-driven training.
+Use <code>scm.py</code> for a rigorous, narrow safety margin around specific,
+already-computed reference frequencies -- not as a general-purpose
+error signal across a band; <code>residual_norm()</code> /
+<code>hierarchical_error_indicator()</code> remain the practical tools for that,
+with the explicit understanding that they are estimates, not bounds.
+The classical "natural-norm" SCM (Chen et al. 2010) exists specifically
+to close this gap with a smarter, problem-adapted norm; re-implementing
+it is noted as optional future work below rather than attempted here.</p>
+<p><a id="s-9"></a></p>
+<h2>🔢 A dtype note (why this matters more than it sounds)</h2>
+<p>Every array-ingesting method in <code>pod.py</code>/<code>galerkin.py</code>/<code>affine.py</code>
+used to hardcode <code>np.asarray(x, dtype=float)</code>. That was invisible for
+this package's original real-valued use cases, but it is a silent
+correctness bug for <code>frequency.py</code>: <code>affine.py</code>'s
+<code>theta_func(omega) = i*omega</code> is PURELY imaginary, so the old code
+would have silently zeroed out the entire damping contribution to
+every reduced query -- no error, no warning, just a quietly-wrong
+answer. This was caught and fixed (each module now infers real-vs-
+complex dtype from its input instead of forcing <code>float</code>) before
+<code>frequency.py</code> was built on top of it; <code>test_frequency.py</code> includes a
+dedicated regression test (<code>test_general_damping_matches_fea_engine_
+complex_solve</code>) asserting the imaginary/phase-lag part of a damped
+response is actually present, specifically to keep this bug from
+silently reappearing.</p>
+<p><a id="s-10"></a></p>
+<h2>🗺️ Roadmap</h2>
+<p>The 5-phase nonlinear-surrogate-ROM plan in
+<code>docs/nonlinear_surrogate_rom_roadmap.md</code> is now fully implemented and
+validated: <code>sampling.py</code> (Phase 1), <code>nonlinear_rom.py</code> (Phase 2 -- the
+shared <code>ReducedForceModel</code> protocol, <code>MultiFidelitySurrogate</code>/
+<code>PolynomialModalROM</code>, and both <code>TrainingStrategy</code> variants),
+<code>fea_engine.nonlinear_solver.solve_nonlinear_transient()</code> (Phase 3 --
+lives in the <code>fea_engine</code> package, see that package's own README),
+<code>nonlinear_dynamics.py</code> (Phase 4 -- <code>integrate_newmark_surrogate()</code> and
+its three correction modes), and <code>nnm.py</code> (Phase 5, final phase --
+<code>HarmonicBalanceSystem</code> + <code>solve_nnm_backbone()</code>), each with real
+fea_engine validation.</p>
+<p>Not currently planned, but possible future work:</p>
+<ul>
+<li>~~Within <code>nnm.py</code> itself: full pseudo-arclength continuation (needed
+  for backbones with a genuine fold, i.e. non-monotonic amplitude vs.
+  frequency)~~ -- now implemented as a Phase 6 addendum:
+  <code>solve_nnm_backbone_arclength()</code>, Keller (1977) pseudo-arclength
+  continuation with a secant predictor, an augmented Newton corrector,
+  and an omega-rescaling fix for a real mixed-units step-size issue
+  (<code>docs/nonlinear_surrogate_rom_roadmap.md</code> Section 11). Validated
+  against an analytic fold (the unit circle, traced through both
+  folds at machine precision), agreement with <code>solve_nnm_backbone()</code>
+  on a non-folding Duffing backbone (&lt;1e-3 relative), and an exact
+  reduction to a closed-form single-DOF case on a 2-mode coupled
+  system's invariant planar branch; a fully characterized real NNM
+  fold was explored but not conclusively established within scope,
+  reported honestly as a natural next validation step rather than a
+  blocker. Subharmonic-multiplier support remains unimplemented --
+  a materially larger AFT-scheme extension than pseudo-arclength
+  turned out to be, still explicitly scoped out (see <code>nnm.py</code>'s own
+  module docstring for why).</li>
+<li>~~A PSD-driven random-vibration stress analyzer~~ -- now implemented:
+  <code>random_vibration.py</code>'s <code>psd_response()</code>, validated against
+  <code>fea_engine</code>'s own <code>solve_random_vibration()</code> (<code>test_random_vibration.py</code>).</li>
+<li>~~The full classical LP-based (natural-norm) Successive Constraint
+  Method (Chen et al. 2010), as a sharper replacement for <code>scm.py</code>'s
+  simplified Weyl/Mirsky-perturbation bound~~ -- the classical LP-based
+  SCM (Huynh, Rozza, Sen, Patera 2007) is now implemented: <code>scm_lp.py</code>'s
+  <code>LPSingularValueLowerBound</code> (same API as <code>scm.py</code>'s
+  <code>SingularValueLowerBound</code>) plus <code>certified_error_bound_lp()</code>, using a
+  genuine online linear program (<code>scipy.optimize.linprog</code>, HiGHS) built
+  from offline-selected reference/control points -- validated in
+  <code>test_scm_lp.py</code> against the same real fea_engine damped-cantilever
+  fixture <code>test_scm.py</code> uses (certification holds unconditionally,
+  checked at 200 points including exact resonance). Honestly, this did
+  NOT close the gap it was meant to close: compared directly against
+  <code>scm.py</code> on the SAME reference point of the SAME real cantilever
+  model, <code>scm_lp.py</code>'s useful (non-trivial) radius measured NARROWER,
+  not wider -- already 0 at the narrowest step tested (<code>1e-8</code> relative
+  frequency), vs. <code>scm.py</code> remaining nonzero out to ~<code>1e-7</code>. The reason:
+  bounding <code>sigma_min(A(omega))^2 = lambda_min(A(omega)^H A(omega))</code>
+  instead of <code>sigma_min(A(omega))</code> directly (the standard "SCM-squared"
+  reduction, needed to keep the eigenvalue problem real, symmetric, and
+  PSD for a complex, non-Hermitian <code>A(omega)</code>) makes <code>B_pq = A_p^T A_q +
+  A_q^T A_p</code> inherit roughly the SQUARE of the raw component
+  spectral-norm spread (~1e22-1e24, vs. ~1e11-1e12 for the raw <code>M</code>/<code>K</code>
+  matrices themselves) -- worsening the same scale-mismatch problem
+  described in the caveat above instead of fixing it. (A real
+  implementation bug surfaced along the way, too: HiGHS spuriously
+  reported "unbounded" for <code>upper_bound()</code>'s maximization -- used only
+  for greedy-selection heuristics, not the certified bound itself -- on
+  a provably compact region, because of that same ~1e23-magnitude
+  coefficient range; fixed by making <code>upper_bound()</code> a closed-form
+  box-only maximization instead of relying on the fragile LP there.
+  <code>lower_bound()</code>, the actually certified quantity, solves correctly
+  via the LP as-is.) Both bounds remain available side by side. The
+  sharper <strong>natural-norm</strong> SCM variant (Chen et al. 2010) -- which
+  bounds <code>sigma_min(A(omega))</code> directly, without the squaring that
+  worsens the scale mismatch above -- remains genuinely future work: it
+  has a real, literature-acknowledged derivation ambiguity for complex,
+  non-Hermitian operators like this package's
+  <code>A(omega) = -omega^2*M + i*omega*C + K</code>, which is why it was
+  deliberately not attempted here (see
+  <code>docs/phase4_error_bounds_greedy_roadmap.md</code> Section 9 for the full
+  reasoning). <code>residual_norm()</code>/<code>hierarchical_error_indicator()</code> remain
+  the practical, UNcertified estimates/indicators <code>greedy.py</code> actually
+  uses; <code>scm.py</code>/<code>scm_lp.py</code>'s bounds are certified-but-narrow
+  complements to them, not replacements.</li>
+<li>Within <code>balanced_truncation.py</code>: <code>docs/classical_mor_roadmap.md</code>
+  explicitly deferred five BT extensions the source paper reviews but
+  never runs numerically -- frequency-weighted BT, singular perturbation
+  approximation, coprime-factorization BT for unstable systems,
+  passivity-preserving BT, and optimal Hankel norm approximation -- as
+  the classical MOR roadmap's own explicitly-deferred Phase 5. Of those,
+  ~~singular perturbation approximation~~ -- now implemented: SPA
+  (Liu &amp; Anderson 1989, also called residualization), as
+  <code>SingularPerturbationROM</code>, a sibling class in the SAME module reusing
+  the SAME balancing transform <code>BalancedTruncationROM</code> already computes,
+  with an identical <code>from_MCK()</code>/<code>transfer_function()</code>/
+  <code>frequency_response()</code>/<code>h_infinity_error_bound()</code>/<code>is_stable()</code> API.
+  Validated in the new <code>test_singular_perturbation.py</code> (4 tests) against
+  the same real fea_engine damped-cantilever fixture
+  <code>test_balanced_truncation.py</code> uses. Unlike Phase 4e (<code>scm_lp.py</code>)
+  above, where the hoped-for improvement did NOT materialize, this one
+  did: at <code>r=10</code>, SPA's DC-gain error measures 1.7e-13 relative
+  (machine precision) against the true full-order DC gain, vs. ordinary
+  BT's 3.4e-5 relative at the same <code>r</code> on the same model -- roughly 8
+  orders of magnitude worse -- while sharing the exact same a priori
+  H-infinity error bound (2.3e-9 bound vs. 4.1e-12 observed sup-norm
+  absolute error) and the same stability-preservation guarantee as
+  ordinary BT (stable at every tested <code>r</code>: 4, 8, 10, 12), and without
+  costing BT's own whole-sweep accuracy (max relative error 1.7e-4
+  across the frequency sweep at <code>r=10</code>, comparable to ordinary BT's own
+  global accuracy). ~~Frequency-weighted BT~~ -- now implemented: Enns
+  (1984) frequency-weighted balanced truncation, as
+  <code>FrequencyWeightedBalancedTruncationROM</code>, a third sibling class in the
+  SAME module reusing the same balancing math via a newly factored-out
+  <code>_balance_from_gramians()</code> (confirmed zero behavior change to the
+  existing unweighted path -- <code>Wi=Wo=None</code> reduces exactly to ordinary
+  <code>BalancedTruncationROM</code>, checked as a regression test). This one is
+  the most nuanced of the three additions: a genuine, measured trade,
+  not a clean win like SPA above or a dead end like Phase 4e (<code>scm_lp.py</code>)
+  above. On the same fixture at <code>r=6</code>, targeting the beam's third
+  natural frequency with <code>bandpass_weight(omega3, zeta=0.2)</code> as an
+  output weight: 14.0x MORE accurate than ordinary BT in the targeted
+  band (max relative error 0.238 vs 3.33, where ordinary BT at <code>r=6</code>
+  essentially fails to represent this mode at all), but ~5.3x LESS
+  accurate far from it, near the dominant first mode (1.9e-3 vs 3.6e-4)
+  -- both measured directly, and the effect held across most (not all)
+  of a small parameter sweep. Unlike ordinary BT/SPA, stability is NOT
+  unconditionally guaranteed for two-sided (both <code>Wi</code> and <code>Wo</code>)
+  weighting -- a real, literature-documented limitation of Enns'
+  construction, genuinely checked (not assumed) across <code>r</code> in
+  {4,6,8,10,12}: stable at <code>r=4,10,12</code>, unstable at <code>r=6,8</code>. One-sided
+  weighting (<code>Wi</code> or <code>Wo</code> alone) preserved stability at every tested <code>r</code>
+  (4, 6, 8, 10). <code>h_infinity_error_bound()</code> is deliberately not exposed
+  on this class, since the classical a priori bound formula applies to
+  the unweighted Hankel singular values specifically and a
+  frequency-weighted version wasn't independently verified here --
+  confirmed by a <code>hasattr</code> test, the same honest omission <code>krylov.py</code>
+  already makes. Validated in the new <code>test_frequency_weighted_bt.py</code>
+  (6 tests) against the same real fea_engine damped-cantilever fixture.
+  ~~Coprime-factorization/passivity-preserving BT~~ -- investigated and
+  closed out via a different, safer route rather than built as originally
+  scoped: the standard positive-real-BT construction needs an algebraic
+  Riccati equation requiring <code>D + D^T</code> invertible, but this package's
+  structural systems always have <code>D=0</code> (no direct feedthrough), making
+  that equation singular -- the same category of derivation risk
+  <code>scm_lp.py</code>'s natural-norm SCM variant carries for complex,
+  non-Hermitian operators (see Phase 4e above). Rather than push through
+  an unverified derivation, the project pivoted to a closed-form result
+  instead: for a collocated force-in/velocity-out system
+  (<code>M qdotdot + C qdot + K q = B u</code>, <code>y = B^T qdot</code>), the mechanical
+  energy <code>E = 0.5 qdot^T M qdot + 0.5 q^T K q</code> satisfies the KYP/
+  positive-real dissipation inequality <code>dE/dt &lt;= y^T u</code> exactly, given
+  only that <code>M</code>, <code>K</code> are SPD and <code>C</code> is PSD -- properties this package
+  already assumes everywhere, no Riccati equation needed. Because
+  congruence transformation (<code>Phi^T M Phi</code>) preserves
+  positive-(semi)definiteness unconditionally for ANY basis, this
+  derivation applies unchanged to this package's EXISTING second-order
+  Galerkin projection (<code>galerkin.py</code>/<code>frequency.py</code>), which therefore
+  already provably preserves passivity -- a previously-unstated but
+  latent property, not a new reduction algorithm. The genuinely new
+  piece is a small diagnostic toolkit, <code>passivity.py</code>:
+  <code>velocity_transfer_function()</code> converts any already-computed
+  displacement frequency response to velocity (mobility) via
+  multiplication by <code>i*omega</code>; <code>passivity_margin()</code> returns
+  <code>Re[H_vel(i*omega)]</code>; <code>is_passive()</code> checks it stays non-negative.
+  Validated in <code>test_passivity.py</code> (3 tests) against the same real
+  fea_engine cantilever fixture used throughout this suite: the
+  full-order model is passive (sanity check); a modally-reduced
+  <code>FrequencyROM</code> stays passive at every tested basis size (3, 6, 10, 15
+  modes) -- the closed-form theorem confirmed directly, not just cited;
+  and sweeping the state-space (first-order) reduction methods
+  (<code>KrylovROM</code>/<code>BalancedTruncationROM</code>/
+  <code>FrequencyWeightedBalancedTruncationROM</code> at <code>r</code>/<code>k</code> in {6, 10, 14}, 9
+  checks total) found 8 stayed passive but ONE genuinely violated it --
+  <code>FrequencyWeightedBalancedTruncationROM</code> at <code>r=14</code> with a bandpass
+  output weight centered on the first natural frequency -- real,
+  measured evidence (not synthetic or forced) that none of these
+  first-order reduction methods carry any passivity-preservation
+  guarantee, unlike second-order Galerkin projection. This effectively
+  closes out the originally-planned coprime-factorization BT item too:
+  the specific coprime-factor construction itself was never built, but
+  the underlying goal -- passivity preservation, verified rather than
+  assumed -- is now addressed via this safer, more directly useful
+  route. ~~Optimal Hankel norm approximation~~ -- now implemented:
+  Adamjan-Arov-Krein/Glover (1984) theory, as <code>hankel_norm.py</code>'s
+  <code>OptimalHankelNormROM</code> (a separate module, not a sibling class in this
+  file, since its Gamma-inversion/Schur-plus-Sylvester construction is
+  algorithmically unlike anything else here -- the same reasoning that
+  already keeps <code>krylov.py</code> separate). Builds, in one application of the
+  AAK formulas, an order-<code>r</code> model achieving <code>\|\|G-G_r\|\|_Hankel =
+  sigma_(r+1)</code> exactly -- the true minimum over every possible order-<code>r</code>
+  system, a stronger optimality claim than this module's own a priori
+  H-infinity bound. SISO only, and guarded by an always-on empirical
+  self-check (rather than an a priori threshold, since deliberate
+  pre-implementation stress-testing showed no simple a priori quantity
+  reliably predicts when the construction becomes numerically
+  unreliable). Validated on the real fea_engine cantilever fixture in
+  the new <code>test_hankel_norm.py</code> (6 tests): the AAK optimality claim was
+  verified directly against <code>BalancedTruncationROM</code> at the same <code>r</code>, the
+  self-check was shown to both agree with theory in the reliable regime
+  and correctly flag a reproduced unreliable case, and an honest finding
+  was reported -- Hankel-norm optimality did not translate into better
+  practical (sup-norm/relative) accuracy than ordinary BT at the same
+  <code>r</code> on this fixture. This closes out the classical MOR roadmap's Phase
+  5 entirely (see <code>docs/classical_mor_roadmap.md</code> Sections 14-15).</li>
+<li>~~A SECOND-ORDER-structure-preserving SOAR/TOAR Krylov path
+  specifically~~ (Phase 5 of <code>docs/frequency_domain_rom_roadmap.md</code>) --
+  the SOAR half is now implemented: <code>soar.py</code>'s <code>soar_basis()</code> +
+  <code>SOARROM</code>, Section 8 of that doc, taken up at the user's request after
+  the 5-phase roadmap above was already complete. Note this solves a
+  DIFFERENT problem than what that Phase 5 item was originally scoped
+  for (<code>FrequencyROM</code>'s own resonance-handling in the affine/POD basis)
+  -- it instead gives a second-order-structure-preserving ALTERNATIVE to
+  <code>krylov.py</code>'s own first-order moment matching, on the same general
+  <code>(M,C,K,B,Cout)</code> I/O-port problem, avoiding the first-order form's 2x
+  state-count blowup. Validated: exact moment matching through moment
+  <code>k-1</code> for a <code>k</code>-vector basis on a synthetic system (catching, along
+  the way, a real self-caught bug where feeding orthonormalized rather
+  than raw vectors into the two-term recurrence silently capped accuracy
+  at moment 1 regardless of <code>k</code>); on a real fea_engine beam with a 3-DOF
+  block port, <code>SOARROM(k)</code> measurably OUTPERFORMS <code>KrylovROM(2k)</code> (same
+  total reduced-state count) at small <code>k</code> (relative error 0.135 vs.
+  0.885 at <code>k=2</code>); and, the actual motivation, <code>SOARROM</code> stays passive
+  (per <code>passivity.py</code>'s own second-order-Galerkin theorem) at every
+  tested order and expansion point on the real fixture, a guarantee
+  <code>KrylovROM</code> does not have. An honest, literature-consistent limitation
+  was found and reported, not hidden: for a SINGLE-DOF port on this
+  beam's well-separated eigenvalues (<code>omega2/omega1 ~ 6.3</code>), the raw
+  recursion collapses toward the dominant mode like inverse power
+  iteration, and the achievable basis size plateaus at 1 regardless of
+  how large <code>k</code> is requested -- exactly why real SOAR/TOAR usage favors
+  block (multi-column) ports, confirmed directly (the 3-DOF block port
+  above does not plateau at the tested orders). TOAR (the further
+  numerical stabilization of SOAR's own known fragility) remains a
+  deliberately-scoped-out follow-up, mitigated here instead via full
+  reorthogonalization (matching <code>krylov.py</code>'s own <code>arnoldi_basis()</code>) --
+  see <code>soar.py</code>'s own module docstring for the full reasoning.</li>
+<li>Sphinx documentation (alongside fea_engine's).</li>
+</ul></div></body></html>

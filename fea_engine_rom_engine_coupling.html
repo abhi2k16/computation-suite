@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>fea_engine + rom_engine: how the packages couple for a ROM problem</title>
+<style>
+  :root {
+    --bg: #fbfbfa;
+    --text: #23241f;
+    --muted: #6b6b64;
+    --line: #dedcd3;
+    --fea: #2563eb;
+    --fea-bg: #e4ecfd;
+    --rom: #b7791f;
+    --rom-bg: #fbead0;
+    --scm: #0f8a5f;
+    --scm-bg: #dcf3e9;
+    --out: #475569;
+    --out-bg: #eceff3;
+    --torch: #a21caf;
+    --torch-bg: #f6e4fb;
+    --gpu: #0369a1;
+    --gpu-bg: #e0f2fe;
+  }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 40px 24px 80px; }
+  h1 { font-size: 1.65rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+  p { margin: 12px 0; }
+  h2 { font-size: 1.15rem; margin-top: 44px; margin-bottom: 10px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  h3 { font-size: 1.0rem; margin-top: 28px; margin-bottom: 8px; color: #3f3f3a; }
+  code { font-family: 'SF Mono', Menlo, Consolas, monospace; background: #f0efe9; padding: 1px 5px; border-radius: 3px; font-size: 0.88em; }
+  .diagram-card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin: 20px 0; }
+  ul { margin: 10px 0; padding-left: 22px; }
+  li { margin: 6px 0; }
+  .callout { background: var(--out-bg); border-left: 3px solid var(--out); padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 0.94rem; margin: 16px 0; }
+  .torch-callout { background: var(--torch-bg); border-left: 3px solid var(--torch); padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 0.94rem; margin: 16px 0; }
+  .gpu-callout { background: var(--gpu-bg); border-left: 3px solid var(--gpu); padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 0.94rem; margin: 16px 0; }
+  .term { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin: 10px 0; font-size: 0.93rem; }
+  .term b { color: #23241f; }
+  table.routes { width: 100%; border-collapse: collapse; margin: 14px 0 22px; font-size: 0.92rem; }
+  table.routes th, table.routes td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.routes th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); border-bottom: 2px solid var(--line); }
+  table.routes tr:last-child td { border-bottom: none; }
+  .badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; white-space: nowrap; }
+  .badge-torch { background: var(--torch-bg); color: var(--torch); }
+  .badge-gpu { background: var(--gpu-bg); color: var(--gpu); }
+  .badge-numpy { background: #eef2e8; color: #3f6212; }
+  .badge-intrusive { background: var(--fea-bg); color: #1e3a8a; }
+  .badge-nonintrusive { background: var(--rom-bg); color: #7c4a0a; }
+  .category-title { font-size: 1.02rem; font-weight: 700; margin-top: 30px; margin-bottom: 4px; color: #23241f; }
+  .category-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 10px; }
+  footer { color: var(--muted); font-size: 0.82rem; margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>How fea_engine and rom_engine couple to approach a Reduced-Order Model (ROM) problem</h1>
+<div class="subtitle">computation-suite &mdash; general-purpose module interaction reference, covering every reduction route currently in the package and the optional machine-learning ("torch") layer several of them can use.</div>
+
+<p>
+<code>fea_engine</code> is a full-order finite element package: it turns a
+mesh, a material description, and boundary/loading conditions into the
+actual matrices and solutions of a structural mechanics problem &mdash;
+stiffness, mass, and damping matrices; static, modal, harmonic, and
+time-stepping solves; linear and geometrically/materially nonlinear
+elements. Solving the full-order problem directly is accurate but can be
+slow, especially when the same structure has to be re-solved many times
+(a parameter sweep, an optimization loop, a real-time control application,
+a Monte&nbsp;Carlo uncertainty study). <code>rom_engine</code> is a
+collection of <strong>reduced-order modeling</strong> (ROM) techniques
+that build a much smaller, much faster stand-in model from a handful of
+full-order results, so that only a FEW expensive full-order solves are
+ever needed, and everything after that runs at a fraction of the cost.
+</p>
+
+<p>
+The key design decision that shapes everything below: <strong>the two
+packages are deliberately decoupled at the code level</strong>. None of
+<code>rom_engine</code>'s reduction logic imports <code>fea_engine</code>
+or knows it exists &mdash; every function takes plain <code>numpy</code>
+arrays (a stiffness matrix, a mass matrix, a set of snapshot solutions) or
+a plain Python callable (a function that, given a load, returns a
+displacement) as its input. <code>fea_engine</code> is the thing that
+PRODUCES those arrays and callables from a real structural model;
+<code>rom_engine</code> only ever CONSUMES them. This means every
+reduction technique in <code>rom_engine</code> is equally usable with
+matrices or solvers that come from a completely different finite-element
+package, a hand-built toy problem, or measured experimental data &mdash;
+<code>fea_engine</code> is simply the one source this project's own tests
+and examples happen to use to build realistic, checkable inputs.
+</p>
+
+<h2>Glossary &mdash; terms used throughout this document</h2>
+<div class="term"><b>Full-order model (FOM).</b> The actual, physically
+detailed structural model &mdash; the real mesh, the real number of
+degrees of freedom (often thousands to millions), the real stiffness/mass/
+damping matrices. "Full-order" distinguishes it from the much smaller
+reduced-order model built to approximate it.</div>
+<div class="term"><b>Reduced-order model (ROM).</b> A much smaller
+mathematical stand-in for the full-order model, built so that evaluating
+it (solving it for a new load, a new frequency, a new time step) costs
+far less than solving the full-order model again, while still capturing
+the behavior that actually matters.</div>
+<div class="term"><b>Snapshot.</b> One full-order solution (a displacement
+field, a frequency-response sample, ...) computed by actually solving the
+FOM once, at one specific set of conditions. Reduction techniques are
+built from a collection of snapshots.</div>
+<div class="term"><b>Reduced basis / mode shapes.</b> A small set of
+"shape" vectors (each the same length as the full-order displacement
+vector) chosen so that the true response can be well approximated as a
+combination of just these few shapes, each scaled by its own small
+"reduced coordinate." Reducing the problem then means solving for those
+few scale factors instead of every individual degree of freedom.</div>
+<div class="term"><b>Offline / online split.</b> The organizing idea
+behind almost every technique below: do the expensive work (building the
+reduced basis, projecting the full-order matrices onto it) ONCE, offline;
+then answer every subsequent query (a new load case, a new frequency, a
+new time step) cheaply, online, using only the small reduced system, never
+touching the full-order model again.</div>
+<div class="term"><b>Intrusive vs. non-intrusive.</b> An "intrusive"
+technique needs direct access to the full-order model's own matrices
+(stiffness, mass, damping) to build its reduced model. A "non-intrusive"
+technique only needs INPUT/OUTPUT data &mdash; e.g. a set of (load,
+response) pairs, or a set of measured frequency-response points &mdash;
+and never needs the matrices themselves. Non-intrusive techniques can be
+built from experimental measurements, not just simulation.</div>
+<div class="term"><b>Newton-Raphson iteration.</b> The standard numerical
+method for solving a nonlinear equation: starting from a guess, repeatedly
+using the equation's own local slope (its "Jacobian," see below) to
+compute a correction, until the equation is satisfied to within a small
+tolerance.</div>
+<div class="term"><b>Jacobian.</b> The matrix of first derivatives of a
+(possibly nonlinear) function with respect to its inputs &mdash; how much
+each output changes for a small change in each input. Needed by
+Newton-Raphson iteration and by gradient-based training.</div>
+<div class="term"><b>Automatic differentiation.</b> Software machinery
+that computes exact derivatives (gradients, Jacobians) of an arbitrarily
+complicated computation automatically, without a person deriving the
+calculus by hand. This is what makes training a neural network practical
+(see "the torch switch" below) and is also used directly on plain
+finite-element and reduced-order computations in a few places in this
+project, with no neural network involved at all.</div>
+
+<h2>The two basic shapes of the coupling boundary</h2>
+<p>
+Every route below hands data across the <code>fea_engine</code> &rarr;
+<code>rom_engine</code> boundary in one of exactly two shapes, depending
+on whether the underlying structural model is linear or nonlinear.
+</p>
+
+<h3>Shape 1 &mdash; plain arrays, for linear models</h3>
+<div class="diagram-card">
+<svg viewBox="0 0 1000 1010" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#4b4b45"/>
+  </marker>
+  <marker id="arrowDashed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#8a8a82"/>
+  </marker>
+</defs>
+
+<!-- ===================== BOXES ===================== -->
+
+<!-- B1: mesh/geometry -->
+<rect x="220" y="16" width="560" height="56" rx="8" fill="var(--fea-bg)" stroke="var(--fea)" stroke-width="1.5"/>
+<text x="500" y="38" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">fea_engine: mesh generation</text>
+<text x="500" y="57" text-anchor="middle" font-size="12" fill="#334155">Structured/mapped meshing, or an external mesh-generator integration</text>
+
+<!-- B2: material/elements -->
+<rect x="220" y="96" width="560" height="56" rx="8" fill="var(--fea-bg)" stroke="var(--fea)" stroke-width="1.5"/>
+<text x="500" y="118" text-anchor="middle" font-size="14" font-weight="600" fill="#1e3a8a">fea_engine: material model + element library</text>
+<text x="500" y="137" text-anchor="middle" font-size="12" fill="#334155">Constitutive laws, damping model, and the finite elements themselves</text>
+
+<!-- B3: FESystem assembly -->
+<rect x="170" y="176" width="660" height="72" rx="8" fill="var(--fea-bg)" stroke="var(--fea)" stroke-width="1.8"/>
+<text x="500" y="200" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">fea_engine: matrix assembly</text>
+<text x="500" y="219" text-anchor="middle" font-size="12" fill="#334155">Assembles the stiffness / mass / damping matrices from the mesh + material</text>
+<text x="500" y="236" text-anchor="middle" font-size="12" fill="#334155">&rarr; K, M, C, F (dense or sparse arrays)</text>
+
+<!-- Handoff pill -->
+<rect x="130" y="278" width="740" height="46" rx="23" fill="#fff" stroke="#8a8a82" stroke-width="1.5" stroke-dasharray="5,4"/>
+<text x="500" y="297" text-anchor="middle" font-size="12.5" font-weight="600" fill="#3f3f3a">K, M, C, F &mdash; PLAIN numpy arrays</text>
+<text x="500" y="314" text-anchor="middle" font-size="11" fill="#6b6b64">the ONLY coupling boundary: rom_engine's reduction code never imports fea_engine</text>
+
+<!-- B4: fea_engine full-order solves -->
+<rect x="30" y="360" width="380" height="94" rx="8" fill="var(--fea-bg)" stroke="var(--fea)" stroke-width="1.5"/>
+<text x="220" y="382" text-anchor="middle" font-size="13.5" font-weight="600" fill="#1e3a8a">fea_engine: full-order solves</text>
+<text x="220" y="401" text-anchor="middle" font-size="11.5" fill="#334155">Static / modal (eigenvalue) /</text>
+<text x="220" y="417" text-anchor="middle" font-size="11.5" fill="#334155">harmonic / frequency-sweep solves</text>
+<text x="220" y="436" text-anchor="middle" font-size="11" font-style="italic" fill="#475569">produces training snapshots + independent ground truth</text>
+
+<!-- B5a: POD -->
+<rect x="450" y="360" width="230" height="94" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.5"/>
+<text x="565" y="382" text-anchor="middle" font-size="13.5" font-weight="600" fill="#7c4a0a">rom_engine: POD basis</text>
+<text x="565" y="401" text-anchor="middle" font-size="11.5" fill="#4b3620">Proper Orthogonal Decomposition</text>
+<text x="565" y="419" text-anchor="middle" font-size="11" fill="#4b3620">of a fixed snapshot set</text>
+<text x="565" y="436" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">standard, or mass-weighted</text>
+
+<!-- B5b: greedy training -->
+<rect x="710" y="360" width="260" height="94" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.5"/>
+<text x="840" y="382" text-anchor="middle" font-size="13.5" font-weight="600" fill="#7c4a0a">rom_engine: greedy training</text>
+<text x="840" y="401" text-anchor="middle" font-size="11.5" fill="#4b3620">weak-greedy adaptive basis growth</text>
+<text x="840" y="419" text-anchor="middle" font-size="11" fill="#4b3620">picks the next training point itself</text>
+<text x="840" y="436" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">via a cheap error indicator</text>
+
+<!-- B6: offline projection -->
+<rect x="200" y="484" width="600" height="76" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.8"/>
+<text x="500" y="507" text-anchor="middle" font-size="14" font-weight="700" fill="#7c4a0a">rom_engine: OFFLINE projection</text>
+<text x="500" y="526" text-anchor="middle" font-size="12" fill="#4b3620">projects K, M, F onto the reduced basis (Galerkin projection); pre-splits any parameter dependence (affine decomposition)</text>
+<text x="500" y="544" text-anchor="middle" font-size="11" font-style="italic" fill="#7c4a0a">done ONCE, expensive &mdash; the offline/online split's expensive half</text>
+
+<!-- B7: online query -->
+<rect x="160" y="598" width="480" height="92" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.8"/>
+<text x="400" y="622" text-anchor="middle" font-size="14" font-weight="700" fill="#7c4a0a">rom_engine: ONLINE query</text>
+<text x="400" y="641" text-anchor="middle" font-size="11.5" fill="#4b3620">solve/evaluate the small reduced system</text>
+<text x="400" y="658" text-anchor="middle" font-size="11.5" fill="#4b3620">at a new frequency, load, or parameter value</text>
+<text x="400" y="677" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">cheap: a handful of unknowns, repeated many times</text>
+
+<!-- B8: certified bound -->
+<rect x="670" y="598" width="300" height="92" rx="8" fill="var(--scm-bg)" stroke="var(--scm)" stroke-width="1.8"/>
+<text x="820" y="622" text-anchor="middle" font-size="14" font-weight="700" fill="#0b5c40">rom_engine: certified bound</text>
+<text x="820" y="641" text-anchor="middle" font-size="11.5" fill="#0b5c40">Successive Constraint Method (SCM)</text>
+<text x="820" y="658" text-anchor="middle" font-size="11.5" fill="#0b5c40">rigorously proven error bound</text>
+<text x="820" y="677" text-anchor="middle" font-size="10.5" font-style="italic" fill="#0b5c40">the ONE truly certified number in the package</text>
+
+<!-- B9: output -->
+<rect x="200" y="718" width="600" height="88" rx="8" fill="var(--out-bg)" stroke="var(--out)" stroke-width="1.8"/>
+<text x="500" y="742" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">Output</text>
+<text x="500" y="761" text-anchor="middle" font-size="12" fill="#334155">reduced coordinates, reconstructed full field,</text>
+<text x="500" y="779" text-anchor="middle" font-size="12" fill="#334155">an error ESTIMATE, an error INDICATOR, or a certified error BOUND</text>
+<text x="500" y="797" text-anchor="middle" font-size="10.5" font-style="italic" fill="#64748b">estimate, indicator, and bound are named differently on purpose &mdash; see below</text>
+
+<!-- ===================== ARROWS: main vertical chain ===================== -->
+<line x1="500" y1="72" x2="500" y2="96" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="500" y1="152" x2="500" y2="176" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="500" y1="248" x2="500" y2="278" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+<!-- handoff -> B4 (snapshots path) -->
+<path d="M340,324 C300,340 240,345 220,360" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<!-- handoff -> B6 (full arrays for projection, bypasses B4/B5 row) -->
+<path d="M660,324 C900,360 900,460 800,484" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="905" y="410" text-anchor="middle" font-size="10" fill="#6b6b64" transform="rotate(90 905,410)">full K,M,C,F</text>
+
+<!-- B4 -> B5a, B4 -> B5b (snapshots feed both training strategies) -->
+<line x1="410" y1="395" x2="450" y2="395" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<path d="M410,415 C560,460 640,415 710,398" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+<!-- B5b -> B4 dashed feedback (adaptive: greedy solves only where needed) -->
+<path d="M710,440 C300,530 60,470 30,420" fill="none" stroke="#8a8a82" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrowDashed)"/>
+<text x="330" y="516" text-anchor="middle" font-size="10.5" fill="#6b6b64">adaptive: full-order solve only where the indicator is worst</text>
+
+<!-- B5a -> B6, B5b -> B6 (basis V) -->
+<line x1="565" y1="454" x2="530" y2="484" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="840" y1="454" x2="620" y2="484" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="620" y="470" text-anchor="middle" font-size="10" fill="#6b6b64">reduced basis</text>
+
+<!-- B6 -> B7, B6 -> B8 -->
+<line x1="450" y1="560" x2="420" y2="598" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="650" y1="560" x2="770" y2="598" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="700" y="580" text-anchor="middle" font-size="10" fill="#6b6b64">projected components</text>
+
+<!-- B7 -> B9, B8 -> B9 -->
+<line x1="400" y1="690" x2="450" y2="718" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<line x1="800" y1="690" x2="600" y2="718" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+<!-- validation dashed loop: output back to fea_engine full-order solves -->
+<path d="M200,760 C-40,700 -40,420 30,400" fill="none" stroke="#8a8a82" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrowDashed)"/>
+<text x="70" y="600" text-anchor="middle" font-size="10.5" fill="#6b6b64" transform="rotate(-90 70,600)">validation only (checking the reduced answer against a real solve)</text>
+
+<!-- ===================== LEGEND ===================== -->
+<rect x="20" y="850" width="960" height="140" rx="8" fill="#fff" stroke="var(--line)" stroke-width="1.2"/>
+<text x="40" y="874" font-size="12.5" font-weight="700" fill="#23241f">Legend</text>
+
+<rect x="40" y="888" width="18" height="18" rx="3" fill="var(--fea-bg)" stroke="var(--fea)" stroke-width="1.5"/>
+<text x="66" y="902" font-size="11.5" fill="#334155">fea_engine &mdash; full-order finite element assembly/solve</text>
+
+<rect x="40" y="915" width="18" height="18" rx="3" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.5"/>
+<text x="66" y="929" font-size="11.5" fill="#334155">rom_engine &mdash; reduced-order training (offline) and query (online)</text>
+
+<rect x="40" y="942" width="18" height="18" rx="3" fill="var(--scm-bg)" stroke="var(--scm)" stroke-width="1.5"/>
+<text x="66" y="956" font-size="11.5" fill="#334155">a rigorously CERTIFIED error bound, not merely an estimate</text>
+
+<line x1="520" y1="897" x2="558" y2="897" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrow)"/>
+<text x="568" y="902" font-size="11.5" fill="#334155">production data flow</text>
+
+<line x1="520" y1="924" x2="558" y2="924" stroke="#8a8a82" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrowDashed)"/>
+<text x="568" y="929" font-size="11.5" fill="#334155">feedback / validation-only (not part of the online query path)</text>
+
+<text x="40" y="975" font-size="11" fill="#6b6b64">rom_engine never imports fea_engine at the code level &mdash; every arrow crossing the boundary carries plain numpy arrays, not objects.</text>
+</svg>
+</div>
+
+<h3>Reading shape 1: offline vs. online</h3>
+<p>
+The whole point of this coupling shape is to spend <code>fea_engine</code>'s
+expensive full-order machinery (mesh, assembly, factorized solves)
+<strong>only during an OFFLINE training phase</strong>, then never touch
+it again during the many cheap <strong>ONLINE</strong> queries a real
+use case needs.
+</p>
+<ul>
+<li><strong>Offline (top four rows, run once, expensive):</strong>
+<code>fea_engine</code> builds the mesh and assembles the stiffness/mass/
+damping matrices. Those arrays hand off to <code>rom_engine</code>, which
+either (a) fits a reduced basis from a fixed grid of full-order snapshots
+(the POD route), or (b) runs a weak-greedy loop, which adaptively decides
+<em>which</em> conditions are worth an expensive full-order solve by
+watching where its own cheap error indicator is largest &mdash; the
+dashed feedback arrow. Either way, the resulting reduced basis plus the
+original full arrays get projected ONCE. This whole offline stage &mdash;
+the mesh-geometry precompute, the assembly itself, and (for a large
+enough system) the iterative linear solve &mdash; is exactly where
+<code>fea_engine</code>'s own <span class="badge badge-gpu">GPU-optional</span>
+<code>backend="torch"</code> switch now reaches (Wave 9 addendum): still
+plain NumPy/SciPy by default, still handing <code>rom_engine</code> the
+SAME plain arrays either way, just optionally faster to produce on a large
+model. <code>rom_engine</code>'s own code downstream of the handoff never
+knows or cares which backend built them.</li>
+<li><strong>Online (bottom rows, run many times, cheap):</strong> new
+queries are answered using only the small projected system &mdash; no
+mesh, no assembly, no full-order solve, ever. The certified-bound route
+sits alongside and turns the residual into a genuinely proven error bound
+using the same projected components, at the same online cost.</li>
+<li><strong>Validation (long dashed loop on the left):</strong> this is
+NOT part of the production path &mdash; it's how the automated test suite
+checks that the online predictions are actually right, by calling
+<code>fea_engine</code>'s own independent solvers as ground truth.</li>
+</ul>
+
+<div class="callout">
+Naming discipline shows up in the diagram on purpose: an error
+<strong>estimate</strong> or an error <strong>indicator</strong> is
+explicitly UNcertified (cheap, useful for ranking or deciding where to
+add training data, but not provably correct); a certified error
+<strong>bound</strong> (from the Successive Constraint Method route) is
+the one number in the whole package that's rigorously proven to never
+undershoot the true error &mdash; and it's also the narrowest/most limited
+one in practical reach, a real trade-off, not a free upgrade.
+</div>
+
+<h3>Shape 2 &mdash; a plain callable, for nonlinear models</h3>
+<p>
+Shape 1's plain stiffness/mass/damping arrays only make sense for LINEAR
+structural models &mdash; a nonlinear element (large deformation, a
+nonlinear material) doesn't have one fixed stiffness matrix at all; the
+relationship between load and displacement bends. For these models,
+<code>rom_engine</code> couples to <code>fea_engine</code> through a
+single, much narrower interface instead: a plain Python callable,
+conceptually <code>fom_solver(load) -&gt; displacement</code>, that wraps
+whichever nonlinear solver the caller wants. The reduction code itself
+never imports <code>fea_engine</code> or even knows it exists &mdash; the
+SAME code is equally happy driven by a hand-wrapped call into any other
+FE package, or by no FE package at all (a purely analytic stand-in
+function, as several of this project's own tests use).
+</p>
+<div class="diagram-card">
+<svg viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+  <marker id="arrowB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#4b4b45"/>
+  </marker>
+  <marker id="arrowDashedB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#8a8a82"/>
+  </marker>
+</defs>
+
+<!-- Box A: fea_engine nonlinear FOM -->
+<rect x="170" y="16" width="660" height="78" rx="8" fill="var(--fea-bg)" stroke="var(--fea)" stroke-width="1.8"/>
+<text x="500" y="40" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">fea_engine: nonlinear elements + nonlinear solver</text>
+<text x="500" y="59" text-anchor="middle" font-size="11.5" fill="#334155">geometrically/materially nonlinear elements &mdash; nonlinear static / displacement-control solves</text>
+<text x="500" y="76" text-anchor="middle" font-size="11" font-style="italic" fill="#475569">wrapped by the CALLER as a plain load -&gt; displacement function</text>
+
+<!-- Handoff pill -->
+<rect x="130" y="112" width="740" height="46" rx="23" fill="#fff" stroke="#8a8a82" stroke-width="1.5" stroke-dasharray="5,4"/>
+<text x="500" y="131" text-anchor="middle" font-size="12.5" font-weight="600" fill="#3f3f3a">fom_solver(load) -&gt; displacement &mdash; a PLAIN closure, not a fea_engine object</text>
+<text x="500" y="148" text-anchor="middle" font-size="11" fill="#6b6b64">the ONLY thing the nonlinear training-strategy code ever calls</text>
+
+<line x1="500" y1="94" x2="500" y2="112" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+
+<!-- B1: applied-load training strategy -->
+<rect x="60" y="182" width="420" height="92" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.6"/>
+<text x="270" y="206" text-anchor="middle" font-size="13" font-weight="600" fill="#7c4a0a">rom_engine: applied-load training</text>
+<text x="270" y="225" text-anchor="middle" font-size="11" fill="#4b3620">samples a well-spread set of per-mode load levels</text>
+<text x="270" y="243" text-anchor="middle" font-size="11" fill="#4b3620">runs a full nonlinear solve at each one</text>
+<text x="270" y="261" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">trains against the LINEAR (undeformed-stiffness) estimate</text>
+
+<!-- B2: enforced-displacement training strategy -->
+<rect x="520" y="182" width="420" height="92" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.6"/>
+<text x="730" y="206" text-anchor="middle" font-size="13" font-weight="600" fill="#7c4a0a">rom_engine: enforced-displacement training</text>
+<text x="730" y="225" text-anchor="middle" font-size="11" fill="#4b3620">prescribes a reduced coordinate directly,</text>
+<text x="730" y="243" text-anchor="middle" font-size="11" fill="#4b3620">solves in displacement control</text>
+<text x="730" y="261" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">reads back the reaction force as the nonlinear force sample</text>
+
+<path d="M300,158 C280,168 275,175 270,182" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+<path d="M700,158 C720,168 725,175 730,182" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+
+<!-- Triples pill -->
+<rect x="190" y="290" width="620" height="46" rx="23" fill="#fff" stroke="#8a8a82" stroke-width="1.5" stroke-dasharray="5,4"/>
+<text x="500" y="309" text-anchor="middle" font-size="12.5" font-weight="600" fill="#3f3f3a">(state, force) training pairs &mdash; plain numpy arrays</text>
+<text x="500" y="326" text-anchor="middle" font-size="11" fill="#6b6b64">handed to whichever nonlinear surrogate model the caller picks</text>
+
+<line x1="270" y1="274" x2="290" y2="290" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+<line x1="730" y1="274" x2="710" y2="290" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+
+<!-- C1: RBF surrogate -->
+<rect x="20" y="356" width="310" height="104" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.6"/>
+<text x="175" y="380" text-anchor="middle" font-size="13" font-weight="600" fill="#7c4a0a">rom_engine: RBF surrogate</text>
+<text x="175" y="399" text-anchor="middle" font-size="11" fill="#4b3620">radial-basis-function interpolant</text>
+<text x="175" y="417" text-anchor="middle" font-size="11" fill="#4b3620">of the nonlinear restoring force</text>
+<text x="175" y="435" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">smooth interpolation, no training/optimization loop</text>
+
+<!-- C2: polynomial surrogate -->
+<rect x="350" y="356" width="300" height="104" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.6"/>
+<text x="500" y="380" text-anchor="middle" font-size="13" font-weight="600" fill="#7c4a0a">rom_engine: polynomial surrogate</text>
+<text x="500" y="399" text-anchor="middle" font-size="11" fill="#4b3620">quadratic + cubic regression of the</text>
+<text x="500" y="417" text-anchor="middle" font-size="11" fill="#4b3620">nonlinear restoring force</text>
+<text x="500" y="435" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">a closed-form least-squares fit, no iterative training</text>
+
+<!-- C3: neural-network surrogate -->
+<rect x="670" y="356" width="310" height="104" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.6"/>
+<text x="825" y="380" text-anchor="middle" font-size="13" font-weight="600" fill="#7c4a0a">rom_engine: neural-network surrogate <tspan fill="var(--torch)">&#9889;</tspan></text>
+<text x="825" y="399" text-anchor="middle" font-size="11" fill="#4b3620">small neural network model of the</text>
+<text x="825" y="417" text-anchor="middle" font-size="11" fill="#4b3620">nonlinear restoring force</text>
+<text x="825" y="435" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">torch-gated &mdash; same training-pair input as the other two</text>
+
+<path d="M300,336 C220,346 200,350 175,356" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+<line x1="500" y1="336" x2="500" y2="356" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+<path d="M700,336 C780,346 800,350 825,356" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+
+<!-- D: online query -->
+<rect x="170" y="488" width="660" height="112" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.8"/>
+<text x="500" y="512" text-anchor="middle" font-size="14" font-weight="700" fill="#7c4a0a">ONLINE reduced nonlinear solve / time integration</text>
+<text x="500" y="530" text-anchor="middle" font-size="11" fill="#4b3620">whichever surrogate is used, its predicted force is fed into a</text>
+<text x="500" y="547" text-anchor="middle" font-size="11" fill="#4b3620">reduced Newton-Raphson solve (statics) or a Newmark-beta time march (dynamics)</text>
+<text x="500" y="564" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">a handful of reduced coordinates, no mesh, no assembly</text>
+<text x="500" y="581" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">the SAME reduced solve/integration code regardless of which surrogate feeds it</text>
+
+<line x1="175" y1="460" x2="330" y2="488" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+<line x1="500" y1="460" x2="500" y2="488" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+<line x1="825" y1="460" x2="670" y2="488" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+
+<!-- E: output -->
+<rect x="250" y="618" width="500" height="64" rx="8" fill="var(--out-bg)" stroke="var(--out)" stroke-width="1.8"/>
+<text x="500" y="644" text-anchor="middle" font-size="12.5" font-weight="600" fill="#334155">reduced coordinates &rarr; reconstructed full field</text>
+<text x="500" y="662" text-anchor="middle" font-size="10.5" font-style="italic" fill="#64748b">cheap: a handful of unknowns, repeated many times online</text>
+
+<line x1="500" y1="600" x2="500" y2="618" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowB)"/>
+
+<!-- validation dashed loop back to fea_engine -->
+<path d="M250,650 C-40,590 -40,70 170,55" fill="none" stroke="#8a8a82" stroke-width="1.4" stroke-dasharray="6,4" marker-end="url(#arrowDashedB)"/>
+<text x="8" y="360" text-anchor="middle" font-size="10" fill="#6b6b64" transform="rotate(-90 8,360)">validation only: checked against a real nonlinear finite-element model</text>
+
+<text x="500" y="697" text-anchor="middle" font-size="10.5" fill="#6b6b64">same color legend as shape 1 above (blue = fea_engine, amber = rom_engine); &#9889; marks a torch-gated component &mdash; see below.</text>
+</svg>
+</div>
+
+<p>
+The offline/online split is the same idea as shape 1, just at a different
+scale: generating training pairs means calling the nonlinear solver
+callable &mdash; a genuine full nonlinear finite-element solve &mdash;
+once per training sample (expensive, offline). Once a surrogate is fit,
+every subsequent evaluation is a small, reduced-dimensional solve with no
+mesh, no assembly, and no <code>fea_engine</code> involvement at all
+&mdash; the online query stays exactly as decoupled as shape 1's.
+</p>
+
+<h2>The torch switch &mdash; how the optional machine-learning layer works</h2>
+<p>
+Most of <code>rom_engine</code> needs nothing beyond <code>numpy</code>
+and <code>scipy</code>. A handful of the newer, more data-driven routes
+&mdash; the neural-network flavor of the nonlinear surrogate above, a
+trainable correction term, an operator that learns a whole excitation-to-
+response mapping, and a couple of others described below &mdash; are
+built on small neural networks, and training a neural network needs
+<strong>automatic differentiation</strong>: software that computes the
+gradient (the direction that reduces a training loss) of a complicated
+computation, so the network's internal numbers can be adjusted
+automatically rather than by hand. <code>rom_engine</code> uses
+<strong>PyTorch</strong> (referred to here, and in the code, simply as
+<em>torch</em>) for this. PyTorch is a substantial optional dependency,
+and not every user of this package needs it, so it is treated as strictly
+<strong>opt-in</strong>: nothing in the package requires it just to
+import or use the non-neural-network routes.
+</p>
+
+<div class="diagram-card">
+<svg viewBox="0 0 1000 330" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+  <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#4b4b45"/>
+  </marker>
+</defs>
+
+<rect x="330" y="16" width="340" height="60" rx="8" fill="#fff" stroke="#8a8a82" stroke-width="1.6"/>
+<text x="500" y="40" text-anchor="middle" font-size="13" font-weight="700" fill="#23241f">every torch-optional module, at import time:</text>
+<text x="500" y="58" text-anchor="middle" font-size="11.5" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#3f3f3a">try: import torch  /  except: torch unavailable</text>
+
+<line x1="500" y1="76" x2="500" y2="100" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowT)"/>
+<path d="M500,100 L620,140 L500,180 L380,140 Z" fill="#fff" stroke="#8a8a82" stroke-width="1.6"/>
+<text x="500" y="136" text-anchor="middle" font-size="11.5" font-weight="700" fill="#23241f">did torch import</text>
+<text x="500" y="152" text-anchor="middle" font-size="11.5" font-weight="700" fill="#23241f">cleanly?</text>
+
+<path d="M380,140 L120,140" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowT)"/>
+<text x="250" y="128" text-anchor="middle" font-size="11" fill="#334155">no</text>
+<rect x="10" y="176" width="230" height="120" rx="8" fill="var(--out-bg)" stroke="var(--out)" stroke-width="1.6"/>
+<text x="125" y="200" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">torch NOT available</text>
+<text x="30" y="222" font-size="11" fill="#334155">&bull; every plain-numpy function/class</text>
+<text x="40" y="238" font-size="11" fill="#334155">still works, unchanged</text>
+<text x="30" y="258" font-size="11" fill="#334155">&bull; trying to build a torch-gated</text>
+<text x="40" y="274" font-size="11" fill="#334155">class raises a clear, immediate error</text>
+<text x="40" y="290" font-size="10.5" font-style="italic" fill="#475569">naming exactly what still works</text>
+
+<path d="M620,140 L880,140" fill="none" stroke="#4b4b45" stroke-width="1.6" marker-end="url(#arrowT)"/>
+<text x="750" y="128" text-anchor="middle" font-size="11" fill="#334155">yes</text>
+<rect x="760" y="176" width="230" height="120" rx="8" fill="var(--torch-bg)" stroke="var(--torch)" stroke-width="1.6"/>
+<text x="875" y="200" text-anchor="middle" font-size="12.5" font-weight="700" fill="#701a75">torch AVAILABLE</text>
+<text x="780" y="222" font-size="11" fill="#701a75">&bull; every plain-numpy function/class</text>
+<text x="790" y="238" font-size="11" fill="#701a75">still works, unchanged</text>
+<text x="780" y="258" font-size="11" fill="#701a75">&bull; the neural-network classes become</text>
+<text x="790" y="274" font-size="11" fill="#701a75">usable: build, train, predict</text>
+<text x="790" y="290" font-size="10.5" font-style="italic" fill="#701a75">no code anywhere else has to change</text>
+
+<rect x="270" y="176" width="460" height="120" rx="8" fill="#fff" stroke="var(--line)" stroke-width="1.4"/>
+<text x="500" y="200" text-anchor="middle" font-size="12" font-weight="700" fill="#23241f">why "did it import cleanly," not just "is torch installed"</text>
+<text x="290" y="224" font-size="11" fill="#334155">A graphics-card-accelerated build of torch that doesn't match the</text>
+<text x="290" y="240" font-size="11" fill="#334155">machine's own driver can fail partway through import with a DIFFERENT</text>
+<text x="290" y="256" font-size="11" fill="#334155">kind of error than "module not found" &mdash; so the check is written</text>
+<text x="290" y="272" font-size="11" fill="#334155">broadly enough to catch any way the import can go wrong, not just the</text>
+<text x="290" y="288" font-size="11" fill="#334155">one most people expect.</text>
+
+</svg>
+</div>
+
+<p>
+The consequence for how the code is written: every function or class that
+only needs ordinary linear algebra (matrix multiplies, eigenvalue
+problems, least-squares fits, numerical integration) is written ONCE and
+never checks whether torch is present &mdash; it works identically either
+way. Only the specific pieces that need automatic differentiation to
+train a neural network's internal weights are placed behind the switch.
+Calling one of those without torch installed raises an immediate, clearly
+worded error explaining what to install and, in most cases, which
+non-neural-network alternative already covers the same use case &mdash;
+never a confusing failure buried deep inside a computation.
+</p>
+
+<div class="torch-callout">
+<b>What actually needs the torch switch, across the whole package:</b> the
+neural-network flavor of the nonlinear surrogate model; a trainable
+correction term added into a reduced equilibrium equation; the ensemble
+uncertainty-quantification tool, when it is wrapped around that
+neural-network surrogate specifically; the excitation-to-response
+operator; the bias-correction network inside the discretization-robust
+encoder/decoder; and the parameterized latent-ODE model (all described in
+the routes below).
+<br><br>
+<b>Everything else needs only numpy/scipy</b>, with no optional
+dependency at all: proper orthogonal decomposition, Galerkin projection,
+affine decomposition, frequency-domain reduction, greedy adaptive
+training, certified error bounds, non-intrusive system identification
+from frequency-response data, Krylov-subspace and balanced-truncation
+style reduction, harmonic-balance nonlinear normal modes, the
+radial-basis-function and polynomial flavors of the nonlinear surrogate,
+nonlinear time integration, design-of-experiments sampling, and dataset
+diagnostics.
+</div>
+
+<div class="gpu-callout">
+<b>A second, unrelated use of torch:</b> a few routes &mdash; balanced
+truncation and optimal Hankel-norm approximation in category C below, and
+several of <code>fea_engine</code>'s own assembly/solve stages that feed
+every route on this page &mdash; also gained an <em>optional</em>
+<code>backend="numpy"</code> (default, unchanged) / <code>backend=
+"torch"</code> + <code>device=</code> switch. This is <strong>not</strong>
+the automatic-differentiation usage described above: no training, no
+neural network, no gradient anywhere in these paths. It is the SAME
+matrix-multiply/Lyapunov-solve/SVD-style linear algebra these routes
+always did, just optionally dispatched to a GPU tensor library instead of
+NumPy/SciPy when a model is large enough for that to pay off. Every one
+of these routes still runs, unchanged, with no torch installed at all
+&mdash; the <span class="badge badge-gpu">GPU-optional</span> badge below
+marks this second, narrower kind of torch dependency wherever it appears,
+to keep it visually distinct from the <span class="badge
+badge-torch">torch</span> badge's actual meaning (training requires
+torch). See <code>fea_engine/docs/consolidated_future_roadmap.md</code>'s
+Wave 9 addendum (items 135-138) for the full validation record.
+</div>
+
+<h2>Every route through rom_engine, by category</h2>
+<p>
+"Route" here means a distinct path from full-order data to a usable
+reduced model &mdash; a specific combination of what kind of structural
+model it applies to (linear or nonlinear), what data it needs
+(intrusive access to matrices, or only input/output samples), and what it
+optimizes for (raw speed, provable error bounds, accuracy across a whole
+frequency range vs. near one operating point, generalizing to conditions
+never explicitly trained on, ...). The package does not pick one "best"
+route &mdash; different structural problems and different accuracy/speed/
+certification needs call for different ones, and several can be applied
+to the same problem side by side for comparison.
+</p>
+
+<div class="category-title">A &mdash; Linear, intrusive, projection-based reduction</div>
+<div class="category-sub">Needs direct access to the stiffness/mass/damping matrices. The classical starting point for reduced-order modeling.</div>
+<table class="routes">
+<tr><th>Route</th><th>What it answers</th><th>How it works, in plain terms</th><th></th></tr>
+<tr>
+<td><b>Proper Orthogonal Decomposition (POD)</b></td>
+<td>Given a set of full-order solutions, what's the smallest number of
+"shapes" that captures most of how they vary?</td>
+<td>Runs a singular value decomposition on the collected snapshots to find
+the directions of greatest variation, in order of importance. A
+"mass-weighted" variant uses the mass matrix so the resulting shapes come
+out orthogonal in the same physically meaningful sense as classical
+vibration mode shapes.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Galerkin projection</b></td>
+<td>Given a reduced basis, how do I get a small system of equations that
+approximates the full one?</td>
+<td>Projects the full-order matrices onto the reduced basis (a standard
+linear-algebra operation: sandwich each matrix between the basis and its
+own transpose), for both static equilibrium and vibration
+(eigenvalue) problems.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Affine parametric decomposition</b></td>
+<td>My matrices depend on a design parameter (a thickness, a material
+property, a frequency) &mdash; how do I avoid re-projecting from scratch
+every time that parameter changes?</td>
+<td>When the matrix can be written as a sum of a few fixed
+"component" matrices, each scaled by a simple function of the parameter,
+only the FIXED components need to be projected once (offline); recombining
+them for a NEW parameter value (online) is then just a cheap weighted sum
+of small, already-reduced pieces &mdash; the foundational offline/online
+split for "many-query" problems (sweeps, optimization, uncertainty
+studies).</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Frequency-domain reduction</b></td>
+<td>How do I get a fast harmonic (steady-state oscillating) response
+across a whole sweep of driving frequencies?</td>
+<td>The harmonic-response equation is naturally affine in the driving
+frequency, so this route is simply the affine-decomposition idea applied
+specifically to that equation, using either a vibration-mode basis or a
+POD basis built from frequency-response snapshots.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Greedy adaptive training</b></td>
+<td>Which training conditions actually deserve an expensive full-order
+solve?</td>
+<td>Rather than a fixed grid of training points chosen up front, this
+route repeatedly checks a cheap error indicator across the whole
+condition space and only spends a real full-order solve at the single
+worst-represented point each round ("weak greedy"), growing the basis
+where it is actually needed.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Certified error bounds (Successive Constraint Method)</b></td>
+<td>Can I PROVE the reduced answer is within some known distance of the
+true one, not just estimate it?</td>
+<td>Computes a rigorously certified lower bound on a quantity (the
+smallest singular value of the system matrix) that turns an otherwise
+uncertified residual into a provable upper bound on the true error.
+Available as a simplified, wider-reach version and as the full classical
+linear-programming-based version, which is narrower in practical reach
+but the more literal implementation of the original method.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+</table>
+
+<div class="category-title">B &mdash; Non-intrusive system identification</div>
+<div class="category-sub">Never needs the stiffness/mass/damping matrices at all &mdash; only input/output data, which can come from measurements, not just simulation.</div>
+<table class="routes">
+<tr><th>Route</th><th>What it answers</th><th>How it works, in plain terms</th><th></th></tr>
+<tr>
+<td><b>Data-driven modal identification (Loewner framework)</b></td>
+<td>I only have measured or simulated frequency-response DATA POINTS
+&mdash; no matrices at all. Can I still recover the natural frequencies,
+damping, and mode shapes?</td>
+<td>Builds a pair of matrices (a "Loewner pencil") directly from
+interpolating the given frequency-response samples; the generalized
+eigenvalues of that pencil ARE the system's identified natural
+frequencies and damping ratios, with mode shapes reconstructed from the
+same data. Also deliberately left NumPy/SciPy-only, same reasoning as
+Krylov-subspace moment matching below: the pencil is sized by the NUMBER
+OF INTERPOLATION POINTS, typically small, so there is no GPU-worthwhile
+computation here either.</td>
+<td><span class="badge badge-nonintrusive">data only</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Cross-model stability screening</b></td>
+<td>How do I tell a genuine structural mode apart from a numerical
+artifact of picking too large a model order?</td>
+<td>Builds many independent identified models from random subsets of the
+available frequency data, then keeps only the eigenvalues that show up
+consistently, tightly clustered, across most of them.</td>
+<td><span class="badge badge-nonintrusive">data only</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+</table>
+
+<div class="category-title">C &mdash; Classical control-theory-style reduction for linear systems</div>
+<div class="category-sub">Intrusive (needs the matrices), but optimizes for a fundamentally different accuracy trade-off than a vibration-mode basis: exactness near one operating point, or accuracy across a whole input/output pair regardless of frequency.</div>
+<table class="routes">
+<tr><th>Route</th><th>What it answers</th><th>How it works, in plain terms</th><th></th></tr>
+<tr>
+<td><b>Krylov-subspace moment matching</b></td>
+<td>I mainly care about accuracy near ONE specific operating frequency
+&mdash; can I get a reduced model that matches the true response exactly
+there, cheaply?</td>
+<td>Builds a reduced basis, from repeated use of a single matrix
+factorization, chosen so the reduced model's frequency response matches
+the true one's local (Taylor-series) behavior exactly at one expansion
+point, with accuracy tapering off farther away. A "two-sided" variant
+matches roughly twice as many terms from the same reduced size, at the
+cost of a more fragile construction. Deliberately left NumPy/SciPy-only
+&mdash; unlike balanced truncation's dense state-space linear algebra
+above, this route's per-generation systems are already small enough that
+GPU dispatch has no real work to accelerate.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Second-order Krylov reduction</b></td>
+<td>Same question as above, but without first doubling the number of
+unknowns by converting to a first-order form.</td>
+<td>The same moment-matching idea, built directly from the mass/damping/
+stiffness matrices in their natural second-order form, avoiding the
+state-space doubling the plain Krylov route needs.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Balanced truncation <span class="badge badge-gpu">&#9889; GPU-optional</span></b></td>
+<td>I care about accuracy across the WHOLE frequency range for a specific
+set of inputs/outputs, not just near one point &mdash; and I want a
+provable worst-case error bound.</td>
+<td>Ranks the reduced states by how strongly they simultaneously affect
+the chosen inputs and outputs (via two matrix equations, one per
+direction), keeps the most important ones, and comes with a real, proven
+worst-case bound on the reduction error. A "singular perturbation"
+variant fixes balanced truncation's one known weak spot (it is slightly
+wrong at zero frequency / steady state); a "frequency-weighted" variant
+trades accuracy in a chosen frequency band against accuracy elsewhere.
+All three optionally dispatch their two dense matrix-equation solves plus
+the balancing SVD to a GPU (<code>backend="torch"</code>, no training
+involved &mdash; see the GPU-optional callout above).</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy default</span><br><span class="badge badge-gpu">GPU-optional</span></td>
+</tr>
+<tr>
+<td><b>Optimal Hankel-norm approximation <span class="badge badge-gpu">&#9889; GPU-optional</span></b></td>
+<td>Is there a reduced model that is PROVABLY the best possible one of its
+size, in a specific rigorous sense?</td>
+<td>A more advanced construction (built on the same balancing machinery
+balanced truncation uses) that produces a reduced model with the smallest
+possible worst-case error, in a technical measure called the Hankel norm,
+among every model of that size &mdash; not merely a good one. Reuses
+balanced truncation's own GPU-optional balancing step for its (genuinely
+expensive) main computation and its own empirical self-check; the
+Schur-decomposition/Sylvester-equation construction that follows stays
+NumPy/SciPy-only, since it operates on the already-small reduced system
+regardless of GPU availability.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy default</span><br><span class="badge badge-gpu">GPU-optional</span></td>
+</tr>
+<tr>
+<td><b>Passivity check</b></td>
+<td>Does my reduced model still respect basic energy conservation?</td>
+<td>Checks whether a reduced model preserves "passivity" &mdash; the
+physical property that a real structure never generates energy out of
+nothing. Some reduction methods can produce a model that is numerically
+close to the truth but technically not passive, which can make a
+simulation coupling that reduced model to something else behave
+unphysically or become unstable; this route checks for that directly
+rather than assuming it can't happen.</td>
+<td><span class="badge badge-intrusive">needs matrices</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+</table>
+
+<div class="category-title">D &mdash; Nonlinear surrogate reduced-order modeling</div>
+<div class="category-sub">For structural models whose stiffness genuinely depends on the deformation itself. Uses shape 2's plain-callable coupling from the section above.</div>
+<table class="routes">
+<tr><th>Route</th><th>What it answers</th><th>How it works, in plain terms</th><th></th></tr>
+<tr>
+<td><b>Radial-basis-function (RBF) surrogate</b></td>
+<td>Given a handful of (reduced state, nonlinear force) training pairs,
+how do I interpolate the nonlinear force smoothly at any NEW reduced
+state?</td>
+<td>Builds a smooth interpolant of the nonlinear restoring force as a
+function of distance from each training point &mdash; no iterative
+optimization needed, just a linear solve.</td>
+<td><span class="badge badge-nonintrusive">callable-based</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Polynomial surrogate</b></td>
+<td>Same question, but with a form that stays well-behaved when
+extrapolated slightly beyond the training range.</td>
+<td>Fits the nonlinear restoring force as a quadratic-plus-cubic
+polynomial of the reduced coordinates by ordinary least squares &mdash; a
+closed-form regression, matching the classical form nonlinear structural-
+dynamics reduction techniques in the literature use.</td>
+<td><span class="badge badge-nonintrusive">callable-based</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Neural-network surrogate <span class="badge badge-torch">&#9889; torch</span></b></td>
+<td>Same question again, when the true relationship is complex enough
+that a small neural network fits it better than a fixed polynomial or
+interpolant form.</td>
+<td>Trains a small feedforward neural network on the same (reduced state,
+nonlinear force) training pairs, using the torch switch described above
+&mdash; same input/output shape as the other two surrogates, so it is a
+drop-in alternative, not a separate code path.</td>
+<td><span class="badge badge-nonintrusive">callable-based</span><br><span class="badge badge-torch">torch</span></td>
+</tr>
+<tr>
+<td><b>Reduced nonlinear time integration</b></td>
+<td>Given any of the three surrogates above, how do I march the reduced
+system forward in time?</td>
+<td>A standard structural-dynamics time-stepping scheme (Newmark-beta),
+generalized to accept any of the three surrogate force models, with
+several different strategies for folding the nonlinear force into each
+step &mdash; from a cheap frozen/lagged estimate up to a genuine
+Newton-Raphson solve every step for guaranteed convergence at higher
+cost.</td>
+<td><span class="badge badge-nonintrusive">callable-based</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Harmonic balance / nonlinear normal modes</b></td>
+<td>What is the structure's own steady-state PERIODIC vibration response
+&mdash; and how does its natural frequency shift with amplitude, the
+signature of nonlinear behavior a linear vibration analysis can't see at
+all?</td>
+<td>Represents the periodic response as a truncated Fourier series
+(harmonic balance) and solves for its coefficients directly, rather than
+time-marching to steady state; traces out how the resonant frequency
+changes with vibration amplitude (a "backbone curve") using continuation,
+including a more advanced form of continuation able to trace through an
+amplitude fold that a simpler continuation scheme cannot pass.</td>
+<td><span class="badge badge-nonintrusive">callable-based</span><br><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+</table>
+
+<div class="category-title">E &mdash; Neural-operator and trajectory-level, data-driven reduction</div>
+<div class="category-sub">The newest and most machine-learning-heavy routes. All torch-gated. Each generalizes across a different axis that every route above is tied to: a specific excitation shape, a specific mesh resolution, or a specific physical parameter value.</div>
+<table class="routes">
+<tr><th>Route</th><th>What it answers</th><th>How it works, in plain terms</th><th></th></tr>
+<tr>
+<td><b>Excitation-to-response operator <span class="badge badge-torch">&#9889; torch</span></b></td>
+<td>Every surrogate in category D predicts an instantaneous force from an
+instantaneous state, and has to be separately time-marched for every new
+load case. Can ONE trained model instead map a WHOLE excitation time
+history directly to the WHOLE response time history &mdash; including for
+excitation shapes it never saw during training?</td>
+<td>A compact "Fourier Neural Operator": a neural network that operates in
+the FREQUENCY domain, learning an independent filter for each retained
+frequency component of the input signal, plus an ordinary (time-domain)
+skip connection. Can optionally be trained with an extra penalty term
+that checks its own predicted trajectory against the true reduced
+equation of motion (using finite differences of the prediction itself),
+which this project's own testing found materially improves how well it
+generalizes to an unseen excitation, beyond fitting the training
+waveforms alone.</td>
+<td><span class="badge badge-nonintrusive">callable-based</span><br><span class="badge badge-torch">torch</span></td>
+</tr>
+<tr>
+<td><b>Discretization-robust encoder/decoder <span class="badge badge-torch">&#9889; partly torch</span></b></td>
+<td>An ordinary reduced basis (from POD) is tied to the exact mesh it was
+built from &mdash; it cannot even be evaluated on a different mesh
+resolution. Can a reduced representation be built once and reused across
+DIFFERENT mesh resolutions?</td>
+<td>Represents a normally discrete set of basis shapes as a mathematically
+CONTINUOUS field using an interpolation scheme, so encoding a new full
+field into reduced coordinates, and decoding reduced coordinates back to
+a full field, can both be evaluated at ANY query coordinates &mdash; not
+just the original mesh's own node locations. This core piece needs no
+neural network at all. An optional add-on neural network can then learn a
+small bias correction on top of the plain (linear) encoding, which does
+use the torch switch.</td>
+<td><span class="badge badge-nonintrusive">data-based</span><br>core: <span class="badge badge-numpy">numpy only</span><br>bias correction: <span class="badge badge-torch">torch</span></td>
+</tr>
+<tr>
+<td><b>Parameterized latent ordinary differential equation
+(ODE) <span class="badge badge-torch">&#9889; torch</span></b></td>
+<td>What if the SAME structural setup is run repeatedly with a different
+value of some physical parameter each time &mdash; a load amplitude, a
+material or geometric property &mdash; and I want one model that predicts
+the response for a NEW parameter value directly, not by re-fitting a
+surrogate for each one?</td>
+<td>Learns the reduced dynamics directly as an ordinary differential
+equation whose right-hand side is a small neural network, conditioned on
+the physical parameter (which is held fixed within one training
+trajectory but varies across the training set), integrated forward in
+time with a from-scratch, verified 4th-order Runge-Kutta scheme.
+Trained with "curriculum learning": the model is first only required to
+get the first few time steps right, then the length of trajectory it must
+get right is progressively extended as it improves &mdash; training
+directly on the FULL trajectory length from the start tends to be
+numerically unstable for this kind of model.</td>
+<td><span class="badge badge-nonintrusive">callable-based</span><br><span class="badge badge-torch">torch</span></td>
+</tr>
+</table>
+
+<div class="category-title">F &mdash; Supporting infrastructure used across every route</div>
+<div class="category-sub">Not reduction techniques themselves &mdash; tools that make building, checking, and trusting any of the routes above more systematic.</div>
+<table class="routes">
+<tr><th>Route</th><th>What it answers</th><th>How it works, in plain terms</th><th></th></tr>
+<tr>
+<td><b>Design-of-experiments sampling</b></td>
+<td>When I have to choose a limited number of expensive training
+conditions (loads, parameter combinations), how do I spread them out well
+rather than clustering by chance?</td>
+<td>A general-purpose "optimal Latin hypercube" sampler: spreads a chosen
+number of points across a parameter space so they are well separated from
+each other (better coverage than plain random sampling), used to choose
+training conditions for several of the routes above.</td>
+<td><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Dataset diagnostics</b></td>
+<td>Before spending time training a surrogate, does my training data
+actually cover the space well? How many independent directions of
+variation does it really contain? Which input parameters matter most to
+the output?</td>
+<td>Checks the sampled parameter combinations for coverage gaps, estimates
+the effective dimensionality of the training data (how many independent
+directions of variation it contains), and uses a cheap approximate model
+to estimate which inputs matter most to the output (a sensitivity
+analysis).</td>
+<td><span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Ensemble uncertainty quantification</b></td>
+<td>How confident should I be in a surrogate's prediction at a given
+input?</td>
+<td>Trains several independently-initialized copies of the same surrogate
+model on the same data, and reports how much they disagree with each
+other as a cheap proxy for confidence: the more the independently-trained
+copies disagree at a given input, the less that input resembles anything
+the model actually learned from.</td>
+<td><span class="badge badge-numpy">numpy only</span> for most model types;<br><span class="badge badge-torch">torch</span> when wrapped around the neural-network surrogate specifically</td>
+</tr>
+<tr>
+<td><b>Differentiable trainable correction terms <span class="badge badge-torch">&#9889; torch</span></b></td>
+<td>Rather than replacing a surrogate model entirely, can I train a small
+CORRECTION term that gets added directly into an already-existing reduced
+equilibrium equation, to nudge its predictions toward reference data?</td>
+<td>Adds a trainable correction term into the reduced equilibrium equation
+and calibrates it using the same automatic-differentiation machinery used
+to train neural-network surrogates &mdash; so the correction can be
+tuned by directly minimizing how much it disagrees with reference data,
+rather than being fit in isolation first and inserted afterward.</td>
+<td><span class="badge badge-torch">torch</span> for the trainable version; the underlying residual computation itself is <span class="badge badge-numpy">numpy only</span></td>
+</tr>
+<tr>
+<td><b>Cross-route validation</b></td>
+<td>Do multiple of the routes above actually AGREE with each other, and
+with an independent reference, when applied to the same real structural
+problem &mdash; not just pass their own isolated tests?</td>
+<td>Runs several routes together on one shared structural model and
+checks them against each other: e.g. two different time-integration
+schemes solving the SAME reduced equation should agree with each other;
+a basis fit at one mesh resolution should reconstruct a solution
+computed at a genuinely different resolution to within a documented
+tolerance.</td>
+<td><span class="badge badge-numpy">numpy-only core</span><br>plus an optional <span class="badge badge-torch">torch</span>-gated extension that also exercises the neural-operator routes</td>
+</tr>
+</table>
+
+<h2>A shared-pattern coupling &mdash; not data flow, but a mirrored design</h2>
+<p>
+Every route above couples through DATA flowing one way, at solve time:
+<code>fea_engine</code> computes something, <code>rom_engine</code>
+consumes it. There is one more, genuinely different kind of coupling
+between the two packages worth knowing about: in a couple of places,
+<code>fea_engine</code> and <code>rom_engine</code> each independently
+implement the exact SAME mathematical pattern &mdash; a trainable
+correction term inserted additively into an equilibrium residual,
+calibrated by minimizing that residual against reference data &mdash; at
+two different scales (the full finite-element displacement field, versus
+a handful of reduced modal coordinates). Because
+<code>rom_engine</code>'s own design principle is that
+<code>fea_engine</code> is a TEST/EXAMPLE dependency only, never a
+LIBRARY one, the reduced-scale version does NOT import the full-order
+one, even though the two are a direct mathematical analogue of each
+other &mdash; the same pattern is deliberately reimplemented
+independently at the smaller scale, rather than shared through an import.
+</p>
+<div class="diagram-card">
+<svg viewBox="0 0 1000 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+  <marker id="arrowMirrorStart" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M10,0 L0,5 L10,10 z" fill="#8a8a82"/>
+  </marker>
+  <marker id="arrowMirrorEnd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#8a8a82"/>
+  </marker>
+</defs>
+
+<!-- Left box: fea_engine full-order correction -->
+<rect x="30" y="30" width="420" height="210" rx="8" fill="var(--fea-bg)" stroke="var(--fea)" stroke-width="1.8"/>
+<text x="240" y="56" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e3a8a">fea_engine: full-order trainable correction</text>
+<text x="240" y="80" text-anchor="middle" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#1e3a8a">external load &minus; internal force &minus; correction = 0</text>
+<text x="55" y="106" font-size="11" fill="#334155">&bull; a trainable correction term (value + Jacobian)</text>
+<text x="55" y="126" font-size="11" fill="#334155">&bull; an implicit-differentiation ("adjoint") layer, wrapping</text>
+<text x="65" y="144" font-size="11" fill="#334155">the whole nonlinear solve so it can be trained end-to-end</text>
+<text x="55" y="164" font-size="11" fill="#334155">&bull; explicit residual-minimization calibration against</text>
+<text x="65" y="182" font-size="11" fill="#334155">full-field reference data</text>
+<text x="240" y="216" text-anchor="middle" font-size="10.5" font-style="italic" fill="#475569">scale: the FULL finite-element displacement field (thousands of dof)</text>
+
+<!-- Right box: rom_engine reduced correction -->
+<rect x="550" y="30" width="420" height="210" rx="8" fill="var(--rom-bg)" stroke="var(--rom)" stroke-width="1.8"/>
+<text x="760" y="56" text-anchor="middle" font-size="13.5" font-weight="700" fill="#7c4a0a">rom_engine: reduced-scale trainable correction</text>
+<text x="760" y="80" text-anchor="middle" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#7c4a0a">external load &minus; linear &minus; nonlinear &minus; correction = 0</text>
+<text x="575" y="106" font-size="11" fill="#4b3620">&bull; the same residual, computed in plain NumPy</text>
+<text x="575" y="126" font-size="11" fill="#4b3620">&bull; the same explicit calibration-by-minimization idea</text>
+<text x="575" y="146" font-size="11" fill="#4b3620">&bull; the SAME trainable correction term, at reduced scale</text>
+<text x="575" y="166" font-size="11" fill="#4b3620">&bull; NOT built: a reduced-scale implicit-adjoint layer</text>
+<text x="575" y="184" font-size="11" fill="#4b3620">&nbsp;&nbsp;(the full-order layer's own counterpart) &mdash; a real follow-on</text>
+<text x="760" y="216" text-anchor="middle" font-size="10.5" font-style="italic" fill="#7c4a0a">scale: the REDUCED modal coordinates (a handful of numbers)</text>
+
+<line x1="450" y1="120" x2="550" y2="120" stroke="#8a8a82" stroke-width="1.8" stroke-dasharray="7,5" marker-start="url(#arrowMirrorStart)" marker-end="url(#arrowMirrorEnd)"/>
+<text x="500" y="103" text-anchor="middle" font-size="10.5" font-weight="600" fill="#3f3f3a">same pattern</text>
+<text x="500" y="145" text-anchor="middle" font-size="10" fill="#6b6b64">independently reimplemented</text>
+<text x="500" y="160" text-anchor="middle" font-size="10" fill="#6b6b64">NO import crosses this line, ever</text>
+
+<text x="500" y="270" text-anchor="middle" font-size="11" fill="#6b6b64">Contrast with the shapes above: nothing here is data passed at runtime &mdash; this is two independent implementations of one shared mathematical derivation.</text>
+</svg>
+</div>
+
+<div class="callout">
+Why not just import the full-order version from the reduced-order package
+and save the duplication? Because <code>rom_engine</code>'s reduced-order
+machinery is useful to people who never touch a real finite-element mesh
+at all &mdash; it is already driven, in category D above, by a plain
+solver callable that could come from anywhere. Making the correction-
+training machinery depend on <code>fea_engine</code> would break that for
+every user who doesn't need it, to save re-deriving a small amount of
+already-simple reduced-space math. The missing reduced-scale
+implicit-adjoint layer is the natural trigger to revisit this boundary,
+if a future use case needs it.
+</div>
+
+<footer>
+Reflects the actual module boundaries and full set of reduction routes
+currently in <code>computation-suite/fea_engine</code> and
+<code>computation-suite/rom_engine</code>. See each package's own
+<code>README.md</code> and <code>docs/</code> folder for the detailed,
+per-method design rationale behind each row above.
+</footer>
+
+</div>
+</body>
+</html>
