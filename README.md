@@ -25,7 +25,7 @@
 | 🚀 [Quick start](#s-3) | ✅ [Tests](#s-9) |
 | 🔄 [A typical workflow](#s-4) | ⚠️ [Notes and limits](#s-10) |
 | 🖥️ [CPU, multi-core and GPU](#s-5) | 📄 [License](#s-11) |
-| 🧪 [Examples](#s-6) |  |
+| 🧪 [Examples](#s-6) | 🎨 [At a glance](#glance) |
 
 ---
 
@@ -37,6 +37,133 @@ acceleration and automatic differentiation.
 Every result is checked against an independent reference: a closed-form
 solution, a second numerical method, or a conservation law. Nothing here is
 a wrapper around a commercial solver.
+
+<a id="glance"></a>
+
+## 🎨 At a glance
+
+### How the pieces fit together
+
+```mermaid
+flowchart TB
+    subgraph FE["🏗️ fea_engine - full-order model"]
+        direction TB
+        MAT["Material<br/>Section"] --> SYS
+        MSH["Mesh<br/>Geometry"] --> SYS
+        ELM["Elements<br/>truss · beam · solid<br/>plate · shell · contact"] --> SYS
+        SYS["<b>FESystem</b><br/>assemble K, M, F<br/>loads · constraints"]
+        SYS --> A1["Static"]
+        SYS --> A2["Modal<br/>Buckling"]
+        SYS --> A3["Harmonic<br/>Random vibration"]
+        SYS --> A4["Transient"]
+        SYS --> A5["Nonlinear<br/>Newton · arc-length<br/>plasticity · contact"]
+    end
+    subgraph RE["📉 rom_engine - reduced model"]
+        direction TB
+        POD["POD basis"] --> PRJ["Galerkin<br/>Affine sweeps<br/>Frequency ROM"]
+        SSM["State-space MOR<br/>balanced truncation<br/>Krylov · SOAR · Hankel"]
+        NLR["Nonlinear ROMs<br/>RBF · ICE · intrusive · NNM"]
+        IDN["Loewner<br/>identification"]
+    end
+    SYS -- "snapshots" --> POD
+    SYS -- "K, M, C" --> SSM
+    SYS -- "K, M, F" --> NLR
+    TCH[("🔥 PyTorch (optional)<br/>CPU · GPU · autograd")]
+    FE -.-> TCH
+    RE -.-> TCH
+    classDef fea fill:#2563eb,stroke:#1e40af,color:#fff
+    classDef rom fill:#7c3aed,stroke:#5b21b6,color:#fff
+    classDef out fill:#0f766e,stroke:#115e59,color:#fff
+    classDef torch fill:#ee4c2c,stroke:#b91c1c,color:#fff
+    class SYS,MAT,MSH,ELM fea
+    class POD,PRJ,SSM,NLR,IDN rom
+    class A1,A2,A3,A4,A5 out
+    class TCH torch
+```
+
+### What is inside
+
+```mermaid
+mindmap
+  root((computation-suite))
+    fea_engine
+      Elements
+        Truss, Beam, Solid
+        Plate, Shell, Contact
+      Analyses
+        Static, Modal, Buckling
+        Harmonic, Random vibration
+        Transient
+      Nonlinear
+        Large displacement
+        Plasticity, Hyperelasticity
+        Arc-length, Contact
+      Tools
+        Meshing and grading
+        Adaptive refinement
+        Topology optimisation
+    rom_engine
+      Projection
+        POD, Galerkin, Affine
+      Frequency domain
+        Greedy training
+        Certified error bounds
+      State space
+        Balanced truncation
+        Krylov, SOAR, Hankel
+      Nonlinear
+        RBF, ICE, Intrusive
+        Normal modes
+      Identification
+        Loewner
+    PyTorch layer
+      GPU solves
+      Autograd tangents
+      Neural operators
+```
+
+### Why reduce a model: offline once, online many times
+
+```mermaid
+flowchart LR
+    subgraph OFF["🧮 Offline - once, expensive"]
+        direction LR
+        a["Full-order solves<br/>at sampled loads / parameters"] --> b["Snapshot matrix"] --> c["POD basis V"] --> d["Project K, M, F<br/>into small operators"]
+    end
+    subgraph ON["⚡ Online - many times, cheap"]
+        direction LR
+        e["New load or<br/>parameter value"] --> f["Reassemble<br/>tiny matrix"] --> g["Solve r x r<br/>system"] --> h["Expand<br/>x = V q"]
+    end
+    d --> f
+    classDef off fill:#b45309,stroke:#92400e,color:#fff
+    classDef on fill:#15803d,stroke:#166534,color:#fff
+    class a,b,c,d off
+    class e,f,g,h on
+```
+
+Measured on the two-region beam example in `USER_GUIDE.md` (120 elements, 500-point parameter sweep, relative error about 1.5e-3):
+
+```text
+Full-order   1653.23 ms  ██████████████████████████████████████████████████████████████████████
+Reduced-order   7.45 ms  ▏                                                         221.8x faster
+```
+
+### Results from the example gallery
+
+<table>
+<tr>
+<td align="center"><a href="fea_engine/examples/gallery/fea_01_cantilever_beam.py"><img src="fea_engine/examples/gallery/fea_01_cantilever_beam.png" width="330"></a><br><sub><b>Cantilever</b>: von Mises stress and mesh convergence to the beam-theory value</sub></td>
+<td align="center"><a href="fea_engine/examples/gallery/fea_03_hertzian_contact.py"><img src="fea_engine/examples/gallery/fea_03_hertzian_contact.png" width="330"></a><br><sub><b>Contact</b>: block pressed onto a rigid obstacle</sub></td>
+<td align="center"><a href="fea_engine/examples/gallery/fea_06_topology_optimization.py"><img src="fea_engine/examples/gallery/fea_06_topology_optimization.png" width="330"></a><br><sub><b>Topology optimisation</b>: 86.8 % less compliance at fixed volume</sub></td>
+</tr>
+<tr>
+<td align="center"><a href="rom_engine/examples/gallery/rom_01_pod_basis.py"><img src="rom_engine/examples/gallery/rom_01_pod_basis.png" width="330"></a><br><sub><b>POD basis</b>: singular-value decay and reconstruction error</sub></td>
+<td align="center"><a href="rom_engine/examples/gallery/rom_04_balanced_truncation.py"><img src="rom_engine/examples/gallery/rom_04_balanced_truncation.png" width="330"></a><br><sub><b>Balanced truncation</b>: actual error stays below the certified bound</sub></td>
+<td align="center"><a href="rom_engine/examples/gallery/rom_05_nonlinear_modal_rom.py"><img src="rom_engine/examples/gallery/rom_05_nonlinear_modal_rom.png" width="330"></a><br><sub><b>Nonlinear modal ROM</b>: 2 modes vs 51-DOF full-order beam, max error 3.3 %</sub></td>
+</tr>
+</table>
+
+Click an image to open the script that produced it. All twelve gallery figures are in `fea_engine/examples/gallery/` and `rom_engine/examples/gallery/`.
 
 <a id="s-1"></a>
 
