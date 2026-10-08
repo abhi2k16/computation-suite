@@ -91,7 +91,7 @@ machine epsilon in the smallest computed Hankel singular values) that
 show up if this step is skipped.
 """
 import numpy as np
-from scipy.linalg import solve_continuous_lyapunov, cholesky, eigh, LinAlgError
+from scipy.linalg import solve_continuous_lyapunov, cholesky, eigh, LinAlgError, matrix_balance
 
 from .state_space import to_state_space
 from .torch_linalg import _HAS_TORCH, _require_torch, torch_solve_continuous_lyapunov, torch_balance_from_gramians
@@ -214,6 +214,20 @@ def _balance_from_gramians(P, Q, backend="numpy", device="cpu"):
     return sigma, T, Tinv
 
 
+def _equilibrate(A, B, Cout):
+    """Power-of-two diagonal state scaling d (LAPACK ?GEBAL, permute=False): returns
+    (D^-1 A D, D^-1 B, Cout D, d) with D = diag(d). Exact in floating point (powers of two), a
+    similarity transform, so transfer function and Hankel singular values are unchanged; a
+    balancing transform T_s found in the scaled coordinates maps back as T = D T_s,
+    Tinv = Tinv_s D^-1."""
+    A = np.asarray(A, dtype=float)
+    B = np.asarray(B, dtype=float)
+    Cout = np.asarray(Cout, dtype=float)
+    A_s, (d, _perm) = matrix_balance(A, permute=False, separate=True)
+    d = np.asarray(d, dtype=float)
+    return A_s, B / d[:, None], Cout * d[None, :], d
+
+
 def hankel_singular_values(A, B, Cout, return_transform=False, backend="numpy", device="cpu"):
     """The system's Hankel singular values, via the square-root method
     (_balance_from_gramians(), fed the plain, unweighted controllability/
@@ -249,12 +263,20 @@ def hankel_singular_values(A, B, Cout, return_transform=False, backend="numpy", 
         raise ValueError(
             f"hankel_singular_values: unknown backend={backend!r} -- "
             f"expected 'numpy' (default) or 'torch'.")
-    P = controllability_gramian(A, B, backend=backend, device=device)
-    Q = observability_gramian(A, Cout, backend=backend, device=device)
+    # Equilibrate the states first (v1.0.1). For structural models the first-order states
+    # [q; qdot] differ in scale by up to ~1e6, so A spans ~20 orders of magnitude and the
+    # Lyapunov solves lose the SMALL Gramian eigenvalues to round-off; whether the Cholesky of the
+    # result then succeeded depended on the BLAS/LAPACK build, giving a 2e-3 or a 3e-2 sweep error
+    # for the same model. A power-of-two diagonal similarity (LAPACK ?GEBAL scaling, no round-off
+    # added) removes the grading. Hankel singular values are invariant under it; the returned
+    # transform maps back to the ORIGINAL state coordinates, so callers see no change in convention.
+    A_s, B_s, C_s, d = _equilibrate(A, B, Cout)
+    P = controllability_gramian(A_s, B_s, backend=backend, device=device)
+    Q = observability_gramian(A_s, C_s, backend=backend, device=device)
     sigma, T, Tinv = _balance_from_gramians(P, Q, backend=backend, device=device)
     if not return_transform:
         return sigma
-    return sigma, T, Tinv
+    return sigma, d[:, None] * T, Tinv / d[None, :]
 
 
 def lowpass_weight(wc):
@@ -373,11 +395,15 @@ def frequency_weighted_hankel_singular_values(A, B, Cout, Wi=None, Wo=None,
         raise ValueError(
             f"frequency_weighted_hankel_singular_values: unknown "
             f"backend={backend!r} -- expected 'numpy' (default) or 'torch'.")
-    Pw, Qw = frequency_weighted_gramians(A, B, Cout, Wi=Wi, Wo=Wo, backend=backend, device=device)
+    # same state equilibration as hankel_singular_values() (the weights act on the unchanged
+    # input/output maps, so only the plant states are rescaled); transform returned in original
+    # state coordinates
+    A_s, B_s, C_s, d = _equilibrate(A, B, Cout)
+    Pw, Qw = frequency_weighted_gramians(A_s, B_s, C_s, Wi=Wi, Wo=Wo, backend=backend, device=device)
     sigma, T, Tinv = _balance_from_gramians(Pw, Qw, backend=backend, device=device)
     if not return_transform:
         return sigma
-    return sigma, T, Tinv
+    return sigma, d[:, None] * T, Tinv / d[None, :]
 
 
 class BalancedTruncationROM:

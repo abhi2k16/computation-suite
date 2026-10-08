@@ -91,6 +91,46 @@ def _true_H(fx, omega_array):
     return np.array([sysobj.solve_harmonic(om, F_full)[tip_dof_global] for om in omega_array])
 
 
+def test_result_is_insensitive_to_roundoff_level_input_noise():
+    """Regression for the v1.0.1 fix. Before it, the Gramian square root's Cholesky-with-absolute-
+    jitter ladder made BT bistable on this model: ~1 in 12 runs with only ulp-level input noise
+    (and every run on some BLAS/LAPACK builds, e.g. Windows MKL) gave a 3e-2 sweep error instead of
+    ~5e-4. With state equilibration the answer must not depend on round-off, so all noisy runs agree."""
+    fx, Kr, Mr, Cr, Br, Coutr, _ = _reduced_port_system()
+    omega = np.linspace(1.0, 1500.0, 25)
+    H_true = _true_H(fx, omega)
+    rng = np.random.default_rng(7)
+    errs = []
+    for eps in (0.0, 1e-15, 1e-14, 1e-13, 1e-12, 1e-13, 1e-14, 1e-15, 1e-12, 1e-13):
+        pert = lambda A: A * (1.0 + eps * rng.standard_normal(A.shape))
+        rom = BalancedTruncationROM.from_MCK(pert(Mr), pert(Kr), Br, Coutr, C=pert(Cr), r=10)
+        errs.append(np.max(np.abs(rom.frequency_response(omega) - H_true) / np.abs(H_true)))
+    errs = np.array(errs)
+    print(f"sweep error under round-off noise: min={errs.min():.3e} max={errs.max():.3e}")
+    assert errs.max() < 5e-3
+    assert errs.max() / errs.min() < 1.5, "result must not branch on round-off"
+
+
+def test_state_equilibration_leaves_hankel_singular_values_unchanged():
+    """The power-of-two similarity scaling inside hankel_singular_values() is a similarity
+    transform: the leading Hankel singular values (the well-resolved ones) must equal an
+    unscaled computation, and the returned transform must balance the ORIGINAL system."""
+    from rom_engine.balanced_truncation import (hankel_singular_values, controllability_gramian,
+                                                observability_gramian, _balance_from_gramians)
+    from rom_engine.state_space import to_state_space
+    fx, Kr, Mr, Cr, Br, Coutr, _ = _reduced_port_system(n_modes=8)
+    ss = to_state_space(Mr, Kr, C=Cr, B=Br, Cout=Coutr, form="A")
+    hsv, T, Tinv = hankel_singular_values(ss.A, ss.B, ss.Cout, return_transform=True)
+    P = controllability_gramian(ss.A, ss.B)
+    Q = observability_gramian(ss.A, ss.Cout)
+    hsv_plain, _, _ = _balance_from_gramians(P, Q)
+    assert np.allclose(hsv[:6], hsv_plain[:6], rtol=1e-5)          # well-resolved values agree
+    # T maps back to the original state coordinates
+    assert np.allclose(Tinv @ T, np.eye(T.shape[0]), atol=1e-6)
+    Ab = Tinv @ ss.A @ T
+    assert np.all(np.linalg.eigvals(Ab).real < 0)
+
+
 def test_accurate_across_whole_sweep():
     fx, Kr, Mr, Cr, Br, Coutr, _ = _reduced_port_system()
     rom = BalancedTruncationROM.from_MCK(Mr, Kr, Br, Coutr, C=Cr, r=10)

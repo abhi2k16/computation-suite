@@ -152,22 +152,30 @@ def test_self_check_agrees_to_near_machine_precision_when_reliable():
 
 def test_self_check_flags_the_known_unreliable_regime():
     """This fixture's port is dominated by its first mode pair -- pushing
-    OptimalHankelNormROM to r=4 from a LARGER (15-mode) pre-reduction
+    OptimalHankelNormROM to r=4 from a MUCH LARGER (20-mode) pre-reduction
     lands in the numerically unreliable regime described in the module
-    docstring (a much wider overall Hankel-singular-value spread than
-    the 6-mode pre-reduction the other tests here use, even though the
-    early Hankel singular values themselves are nearly unchanged -- see
+    docstring (a very wide overall Hankel-singular-value spread; see the
     module docstring for why the OVERALL spread, not just sigma_(r+1)
-    itself, drives the balancing transform's accuracy). This is checked
-    DIRECTLY here as a genuine, reproducible finding, not asserted from
-    the docstring alone -- the self-check must actually flag it."""
-    fx, Kr, Mr, Cr, Br, Coutr, _ = _reduced_port_system(n_modes=15)
-    rom = OptimalHankelNormROM.from_MCK(Mr, Kr, Br, Coutr, C=Cr, r=4)
-    print(f"15-mode pre-reduction, r=4: sigma_r1={rom.sigma_r1:.6e}  "
+    itself, drives the balancing transform's accuracy). v1.0.1: the state
+    equilibration in hankel_singular_values() moved the onset of this regime
+    from 15 to 20 modes (15-mode cases now agree with theory to machine
+    precision, tested above). In this regime the contract is that the
+    method must NEVER silently return a wrong model: either construction
+    raises a ValueError naming the numerical failure, or the returned model
+    reports numerically_reliable=False. Which of the two happens at the
+    edge can depend on the BLAS/LAPACK build, so both are accepted."""
+    fx, Kr, Mr, Cr, Br, Coutr, _ = _reduced_port_system(n_modes=20)
+    try:
+        rom = OptimalHankelNormROM.from_MCK(Mr, Kr, Br, Coutr, C=Cr, r=4)
+    except ValueError as e:
+        assert "stable" in str(e) or "numerical" in str(e).lower(), str(e)
+        print(f"PASS -- 20-mode r=4 refused loudly: {str(e)[:90]}...")
+        return
+    print(f"20-mode pre-reduction, r=4: sigma_r1={rom.sigma_r1:.6e}  "
           f"measured={rom.measured_hankel_norm_error:.6e}  "
           f"reliable={rom.numerically_reliable}")
     assert not rom.numerically_reliable, (
-        "this specific (pre-reduction size, r) combination is a known "
+        "this (pre-reduction size, r) combination is a known "
         "numerically unreliable case for THIS fixture/port -- the "
         "self-check must catch it, not silently return a wrong model"
     )

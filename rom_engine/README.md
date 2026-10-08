@@ -355,7 +355,7 @@ pip install -e ".[fea,dev]"
 pytest tests/ -v
 ```
 
-All 410 tests pass (46 further tests need PyTorch and skip when it is not installed; 456 in total). The intrusive modules (below) are validated against
+All 412 tests pass (46 further tests need PyTorch and skip when it is not installed; 458 in total). The intrusive modules (below) are validated against
 real fea_engine models (not synthetic matrices); the non-intrusive
 `loewner`/`screening` modules are validated against BOTH a synthetic
 mass-spring fixture and two real, materially different structural
