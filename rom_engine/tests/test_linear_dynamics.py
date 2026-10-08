@@ -45,7 +45,11 @@ def test_modal_superposition_matches_sdof_closed_form_free_decay():
 @pytest.fixture(scope="module")
 def beam():
     d = damped_cantilever_beam_system(n=20, alpha=2.0, beta=1e-5)
-    return d
+    # The fixture's K/M/C are the UNCONSTRAINED beam: K is singular (rigid-body modes whose
+    # eigenvalues are pure round-off and differ between LAPACK builds). Use the clamped block.
+    fd = np.asarray(d["free_dofs"])
+    ix = np.ix_(fd, fd)
+    return {"K": d["K"][ix], "M": d["M"][ix], "C": d["C"][ix]}
 
 
 def test_methods_agree_on_real_beam(beam):
@@ -56,7 +60,13 @@ def test_methods_agree_on_real_beam(beam):
     load = lambda t: f * np.sin(2 * np.pi * 60 * t)
     t, qn, *_ = newmark_linear(M, C, K, load, dt, steps)
     tm, qm, info = modal_superposition(K, M, load, dt, steps, n_modes=n, rayleigh=(2.0, 1e-5))
-    assert np.linalg.norm(qn - qm) / np.linalg.norm(qm) < 5e-3     # all modes: only the Newmark time error remains
+    e1 = np.linalg.norm(qn - qm) / np.linalg.norm(qm)
+    assert e1 < 2e-2                                                # all modes: only the Newmark time error remains
+    # halving dt must cut that error ~4x (second order); the exact modal reference does not depend on dt
+    t2, qn2, *_ = newmark_linear(M, C, K, load, dt / 2, 2 * steps)
+    _, qm2f, _ = modal_superposition(K, M, load, dt / 2, 2 * steps, n_modes=n, rayleigh=(2.0, 1e-5))
+    e2 = np.linalg.norm(qn2 - qm2f) / np.linalg.norm(qm2f)
+    assert 3.0 < e1 / e2 < 5.0
     tm2, qm2, _ = modal_superposition(K, M, load, dt, steps, n_modes=6, rayleigh=(2.0, 1e-5))
     assert np.linalg.norm(qm2 - qm) / np.linalg.norm(qm) < 5e-2   # truncation to 6 modes stays close
 
