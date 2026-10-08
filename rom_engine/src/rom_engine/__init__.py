@@ -752,6 +752,14 @@ from .attractor import (
 # re-exported here (see neural_operator's own module docstring note);
 # import them directly from their own module when torch is installed.
 
+from .cms import guyan, craig_bampton, couple, GuyanModel, CraigBamptonModel, CoupledModel
+from .hyper_reduction import (
+    deim_indices, qdeim_indices, DEIM, gappy_reconstruct, ecsw_weights,
+    ecsw_training_matrix, ECSW, reduced_force_error, HyperReducedNonlinearROM,
+)
+from .linear_dynamics import newmark_linear, modal_superposition, piecewise_linear_exact, galerkin_transient
+from .validation import validate_rom, convergence_study, select_basis_size, ValidationReport
+
 __all__ = [
     "PodBasis", "MultiFieldPOD", "assemble_field_weight_matrix", "trapezoidal_field_gram",
     "GalerkinROM", "AffineDecomposition",
@@ -795,6 +803,11 @@ __all__ = [
     "stroboscopic_sample", "steady_state_amplitude", "midspan_transverse_probe",
     "master_slave_data", "dominant_frequency",
     "SweepPoint", "SweepResult", "frequency_sweep", "amplitude_sweep",
+    "guyan", "craig_bampton", "couple", "GuyanModel", "CraigBamptonModel", "CoupledModel",
+    "deim_indices", "qdeim_indices", "DEIM", "gappy_reconstruct", "ecsw_weights",
+    "ecsw_training_matrix", "ECSW", "reduced_force_error", "HyperReducedNonlinearROM",
+    "newmark_linear", "modal_superposition", "piecewise_linear_exact", "galerkin_transient",
+    "validate_rom", "convergence_study", "select_basis_size", "ValidationReport",
 ]
 
 __version__ = "0.1.0"

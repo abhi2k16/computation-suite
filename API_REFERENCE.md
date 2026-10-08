@@ -5,7 +5,7 @@
 ### `fea_engine` &nbsp;·&nbsp; `rom_engine`
 
 ![fea_engine](https://img.shields.io/badge/fea__engine-61_classes_%C2%B7_158_functions-2563eb?style=for-the-badge)
-![rom_engine](https://img.shields.io/badge/rom__engine-36_classes_%C2%B7_61_functions-7c3aed?style=for-the-badge)
+![rom_engine](https://img.shields.io/badge/rom__engine-43_classes_%C2%B7_77_functions-7c3aed?style=for-the-badge)
 ![python](https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge)
 ![torch](https://img.shields.io/badge/torch-optional-ee4c2c?style=for-the-badge)
 ![license](https://img.shields.io/badge/license-MIT-16a34a?style=for-the-badge)
@@ -42,7 +42,7 @@ flowchart LR
 | | 🧱 Classes | 🔧 Functions | ⚙️ Methods | 📦 Modules |
 |---|---:|---:|---:|---:|
 | **`fea_engine`** | 61 | 158 | 227 | 35 |
-| **`rom_engine`** | 36 | 61 | 124 | 33 |
+| **`rom_engine`** | 43 | 77 | 147 | 37 |
 
 > [!NOTE]
 > The inventory (Part 3) is generated from the source code, so signatures are exact. Purposes are the first sentence of each docstring; module descriptions and the task table are hand-written. ★ marks names importable straight from the package. The examples in Part 2 were all executed and show real output. For explanations and more worked examples see [`USER_GUIDE.md`](USER_GUIDE.md).
@@ -58,7 +58,7 @@ flowchart LR
 
 **🏗️ `fea_engine` modules:** [adaptivity.py](#mod-adaptivity-py) &#183; [autograd_tangent.py](#mod-autograd-tangent-py) &#183; [backend_dispatch.py](#mod-backend-dispatch-py) &#183; [batched_solve.py](#mod-batched-solve-py) &#183; [beam2d_reissner_vectorized.py](#mod-beam2d-reissner-vectorized-py) &#183; [beam2d_reissner_vectorized_torch.py](#mod-beam2d-reissner-vectorized-torch-py) &#183; [build_mesh.py](#mod-build-mesh-py) &#183; [damping.py](#mod-damping-py) &#183; [differentiable.py](#mod-differentiable-py) &#183; [elements/base.py](#mod-elements-base-py) &#183; [elements/beams.py](#mod-elements-beams-py) &#183; [elements/beams3d.py](#mod-elements-beams3d-py) &#183; [elements/contact.py](#mod-elements-contact-py) &#183; [elements/nonlinear_solids.py](#mod-elements-nonlinear-solids-py) &#183; [elements/plates.py](#mod-elements-plates-py) &#183; [elements/shells.py](#mod-elements-shells-py) &#183; [elements/shells_director.py](#mod-elements-shells-director-py) &#183; [elements/solids.py](#mod-elements-solids-py) &#183; [elements/trusses.py](#mod-elements-trusses-py) &#183; [facet_loads.py](#mod-facet-loads-py) &#183; [geometry/shapes.py](#mod-geometry-shapes-py) &#183; [grading.py](#mod-grading-py) &#183; [iterative_solvers.py](#mod-iterative-solvers-py) &#183; [loads.py](#mod-loads-py) &#183; [material.py](#mod-material-py) &#183; [mesh.py](#mod-mesh-py) &#183; [mesh_io.py](#mod-mesh-io-py) &#183; [mesh_transform.py](#mod-mesh-transform-py) &#183; [mixed_assembly.py](#mod-mixed-assembly-py) &#183; [nonlinear_solver.py](#mod-nonlinear-solver-py) &#183; [postprocess.py](#mod-postprocess-py) &#183; [solver.py](#mod-solver-py) &#183; [topopt.py](#mod-topopt-py) &#183; [torch_sparse_solver.py](#mod-torch-sparse-solver-py) &#183; [vectorized_assembly.py](#mod-vectorized-assembly-py)
 
-**📉 `rom_engine` modules:** [affine.py](#mod-affine-py) &#183; [attractor.py](#mod-attractor-py) &#183; [balanced_truncation.py](#mod-balanced-truncation-py) &#183; [dataset_diagnostics.py](#mod-dataset-diagnostics-py) &#183; [differentiable_correction.py](#mod-differentiable-correction-py) &#183; [ensemble_uq.py](#mod-ensemble-uq-py) &#183; [frequency.py](#mod-frequency-py) &#183; [galerkin.py](#mod-galerkin-py) &#183; [greedy.py](#mod-greedy-py) &#183; [hankel_norm.py](#mod-hankel-norm-py) &#183; [intrusive_nonlinear_rom.py](#mod-intrusive-nonlinear-rom-py) &#183; [krylov.py](#mod-krylov-py) &#183; [loewner.py](#mod-loewner-py) &#183; [membrane_expansion.py](#mod-membrane-expansion-py) &#183; [metrics.py](#mod-metrics-py) &#183; [mode_correction.py](#mod-mode-correction-py) &#183; [neural_operator.py](#mod-neural-operator-py) &#183; [nnm.py](#mod-nnm-py) &#183; [nonlinear_dynamics.py](#mod-nonlinear-dynamics-py) &#183; [nonlinear_rom.py](#mod-nonlinear-rom-py) &#183; [parameterized_latent_ode.py](#mod-parameterized-latent-ode-py) &#183; [passivity.py](#mod-passivity-py) &#183; [pod.py](#mod-pod-py) &#183; [random_vibration.py](#mod-random-vibration-py) &#183; [reduced_basis_operator.py](#mod-reduced-basis-operator-py) &#183; [sampling.py](#mod-sampling-py) &#183; [scm.py](#mod-scm-py) &#183; [scm_lp.py](#mod-scm-lp-py) &#183; [screening.py](#mod-screening-py) &#183; [soar.py](#mod-soar-py) &#183; [state_space.py](#mod-state-space-py) &#183; [torch_linalg.py](#mod-torch-linalg-py) &#183; [wave13_validation.py](#mod-wave13-validation-py)
+**📉 `rom_engine` modules:** [affine.py](#mod-affine-py) &#183; [attractor.py](#mod-attractor-py) &#183; [balanced_truncation.py](#mod-balanced-truncation-py) &#183; [cms.py](#mod-cms-py) &#183; [dataset_diagnostics.py](#mod-dataset-diagnostics-py) &#183; [differentiable_correction.py](#mod-differentiable-correction-py) &#183; [ensemble_uq.py](#mod-ensemble-uq-py) &#183; [frequency.py](#mod-frequency-py) &#183; [galerkin.py](#mod-galerkin-py) &#183; [greedy.py](#mod-greedy-py) &#183; [hankel_norm.py](#mod-hankel-norm-py) &#183; [hyper_reduction.py](#mod-hyper-reduction-py) &#183; [intrusive_nonlinear_rom.py](#mod-intrusive-nonlinear-rom-py) &#183; [krylov.py](#mod-krylov-py) &#183; [linear_dynamics.py](#mod-linear-dynamics-py) &#183; [loewner.py](#mod-loewner-py) &#183; [membrane_expansion.py](#mod-membrane-expansion-py) &#183; [metrics.py](#mod-metrics-py) &#183; [mode_correction.py](#mod-mode-correction-py) &#183; [neural_operator.py](#mod-neural-operator-py) &#183; [nnm.py](#mod-nnm-py) &#183; [nonlinear_dynamics.py](#mod-nonlinear-dynamics-py) &#183; [nonlinear_rom.py](#mod-nonlinear-rom-py) &#183; [parameterized_latent_ode.py](#mod-parameterized-latent-ode-py) &#183; [passivity.py](#mod-passivity-py) &#183; [pod.py](#mod-pod-py) &#183; [random_vibration.py](#mod-random-vibration-py) &#183; [reduced_basis_operator.py](#mod-reduced-basis-operator-py) &#183; [sampling.py](#mod-sampling-py) &#183; [scm.py](#mod-scm-py) &#183; [scm_lp.py](#mod-scm-lp-py) &#183; [screening.py](#mod-screening-py) &#183; [soar.py](#mod-soar-py) &#183; [state_space.py](#mod-state-space-py) &#183; [torch_linalg.py](#mod-torch-linalg-py) &#183; [validation.py](#mod-validation-py) &#183; [wave13_validation.py](#mod-wave13-validation-py)
 
 ---
 
@@ -1253,6 +1253,30 @@ Balanced truncation (plain, frequency-weighted, singular-perturbation) for state
 
 </details>
 
+<a id="mod-cms-py"></a>
+
+### 📦 `cms.py`
+
+Component mode synthesis: Guyan static condensation and Craig-Bampton substructure reduction, plus coupling of reduced substructures into one model. Use it for assemblies or when parts are reduced separately and joined at interface DOFs.
+
+<details markdown="1"><summary><b>Show API</b> &nbsp;·&nbsp; 🧱 3 classes &nbsp;·&nbsp; 🔧 3 functions</summary>
+
+- 🧱 **`class GuyanModel(T: np.ndarray, K: np.ndarray, M: np.ndarray, master: np.ndarray, slave: np.ndarray)`** ★
+  - `.expand(u_master)`
+- 🔧 **`guyan(K, M, master)`** ★ — Static (Guyan-Irons) condensation onto the `master` DOFs.
+- 🧱 **`class CraigBamptonModel(T: np.ndarray, K: np.ndarray, M: np.ndarray, interface: np.ndarray, internal: np.ndarray, omega_fixed: np.ndarray, n_interface: int, n_modes: int)`** ★ — Reduced substructure.
+  - `.expand(coords)` — Full-order displacement from reduced coordinates.
+  - 🏷️ `.freq_fixed_hz` *(property)*
+- 🔧 **`craig_bampton(K, M, interface, n_modes=None)`** ★ — Craig-Bampton reduction of one substructure.
+- 🧱 **`class CoupledModel(subs, interface_maps)`** ★ — Several Craig-Bampton substructures joined at shared interface DOFs.
+  - 🏷️ `.n` *(property)*
+  - `.solve_modal(n_modes=6)` — Lowest natural frequencies [Hz] and shapes in reduced coordinates.
+  - `.local_coords(k, x)` — Reduced coordinates of substructure k extracted from a global reduced vector x.
+  - `.expand(k, x)` — Full-order displacement of substructure k for a global reduced vector x.
+- 🔧 **`couple(subs, interface_maps)`** ★ — Join Craig-Bampton substructures; see `CoupledModel`.
+
+</details>
+
 <a id="mod-dataset-diagnostics-py"></a>
 
 ### 📦 `dataset_diagnostics.py`
@@ -1376,6 +1400,35 @@ Optimal Hankel-norm approximation (best reduced model in the Hankel norm) for st
 
 </details>
 
+<a id="mod-hyper-reduction-py"></a>
+
+### 📦 `hyper_reduction.py`
+
+Hyper-reduction for nonlinear ROMs: ECSW (weighted element subset), DEIM/QDEIM and gappy reconstruction, plus a hyper-reduced version of the intrusive nonlinear ROM. Use it so the reduced force no longer needs the full-order model.
+
+<details markdown="1"><summary><b>Show API</b> &nbsp;·&nbsp; 🧱 3 classes &nbsp;·&nbsp; 🔧 6 functions</summary>
+
+- 🔧 **`deim_indices(U)`** ★ — Greedy DEIM point selection for a force basis U (n x m, orthonormal columns preferred).
+- 🔧 **`qdeim_indices(U)`** ★ — QDEIM point selection (Drmac & Gugercin 2016): column-pivoted QR of U^T.
+- 🧱 **`class DEIM(U, method='deim')`** ★ — Discrete empirical interpolation of a force vector from its values at a few DOFs.
+  - `DEIM.from_snapshots(force_snapshots, n_points=None, energy=None, method='deim')` — Build the force basis by SVD of force snapshots (columns), then select points.
+  - `.approximate(f_at_indices)` — Approximate the full vector from its values at `self.indices`.
+  - `.approximate_reduced(V, f_at_indices)` — V^T f without ever forming the full f: (V^T interp) @ f_P (precompute for speed).
+- 🔧 **`gappy_reconstruct(U, indices, f_at_indices)`** ★ — Least-squares gappy-POD reconstruction f ~= U argmin_c \|\| f_P - U_P c \|\| (len(indices) >= m).
+- 🔧 **`ecsw_weights(G, b, tol=1e-06, max_elements=None)`** ★ — Sparse non-negative weights w >= 0 with \|\| G w - b \|\| <= tol * \|\|b\|\| (Lawson-Hanson NNLS with an early stop at the tolerance, which is what keeps the selected set small).
+- 🔧 **`ecsw_training_matrix(V, snapshots, elem_dofs, elem_force_fn)`** ★ — Build (G, b) for `ecsw_weights`.
+- 🧱 **`class ECSW(V, elem_dofs, elem_force_fn, weights, elem_tangent_fn=None, info=None)`** ★ — Hyper-reduced reduced internal force from a weighted element subset.
+  - `ECSW.fit(V, snapshots, elem_dofs, elem_force_fn, elem_tangent_fn=None, tol=1e-06, max_elements=None)`
+  - 🏷️ `.n_selected` *(property)*
+  - `.reduced_force(q)`
+  - `.reduced_tangent(q)`
+- 🔧 **`reduced_force_error(ecsw, full_reduced_force_fn, q_test)`** ★ — Relative error of the hyper-reduced reduced force at held-out reduced states `q_test` (rows).
+- 🧱 **`class HyperReducedNonlinearROM(V, M, C, load_fn, K0, ecsw)`** ★ (extends `IntrusiveNonlinearROM`) — `IntrusiveNonlinearROM` whose reduced internal force/tangent come from an ECSW element subset.
+  - `.reduced_internal_force(q)`
+  - `.reduced_tangent(q)`
+
+</details>
+
 <a id="mod-intrusive-nonlinear-rom-py"></a>
 
 ### 📦 `intrusive_nonlinear_rom.py`
@@ -1423,6 +1476,21 @@ Krylov / moment-matching model reduction (one-sided and two-sided) around an exp
   - `.transfer_function(s)` — H_r(s) = Cout_r (s*E_r - A_r)^-1 B_r, the reduced model's own transfer function, at one (possibly complex) frequency s.
   - `.frequency_response(omega_array)` — H_r(i*omega) swept over omega_array -- the reduced model's harmonic transfer function, directly comparable to a full-order model's own ...
   - `.is_stable()` — True iff every pole of the REDUCED model (generalized eigenvalues of (A_r, E_r)) has negative real part.
+
+</details>
+
+<a id="mod-linear-dynamics-py"></a>
+
+### 📦 `linear_dynamics.py`
+
+Time-domain response of linear full or reduced systems: Newmark-beta, exact modal superposition, and a transient wrapper for `GalerkinROM`.
+
+<details markdown="1"><summary><b>Show API</b> &nbsp;·&nbsp; 🧱 0 classes &nbsp;·&nbsp; 🔧 4 functions</summary>
+
+- 🔧 **`newmark_linear(M, C, K, load, dt, n_steps, q0=None, v0=None, beta=0.25, gamma=0.5)`** ★ — Newmark-beta integration of M q'' + C q' + K q = F(t).
+- 🔧 **`piecewise_linear_exact(A, B, U, dt, x0)`** ★ — Exact solution of x' = A x + B u(t) at t_k = k dt, for u linear between the samples U[k].
+- 🔧 **`modal_superposition(K, M, load, dt, n_steps, n_modes, zeta=0.0, rayleigh=None, u0=None, v0=None)`** ★ — Modal-superposition transient with exact modal integration.
+- 🔧 **`galerkin_transient(rom, load, dt, n_steps, C=None, M=None, u0=None, v0=None, beta=0.25, gamma=0.5)`** ★ — Newmark on the reduced matrices of a `GalerkinROM` (built with `reduce_system(K, M, F)`).
 
 </details>
 
@@ -1776,6 +1844,28 @@ Torch-native dense linear algebra helpers (Lyapunov, Sylvester, Gramian square r
 - 🔧 **`torch_solve_sylvester(A, B, Q, device='cpu', dtype=None)`** — Torch-native solve of A X + X B = Q for X -- the SAME equation scipy.linalg.solve_sylvester(A, B, Q) solves, including its generally-RECTANGULAR case (A is (m, m), B is (p, p), X and Q are (m, p)) -- same Kronecker-vectorization ...
 - 🔧 **`torch_gramian_square_root(P, device='cpu', dtype=None, jitter_tries=(0.0, 1e-12, 1e-09, 1e-06))`** — Torch-native counterpart of balanced_truncation._gramian_square_ root() -- a factor L with P = L @ L.T, via Cholesky first (with the SAME small jitter ladder for numerical-noise-induced non-positive- definiteness) then an ...
 - 🔧 **`torch_balance_from_gramians(P, Q, device='cpu', dtype=None)`** — Torch-native counterpart of balanced_truncation._balance_from_ gramians() -- the shared square-root balancing step (Gramian square roots, then an SVD of Lq^T Lp), same formulas, same return convention (sigma descending, T, Tinv) ...
+
+</details>
+
+<a id="mod-validation-py"></a>
+
+### 📦 `validation.py`
+
+One method-agnostic way to validate any reduced model against the full-order one: error report, timing and speed-up, convergence study and basis-size selection.
+
+<details markdown="1"><summary><b>Show API</b> &nbsp;·&nbsp; 🧱 1 class &nbsp;·&nbsp; 🔧 3 functions</summary>
+
+- 🧱 **`class ValidationReport(errors: np.ndarray, norm: str, tol: float, t_fom: float, t_rom: float, worst_index: int, extra: dict)`** ★
+  - 🏷️ `.mean` *(property)*
+  - 🏷️ `.median` *(property)*
+  - 🏷️ `.max` *(property)*
+  - 🏷️ `.speedup` *(property)*
+  - 🏷️ `.passed` *(property)*
+  - `.summary()`
+  - `.as_table()`
+- 🔧 **`validate_rom(rom_predict, fom_predict, test_inputs, tol=None, norm='rel_l2', timing=True)`** ★ — Compare a reduced predictor with the full-order predictor over held-out inputs.
+- 🔧 **`convergence_study(build_rom, sizes, fom_predict, test_inputs, norm='rel_l2')`** ★ — Error versus reduced size.
+- 🔧 **`select_basis_size(study, tol, use='max')`** ★ — Smallest size in a `convergence_study` whose error (`use` = 'max' or 'mean') is <= tol.
 
 </details>
 

@@ -1150,6 +1150,55 @@ general-purpose explanation of every ROM formulation route in the
 package (including these), and `rom_engine/README.md` for the module-
 level API.
 
+<a id="rom-newer-tools"></a>
+
+## 🧩 ROM: hyper-reduction, substructuring, linear transients and validation
+
+Four newer `rom_engine` modules; all are validated against real `fea_engine` models in their own test files.
+
+**Hyper-reduction (`hyper_reduction.py`).** `IntrusiveNonlinearROM` still calls the full-order internal force at every step. ECSW replaces that by a weighted sum over a few elements chosen offline:
+
+```python
+from rom_engine import ECSW, HyperReducedNonlinearROM
+
+# V: basis (n_dof x r), training_states: columns V @ q at the amplitudes you expect,
+# elem_dofs[e]: global DOFs of element e, elem_force_fn(e, u_local): its internal force
+ecsw = ECSW.fit(V, training_states, elem_dofs, elem_force_fn, elem_tangent_fn, tol=1e-4)
+rom = HyperReducedNonlinearROM(V, M, C, load_fn, K0_full, ecsw)   # K0_full: zero-state tangent, used once
+t, q, qdot = rom.integrate_rk4(q0, qdot0, dt, n_steps)             # same integrators as IntrusiveNonlinearROM
+```
+
+On a 40-element nonlinear `Beam2DCorotational` (3 modes, 60 training states), ECSW kept 16 of 40 elements, matched the full reduced force to about 3e-5 on held-out states, and a 300-step RK4 trajectory agreed with the full intrusive ROM to 1.1e-5. The force evaluation was about 3x faster; end to end the run was only about 1.4x faster on this small model, so expect the benefit to appear on larger meshes. `DEIM`, `deim_indices()`, `qdeim_indices()` and `gappy_reconstruct()` are available when you can only evaluate a force vector at selected DOFs rather than per element. Check any hyper-reduced model on held-out states (`reduced_force_error()`): outside the training range the error can grow quickly.
+
+**Component mode synthesis (`cms.py`).** Reduce substructures separately and join them at their interface DOFs:
+
+```python
+from rom_engine import craig_bampton, couple
+
+left = craig_bampton(K_left, M_left, interface_dofs_left, n_modes=10)
+right = craig_bampton(K_right, M_right, interface_dofs_right, n_modes=10)
+joined = couple([left, right], [[0, 1], [0, 1]])        # global interface index for each interface DOF
+freq_hz, shapes = joined.solve_modal(5)
+u_left = joined.expand(0, shapes[:, 0])                   # full-order shape of substructure 0
+```
+
+For a clamped-clamped beam split in two, keeping all fixed-interface modes reproduces the full model's frequencies (error about 1e-9 relative to the first frequency); with 5 modes per half the error is about 8e-3 and with 10 about 4e-4. `guyan()` (static condensation) is exact for static loads on the kept DOFs but misses internal dynamics, so prefer Craig-Bampton for vibration.
+
+**Linear time histories (`linear_dynamics.py`).** `newmark_linear(M, C, K, load, dt, n_steps)` (one factorisation, second order), `modal_superposition(K, M, load, dt, n_steps, n_modes, rayleigh=(a, b))` (each mode integrated exactly for a load that is linear between samples) and `galerkin_transient(rom, load, dt, n_steps, C=C)` for a `GalerkinROM`.
+
+**One validation report (`validation.py`).**
+
+```python
+from rom_engine import validate_rom, convergence_study, select_basis_size
+
+report = validate_rom(rom_predict, fom_predict, held_out_inputs, tol=1e-3)
+print(report.summary())     # mean / max error, timing, speed-up, PASS or FAIL
+study = convergence_study(lambda r: build_predictor(r), [2, 4, 8, 16], fom_predict, held_out_inputs)
+r = select_basis_size(study, 1e-3)     # smallest tested size meeting the tolerance, or None
+```
+
+The report is only as meaningful as its test inputs: use inputs that were not used for training, and include a few outside the training range.
+
 <a id="s-25"></a>
 
 ## 🧭 Choosing a ROM method
