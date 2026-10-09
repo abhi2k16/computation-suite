@@ -190,8 +190,79 @@ def _max_neighbor_ratio(sizes, adjacency_to_elems, growth_ratio_cap):
     return max_ratio, n_over
 
 
+class _NodeSelectionMixin:
+    """Named node sets and coordinate-based selection shared by Mesh and MultiBlockMesh (v1.0.1).
+
+    A node set is a name for a group of node ids, stored in `self.node_sets`. Once registered, the
+    name can be used anywhere a node selection is accepted, e.g.
+        mesh.select_nodes(x=0.0, name="root")           # or mesh.add_node_set("root", ids)
+        system.fix_dofs("root", ["ux", "uy"])
+        U.component("uy", nodes="tip")
+    The pattern follows PyMAPDL components / PyDPF scopings: say WHAT is selected once, reuse it."""
+
+    def add_node_set(self, name, node_ids):
+        """Register `node_ids` (non-empty, within the mesh) under `name`. Returns self (chainable).
+        An existing name is replaced."""
+        if not isinstance(name, str) or not name:
+            raise ValueError("add_node_set: the set name must be a non-empty string.")
+        ids = np.asarray(node_ids).reshape(-1)
+        if ids.size == 0:
+            raise ValueError(f"add_node_set({name!r}): no nodes given -- the selection matched nothing "
+                             f"(check the coordinate value / tolerance).")
+        if ids.dtype.kind not in "iu":
+            if ids.dtype.kind == "f" and np.all(ids == np.round(ids)):
+                ids = ids.astype(int)
+            else:
+                raise ValueError(f"add_node_set({name!r}): node ids must be integers.")
+        ids = np.unique(ids.astype(int))
+        if ids[0] < 0 or ids[-1] >= len(self.nodes):
+            raise ValueError(f"add_node_set({name!r}): node id outside the mesh "
+                             f"(valid range 0..{len(self.nodes) - 1}).")
+        self.node_sets[name] = ids
+        return self
+
+    def node_set(self, name):
+        """The sorted node-id array registered under `name` (ValueError listing the available
+        names if there is no such set)."""
+        try:
+            return self.node_sets[name]
+        except KeyError:
+            raise ValueError(f"no node set named {name!r}; available: {sorted(self.node_sets)}") from None
+
+    def select_nodes(self, x=None, y=None, z=None, tol=1e-9, name=None):
+        """Node ids whose coordinates satisfy ALL given conditions. Each of x, y, z is either a
+        value (|coord - value| < tol) or a (lo, hi) pair (lo - tol <= coord <= hi + tol); axes left
+        as None are unconstrained. With `name`, the result is also registered as a node set (an
+        empty selection then raises). Without `name`, an empty array is returned, as nodes_on_line does.
+
+            mesh.select_nodes(x=0.0)                       # a line / plane
+            mesh.select_nodes(x=(0.0, 0.1), y=0.2)         # a segment
+            mesh.select_nodes(y=0.0, name="bottom")
+        """
+        dim = self.nodes.shape[1]
+        mask = np.ones(len(self.nodes), dtype=bool)
+        for axis, spec in enumerate((x, y, z)):
+            if spec is None:
+                continue
+            if axis >= dim:
+                raise ValueError(f"select_nodes: '{'xyz'[axis]}' given but the mesh has only {dim} "
+                                 f"coordinate(s).")
+            col = self.nodes[:, axis]
+            if np.ndim(spec) == 0:
+                mask &= np.abs(col - spec) < tol
+            else:
+                lo, hi = spec
+                if lo > hi:
+                    raise ValueError(f"select_nodes: {'xyz'[axis]}=({lo}, {hi}) has lo > hi.")
+                mask &= (col >= lo - tol) & (col <= hi + tol)
+        ids = np.where(mask)[0]
+        if name is not None:
+            self.add_node_set(name, ids)
+        return ids
+
+
 @dataclass
-class Mesh:
+class Mesh(_NodeSelectionMixin):
     nodes: np.ndarray       # (n_nodes, dim)
     elements: np.ndarray    # (n_elements, nodes_per_element), int
     dim: int                # 1, 2, or 3
@@ -217,6 +288,7 @@ class Mesh:
     point_data: dict = field(default_factory=dict)
     cell_data: dict = field(default_factory=dict)
     field_data: dict = field(default_factory=dict)
+    node_sets: dict = field(default_factory=dict)    # {name: sorted node-id array}, see add_node_set()
 
     def register_point_data(self, name, array):
         """Attach a per-node field (any array whose first axis has
@@ -438,7 +510,7 @@ class Mesh:
 
 
 @dataclass
-class MultiBlockMesh:
+class MultiBlockMesh(_NodeSelectionMixin):
     """A mesh with MORE THAN ONE element topology sharing one node
     array. `blocks` maps a block name (any hashable key -- Module 14's
     own producers use short topology names like "tri3"/"quad4"/"tet4",
@@ -473,6 +545,7 @@ class MultiBlockMesh:
     point_data: dict = field(default_factory=dict)
     cell_data: dict = field(default_factory=dict)   # {block_name: {field_name: array}}
     field_data: dict = field(default_factory=dict)
+    node_sets: dict = field(default_factory=dict)    # {name: sorted node-id array}, see add_node_set()
 
     def register_point_data(self, name, array):
         """Same contract as Mesh.register_point_data() -- see that

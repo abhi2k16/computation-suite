@@ -32,6 +32,8 @@ solver           : global assembly, boundary conditions, static/modal/dynamic
 nonlinear_solver : incremental Newton-Raphson drivers (geometric, material,
                     and contact/boundary nonlinearity)
 postprocess      : derived response quantities (modal participation, PSD stats)
+fields           : FEField -- the ndarray-subclass solution vector returned by the solvers, with
+                    named access (U.component("uy", nodes="tip"), U.nodal, U.magnitude())
 iterative_solvers: Wave 8 items 36-40 (docs/consolidated_future_roadmap.md) --
                     fill-reducing reordering, preconditioners, conjugate
                     gradients, classical stationary iterations, and geometric
@@ -104,6 +106,7 @@ from .elements import (Element, gauss_product, Quad4PlaneStress, Hex8Solid3D,
                         closest_point_on_segment_2d, find_contact_pairs_2d,
                         ELEMENT_REGISTRY)
 from .solver import FESystem
+from .fields import FEField
 from .iterative_solvers import (
     reverse_cuthill_mckee, fill_in_count, permuted_solve,
     jacobi_preconditioner, ssor_preconditioner, incomplete_cholesky0,
@@ -151,7 +154,7 @@ __all__ = [
     "NodeToSegmentContact2D", "NodeToSegmentContact2DFriction",
     "closest_point_on_segment_2d", "find_contact_pairs_2d",
     "ELEMENT_REGISTRY",
-    "FESystem",
+    "FESystem", "FEField",
     "reverse_cuthill_mckee", "fill_in_count", "permuted_solve",
     "jacobi_preconditioner", "ssor_preconditioner", "incomplete_cholesky0",
     "preconditioned_cg", "jacobi_solve", "gauss_seidel_solve", "sor_solve",

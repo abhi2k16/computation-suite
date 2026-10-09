@@ -1087,9 +1087,9 @@ The core: `FESystem` assembles K/M/C/F, applies loads and constraints, and runs 
 <details open markdown="1"><summary><b>Show API</b> &nbsp;·&nbsp; 🧱 1 class &nbsp;·&nbsp; 🔧 0 functions</summary>
 
 - 🧱 **`class FESystem(mesh, elem_formulation, thickness=1.0, sparse=False, backend='scipy', device='cpu')`** ★
-  - `.assemble_stiffness(D, method='full', vectorized=False, **kwargs)` — kwargs are passed straight through to the chosen element method -- e.g. thickness=t for Quad4PlaneStress, or gauss_order= for a one-off ...
-  - `.assemble_mass(rho_or_matrix, **kwargs)`
-  - `.assemble_lumped_mass(rho_or_matrix, **kwargs)` — Element-by-element HRZ lumping (element.Element.lumped_mass()) -- required before solve_transient_explicit().
+  - `.assemble_stiffness(D, method='full', vectorized=False, accumulate=False, **kwargs)` — a repeated call now REPLACES K (one-time warning); `accumulate=True` adds on purpose. kwargs are passed straight through to the chosen element method -- e.g. thickness=t for Quad4PlaneStress, or gauss_order= for a one-off ...
+  - `.assemble_mass(rho_or_matrix, accumulate=False, **kwargs)` — scalar density for beams/trusses; solids and plane elements need a density matrix (`rho * np.eye(n)`), a scalar raises a ValueError that says so. A repeated call replaces M.
+  - `.assemble_lumped_mass(rho_or_matrix, accumulate=False, **kwargs)` — Element-by-element HRZ lumping (element.Element.lumped_mass()) -- required before solve_transient_explicit().
   - `.assemble_geometric_stiffness(N, **kwargs)` — global geometric ("stress stiffness") matrix K_sigma, built from a REFERENCE axial force state N (TENSION-POSITIVE, see Element.
   - `.assemble_internal_force(u_global, mat, **kwargs)` — Global internal-force vector F_int(u_global).
   - `.assemble_tangent_stiffness(u_global, mat, **kwargs)` — Global tangent stiffness K_T(u_global) = d(F_int)/d(u), at the current displacement state -- must be reassembled every Newton-Raphson iteration ...
@@ -1099,8 +1099,10 @@ The core: `FESystem` assembles K/M/C/F, applies loads and constraints, and runs 
   - `.init_iter_state()` — Call once, before the first nonlinear solve, for any system that uses a mixed-formulation element.
   - `.update_iter_states(u_global, delta_u_global, mat, **kwargs)` — Advance self.iter_state using the REALIZED Newton correction delta_u_global a driver's own linear solve just produced -- call this EVERY Newton ...
   - `.assemble_damping(damping, **kwargs)` — damping: a damping.RayleighDamping instance, a damping.FieldDamping instance, or a raw damping matrix (plain ndarray, or scipy.sparse matrix when ...
-  - `.fix_dofs(node_ids, dof_indices, value=0.0)` — dof_indices: which local DOF(s) at each node to constrain (0-based, element-formulation-specific, e.g. 0,1 for u,v).
-  - `.add_nodal_force(node_ids, dof_index, total_force)` — Splits total_force evenly across node_ids at local DOF dof_index -- the same simplified load-lumping convention used throughout this project's ...
+  - `.dof_names` / `.dof_index(name)` — (v1.0.1) the element's DOF names (e.g. `("ux","uy")`) and name-to-index lookup. `fix_dofs` and the load methods accept names, integers or a mix, and node-set names (see `Mesh.add_node_set` / `select_nodes`) wherever node ids are accepted.
+  - `.field(data, label=None)` — (v1.0.1) wraps a full-length DOF vector or `(n_dof, k)` array as an `FEField`. `solve_static`, `solve_modal` (mode shapes) and `solve_harmonic` already return `FEField`, an `ndarray` subclass with `.component(name, nodes=None)`, `.nodal`, `.at(nodes)`, `.magnitude(nodes=None)`, `.to_dataframe()`; plain indexing still works.
+  - `.fix_dofs(node_ids, dof_indices, value=0.0)` — dof_indices: which local DOF(s) at each node to constrain (0-based or by name, element-formulation-specific, e.g. 0,1 or "ux","uy"). Raises ValueError for an empty node selection, a node id outside the mesh, or a local DOF index outside `0..dofs_per_node-1`.
+  - `.add_nodal_force(node_ids, dof_index, total_force)` — Splits total_force evenly across node_ids at local DOF dof_index -- the same simplified load-lumping convention used throughout this project's ... Raises ValueError for an empty selection or an out-of-range `dof_index`.
   - `.add_consistent_edge_load(node_pairs, dof_index, traction, thickness=1.0)` — Consistent nodal load for a uniform traction along a chain of 2-node edge segments (node_pairs = [(n0,n1), (n1,n2),...]), weighted by each segment's ...
   - `.add_consistent_facet_load(formulation, facets, dof_index, traction, quad_order=2, thickness=1.0)`
   - 🏷️ `.free_dofs` *(property)*

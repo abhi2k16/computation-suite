@@ -12,6 +12,10 @@ from .base import Element, gauss_product, jacobian
 class Quad4MindlinPlate(Element):
     n_nodes, dofs_per_node, dim, gauss_order = 4, 3, 2, 2
     translational_dof_mask = [True, False, False]   # [w, betax, betay]
+    # element-native names, kept as documented (betax/betay are Mindlin section rotations, not
+    # simply rotations about x/y, so they are deliberately NOT renamed rx/ry)
+    dof_names = ("w", "betax", "betay")
+    dof_aliases = {"uz": "w"}
 
     def shape_and_derivs(self, natural_coords):
         xi, eta = natural_coords

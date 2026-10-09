@@ -334,6 +334,17 @@ def spurious_zero_energy_modes(elem, elem_coords, D, thickness=1.0, tol=1e-8):
     return rank_full - rank_reduced, eig_reduced
 
 
+# Default per-node DOF names by DOFs-per-node count (see Element.dof_names).
+_DEFAULT_DOF_NAMES = {
+    1: ("u",),
+    2: ("ux", "uy"),
+    3: ("ux", "uy", "uz"),
+    6: ("ux", "uy", "uz", "rx", "ry", "rz"),
+}
+# Shorthand accepted everywhere a DOF name is (applied only where the canonical name exists).
+_COMMON_DOF_ALIASES = {"u": "ux", "v": "uy", "w": "uz"}
+
+
 # =====================================================================
 # Base element
 # =====================================================================
@@ -359,6 +370,54 @@ class Element:
                                      # for elements that mix translation and
                                      # rotation DOFs (plate, beam) -- see
                                      # lumped_mass() for why this matters.
+
+    # Named per-node DOFs (v1.0.1), so BCs / loads / results can say "uy" instead of a bare index.
+    # dof_names: tuple in LOCAL DOF order, or None -> a default is derived from dofs_per_node
+    # (1: u | 2: ux,uy | 3: ux,uy,uz | 6: ux,uy,uz,rx,ry,rz). Elements whose DOFs are NOT those
+    # (2-D beams, the Mindlin plate) override it. dof_aliases: extra accepted spellings -> canonical name.
+    dof_names = None
+    dof_aliases = {}
+
+    def local_dof_names(self):
+        """Per-node DOF names in local order (what fix_dofs / add_nodal_force accept instead of an
+        integer index), or None if this element's DOFs have no standard names."""
+        if self.dof_names is not None:
+            return tuple(self.dof_names)
+        return _DEFAULT_DOF_NAMES.get(self.dofs_per_node)
+
+    def local_dof_aliases(self):
+        """{alternative spelling: canonical name}: the element's own aliases plus the common
+        u/v/w -> ux/uy/uz shorthand (only where the canonical name exists)."""
+        names = self.local_dof_names() or ()
+        out = {a: c for a, c in _COMMON_DOF_ALIASES.items() if c in names}
+        out.update({a.lower(): c for a, c in self.dof_aliases.items()})
+        return out
+
+    def dof_index(self, name):
+        """Local index of a DOF given by name (case-insensitive, aliases and 'x'/'y'/'z' shorthand
+        accepted) or integer; ValueError listing the valid names otherwise."""
+        names = self.local_dof_names()
+        if isinstance(name, (int,)) or hasattr(name, "__index__"):
+            i = int(name)
+            if not 0 <= i < self.dofs_per_node:
+                raise ValueError(f"DOF index {i} out of range 0..{self.dofs_per_node - 1} for "
+                                 f"{type(self).__name__}.")
+            return i
+        if names is None:
+            raise ValueError(f"{type(self).__name__} has {self.dofs_per_node} DOF(s) per node with no "
+                             f"standard names; use integer indices 0..{self.dofs_per_node - 1}.")
+        key = str(name).strip().lower()
+        low = [n.lower() for n in names]
+        if key in low:
+            return low.index(key)
+        if key in ("x", "y", "z") and f"u{key}" in low:
+            return low.index(f"u{key}")
+        canon = self.local_dof_aliases().get(key)
+        if canon is not None and canon.lower() in low:
+            return low.index(canon.lower())
+        raise ValueError(f"unknown DOF name {name!r} for {type(self).__name__}; valid names: "
+                         f"{list(names)}" + (f" (aliases: {sorted(self.local_dof_aliases())})"
+                                              if self.local_dof_aliases() else "") + ".")
 
     def shape_and_derivs(self, natural_coords):
         """Returns (N, dN_natural): N shape (n_nodes,), dN_natural shape

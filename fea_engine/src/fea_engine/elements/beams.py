@@ -13,6 +13,8 @@ from .base import Element
 class Beam2DEulerBernoulli(Element):
     n_nodes, dofs_per_node, dim, gauss_order = 2, 2, 1, 1
     translational_dof_mask = [True, False]   # [v, theta]
+    dof_names = ("uy", "rz")                  # transverse deflection, rotation (beam along x)
+    dof_aliases = {"v": "uy", "w": "uy", "theta": "rz"}
     # Note: lumped_mass() is inherited from Element unmodified -- it
     # only needs self.mass() (defined below, closed-form) and
     # self.shape_and_derivs()/gauss_order (defined below too, the
@@ -100,6 +102,8 @@ class Beam2DEulerBernoulli(Element):
 class Beam2DCorotational(Element):
     n_nodes, dofs_per_node, dim, gauss_order = 2, 3, 1, 1
     translational_dof_mask = [True, True, False]   # [u, v, theta]
+    dof_names = ("ux", "uy", "rz")
+    dof_aliases = {"theta": "rz"}
 
     def shape_and_derivs(self, natural_coords):
         """Linear interpolation along the (reference) bar axis --
@@ -549,6 +553,8 @@ class Beam2DCorotational(Element):
 class Beam2DReissner(Element):
     n_nodes, dofs_per_node, dim, gauss_order = 2, 3, 1, 2
     translational_dof_mask = [True, True, False]   # [u1, u2, theta]
+    dof_names = ("ux", "uy", "rz")
+    dof_aliases = {"u1": "ux", "u2": "uy", "theta": "rz"}
 
     def shape_and_derivs(self, natural_coords):
         """Linear interpolation along the reference axis for ALL THREE

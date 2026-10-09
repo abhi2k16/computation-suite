@@ -43,6 +43,8 @@ material/physics, e.g. different D matrices per block) or a single
 plain value reused for every block (the common case: one physics, just
 more than one element topology) -- see _per_block_arg().
 """
+import warnings
+
 import numpy as np
 from scipy.linalg import eigh
 
@@ -177,6 +179,11 @@ class FESystem:
         self.K = self._zeros_matrix()
         self.M = None
         self.M_lumped = None
+        # v1.0.1: which global matrices assemble_*() has already filled, so a repeated
+        # assembly (e.g. re-running a notebook cell) replaces the matrix instead of silently
+        # adding a second copy (K -> 2K). See _begin_assembly().
+        self._assembled = set()
+        self._warned_reassembly = set()
         self.K_sigma = None  # geometric ("stress stiffness") matrix, Module 19
                               # (general-purpose extensions Phase 4) -- None
                               # until assemble_geometric_stiffness() is called,
@@ -263,6 +270,176 @@ class FESystem:
         npn = self.npn
         return np.array([npn * n + k for n in elem_conn for k in range(npn)])
 
+    # -----------------------------------------------------------------
+    # v1.0.1 input validation / safe re-assembly helpers. They only add checks and clearer
+    # messages: every call that was valid before behaves exactly as before.
+    def _elem_label(self):
+        e = self.elem
+        if isinstance(e, dict):
+            return ", ".join(sorted({type(v).__name__ for v in e.values()}))
+        return type(e).__name__
+
+    @staticmethod
+    def _as_int_array(values, what, who):
+        arr = np.asarray(list(values) if isinstance(values, (set, frozenset)) else values)
+        arr = arr.reshape(-1)
+        if arr.size and arr.dtype.kind not in "iu":
+            if arr.dtype.kind == "f" and np.all(arr == np.round(arr)):
+                arr = arr.astype(int)
+            else:
+                raise ValueError(f"{who}: {what} must be integers, got {arr.dtype}.")
+        return arr.astype(int)
+
+    # ---- named DOFs / results (v1.0.1) --------------------------------------------------------
+    @property
+    def dof_names(self):
+        """Per-node DOF names in local order, e.g. ('ux', 'uy') -- usable wherever a local DOF
+        index is accepted (fix_dofs, add_nodal_force, FEField.component, ...). None if the
+        element(s) have no standard names or the blocks disagree."""
+        names = {e.local_dof_names() for _, e, _ in self._blocks}
+        if len(names) != 1:
+            return None
+        return next(iter(names))
+
+    def dof_index(self, name):
+        """Local DOF index for a name ('ux', 'uy', 'rz', 'w', ... or shorthand 'x'/'y'/'z'/'u'/'v'),
+        or an integer returned unchanged after a range check. ValueError lists the valid names."""
+        return self._dof_index_by_name(name, "dof_index")
+
+    def _dof_index_by_name(self, name, who):
+        if self.dof_names is None:
+            raise ValueError(
+                f"{who}: DOF name {name!r} given, but {self._elem_label()} has {self.npn} DOF(s) per "
+                f"node without standard names (or the mesh blocks use different DOF layouts); "
+                f"use integer indices 0..{self.npn - 1}.")
+        try:
+            return self._blocks[0][1].dof_index(name)
+        except ValueError as err:
+            raise ValueError(f"{who}: {err}") from None
+
+    def field(self, data, label=None):
+        """Wrap a full-length vector (n_dof,) or matrix (n_dof, k) as an `FEField` that knows this
+        system's DOF layout, so values can be read by name -- e.g. for results from the nonlinear
+        or transient drivers: `system.field(history[-1]).component("uy", nodes="tip")`.
+        Anything that is not a numeric array of leading length n_dof is returned unchanged."""
+        from .fields import FEField
+        if isinstance(data, FEField) or not isinstance(data, np.ndarray) or data.ndim not in (1, 2) \
+                or data.shape[0] != self.n_dof or data.dtype.kind not in "fc":
+            return data
+        elem = self._blocks[0][1]
+        mask = elem.translational_dof_mask
+        return FEField(data, n_nodes=len(self.mesh.nodes), dofs_per_node=self.npn,
+                       dof_names=self.dof_names, aliases=elem.local_dof_aliases(),
+                       translational=mask if mask is not None else (True,) * self.npn,
+                       mesh=self.mesh, label=label)
+
+    def _check_nodes(self, node_ids, who):
+        """node_ids -> int array. `node_ids` may also be the NAME of a mesh node set (or a list of
+        names). Raises a clear ValueError for an empty selection (typically a
+        mesh.nodes_on_line()/nodes_on_plane() call that matched nothing), an unknown set name, or an
+        id outside the mesh."""
+        if isinstance(node_ids, str) or (isinstance(node_ids, (list, tuple)) and len(node_ids) > 0
+                                         and all(isinstance(n, str) for n in node_ids)):
+            names = [node_ids] if isinstance(node_ids, str) else list(node_ids)
+            sets = getattr(self.mesh, "node_sets", {})
+            missing = [n for n in names if n not in sets]
+            if missing:
+                raise ValueError(f"{who}: unknown node set(s) {missing}; available: {sorted(sets)}. "
+                                 f"Register one with mesh.add_node_set(name, ids) or "
+                                 f"mesh.select_nodes(..., name=name).")
+            node_ids = np.unique(np.concatenate([np.asarray(sets[n], dtype=int) for n in names]))
+        nodes = self._as_int_array(node_ids, "node ids", who)
+        if nodes.size == 0:
+            raise ValueError(
+                f"{who}: no nodes selected (node_ids is empty). A selector such as "
+                f"mesh.nodes_on_line(axis, value) matched nothing -- check the coordinate "
+                f"value and its tolerance (tol=).")
+        n_nodes = len(self.mesh.nodes)
+        bad = nodes[(nodes < 0) | (nodes >= n_nodes)]
+        if bad.size:
+            raise ValueError(
+                f"{who}: node id(s) {sorted(set(bad.tolist()))[:5]} outside the mesh "
+                f"(valid range 0..{n_nodes - 1}).")
+        return nodes
+
+    def _check_local_dofs(self, dof_indices, who):
+        """dof_indices -> int array of LOCAL (per-node) DOF indices, each in 0..dofs_per_node-1.
+        Without this check an out-of-range index silently addressed a neighbouring node's DOF."""
+        # dof_indices may be an int, a name ("uy"), or a list mixing both; names are resolved first
+        if isinstance(dof_indices, (set, frozenset)):
+            items = list(dof_indices)
+        elif isinstance(dof_indices, str) or np.ndim(dof_indices) == 0:
+            items = [dof_indices]
+        else:
+            items = list(dof_indices)
+        resolved = [self._dof_index_by_name(it, who) if isinstance(it, str) else it for it in items]
+        dofs = self._as_int_array(np.array(resolved), "local DOF indices", who)
+        if dofs.size == 0:
+            raise ValueError(f"{who}: no DOF indices given.")
+        bad = dofs[(dofs < 0) | (dofs >= self.npn)]
+        if bad.size:
+            raise ValueError(
+                f"{who}: local DOF index {sorted(set(bad.tolist()))} is out of range -- "
+                f"{self._elem_label()} has {self.npn} DOF(s) per node, so valid indices "
+                f"are 0..{self.npn - 1}.")
+        return dofs
+
+    def _begin_assembly(self, attr, accumulate, who):
+        """Called at the start of assemble_stiffness/_mass/_lumped_mass. The assembly loops ADD
+        into the global matrix, so a second call used to silently double it (K -> 2K). Now a
+        repeated assembly REPLACES the matrix (idempotent), with a one-time UserWarning per matrix;
+        pass accumulate=True to add on purpose."""
+        if not hasattr(self, "_assembled"):          # object built without __init__ (e.g. unpickled)
+            self._assembled, self._warned_reassembly = set(), set()
+        previous = None
+        newly_flagged = attr not in self._assembled
+        if attr in self._assembled and not accumulate:
+            if attr not in self._warned_reassembly:
+                warnings.warn(
+                    f"{who}: {attr} was already assembled, so it is being REPLACED (earlier "
+                    f"versions silently added a second copy, doubling the matrix). Pass "
+                    f"accumulate=True to add to the existing matrix instead.",
+                    UserWarning, stacklevel=3)
+                self._warned_reassembly.add(attr)
+            previous = getattr(self, attr)
+            setattr(self, attr, self._zeros_matrix())
+        self._assembled.add(attr)
+        return previous, newly_flagged    # lets a failing caller undo exactly what this call changed
+
+    def _rollback_assembly(self, attr, token):
+        """Undo _begin_assembly() after a failed assembly: restore the replaced matrix, or un-mark
+        a first assembly that never completed (so the next call is not reported as a re-assembly)."""
+        previous, newly_flagged = token
+        if previous is not None:
+            setattr(self, attr, previous)
+        if newly_flagged:
+            self._assembled.discard(attr)
+
+    def _element_matrix(self, formulation, method, coords, rho, kwargs, who):
+        """formulation.mass()/lumped_mass() with a readable error when a SCALAR density is passed
+        to an element that needs a density MATRIX (solids and plane elements: rho * I)."""
+        try:
+            return getattr(formulation, method)(coords, rho, **kwargs)
+        except (ValueError, TypeError) as err:
+            if np.isscalar(rho):
+                n = getattr(formulation, "dofs_per_node", self.npn)
+                raise ValueError(
+                    f"{who}: {type(formulation).__name__}.{method}() could not use the scalar "
+                    f"density {rho!r} ({err}). This element needs a density MATRIX -- for a "
+                    f"solid or plane element pass rho * np.eye(n) with n = its number of "
+                    f"translational DOFs per node (here dofs_per_node = {n}), plus thickness= "
+                    f"if the element needs it; for shells use material.shell_rho_matrix().") from err
+            raise
+
+    def _require_stiffness(self, who):
+        """Raise instead of returning a meaningless all-zero answer when K was never assembled."""
+        K = self.K
+        nonzero = K.nnz if hasattr(K, "nnz") else np.count_nonzero(K)
+        if nonzero == 0:
+            raise RuntimeError(
+                f"{who}: the global stiffness matrix K is all zeros -- call "
+                f"assemble_stiffness(...) before solving.")
+
     @staticmethod
     def _per_block_arg(arg, name):
         """If arg is a dict keyed by block name (per-block D/mat/rho --
@@ -278,7 +455,7 @@ class FESystem:
         return arg
 
     # -----------------------------------------------------------------
-    def assemble_stiffness(self, D, method="full", vectorized=False, **kwargs):
+    def assemble_stiffness(self, D, method="full", vectorized=False, accumulate=False, **kwargs):
         """kwargs are passed straight through to the chosen element
         method -- e.g. thickness=t for Quad4PlaneStress, or gauss_order=
         for a one-off integration-order override. Any element-specific
@@ -286,6 +463,11 @@ class FESystem:
         this method. D may be a single value shared by every block, or
         a dict keyed by block name for per-block materials/physics --
         see _per_block_arg().
+
+        accumulate (v1.0.1): calling this method again REPLACES the global
+        stiffness (assembling twice no longer doubles K; a one-time
+        UserWarning says so). Pass accumulate=True to ADD to the existing
+        matrix on purpose, e.g. to superpose a second contribution.
 
         method (Wave 2 item 12, docs/consolidated_future_roadmap.md):
         which of Element's stiffness variants (elements/base.py) to
@@ -347,6 +529,14 @@ class FESystem:
             raise ValueError(
                 f"assemble_stiffness: unknown method={method!r} -- expected "
                 f"'full' (default), 'reduced', or 'hourglass_stabilized'.")
+        token = self._begin_assembly("K", accumulate, "assemble_stiffness")
+        try:
+            self._assemble_stiffness_body(D, method, vectorized, kwargs)
+        except BaseException:
+            self._rollback_assembly("K", token)   # a failed re-assembly leaves the old matrix intact
+            raise
+
+    def _assemble_stiffness_body(self, D, method, vectorized, kwargs):
         if vectorized:
             if method != "full":
                 raise ValueError(
@@ -381,18 +571,28 @@ class FESystem:
                 g = self._global_dofs(elem_conn)
                 self.K[np.ix_(g, g)] += ke
 
-    def assemble_mass(self, rho_or_matrix, **kwargs):
+    def assemble_mass(self, rho_or_matrix, accumulate=False, **kwargs):
+        """Consistent mass. rho_or_matrix: a scalar (beams, trusses) or a density matrix
+        (solids/plane elements: rho * np.eye(n)); a scalar given to an element that needs a
+        matrix now raises a ValueError that says so. A repeated call REPLACES M (one-time
+        UserWarning); accumulate=True adds instead -- see assemble_stiffness()."""
         if self.M is None:
             self.M = self._zeros_matrix()
-        for name, formulation, connectivity in self._blocks:
-            block_rho = self._per_block_arg(rho_or_matrix, name)
-            for elem_conn in connectivity:
-                elem_coords = self.mesh.nodes[elem_conn]
-                me = formulation.mass(elem_coords, block_rho, **kwargs)
-                g = self._global_dofs(elem_conn)
-                self.M[np.ix_(g, g)] += me
+        token = self._begin_assembly("M", accumulate, "assemble_mass")
+        try:
+            for name, formulation, connectivity in self._blocks:
+                block_rho = self._per_block_arg(rho_or_matrix, name)
+                for elem_conn in connectivity:
+                    elem_coords = self.mesh.nodes[elem_conn]
+                    me = self._element_matrix(formulation, "mass", elem_coords, block_rho,
+                                              kwargs, "assemble_mass")
+                    g = self._global_dofs(elem_conn)
+                    self.M[np.ix_(g, g)] += me
+        except BaseException:
+            self._rollback_assembly("M", token)
+            raise
 
-    def assemble_lumped_mass(self, rho_or_matrix, **kwargs):
+    def assemble_lumped_mass(self, rho_or_matrix, accumulate=False, **kwargs):
         """Element-by-element HRZ lumping (element.Element.lumped_mass())
         -- required before solve_transient_explicit(). Kept as a
         separate assembly from assemble_mass() (rather than derived
@@ -401,13 +601,19 @@ class FESystem:
         split, which isn't recoverable from the global matrix alone."""
         if self.M_lumped is None:
             self.M_lumped = self._zeros_matrix()
-        for name, formulation, connectivity in self._blocks:
-            block_rho = self._per_block_arg(rho_or_matrix, name)
-            for elem_conn in connectivity:
-                elem_coords = self.mesh.nodes[elem_conn]
-                me = formulation.lumped_mass(elem_coords, block_rho, **kwargs)
-                g = self._global_dofs(elem_conn)
-                self.M_lumped[np.ix_(g, g)] += me
+        token = self._begin_assembly("M_lumped", accumulate, "assemble_lumped_mass")
+        try:
+            for name, formulation, connectivity in self._blocks:
+                block_rho = self._per_block_arg(rho_or_matrix, name)
+                for elem_conn in connectivity:
+                    elem_coords = self.mesh.nodes[elem_conn]
+                    me = self._element_matrix(formulation, "lumped_mass", elem_coords, block_rho,
+                                              kwargs, "assemble_lumped_mass")
+                    g = self._global_dofs(elem_conn)
+                    self.M_lumped[np.ix_(g, g)] += me
+        except BaseException:
+            self._rollback_assembly("M_lumped", token)
+            raise
 
     @staticmethod
     def _per_element_arg(arg, i):
@@ -767,19 +973,28 @@ class FESystem:
         displacement in a NONLINEAR model should still go through
         `solve_nonlinear_displacement_control()`, which predates this
         item and remains the supported mechanism there."""
-        for n in node_ids:
-            for k in dof_indices:
-                dof = self.npn * int(n) + k
+        # v1.0.1: validated -- an empty selection or a local DOF index outside 0..dofs_per_node-1
+        # used to be accepted silently (the latter constrained OTHER nodes' DOFs).
+        nodes = self._check_nodes(node_ids, "fix_dofs")
+        dofs = self._check_local_dofs(dof_indices, "fix_dofs")
+        for n in nodes:
+            for k in dofs:
+                dof = self.npn * int(n) + int(k)
                 self.fixed_dofs.add(dof)
                 self.fixed_dof_values[dof] = float(value)
 
     def add_nodal_force(self, node_ids, dof_index, total_force):
         """Splits total_force evenly across node_ids at local DOF
         dof_index -- the same simplified load-lumping convention used
-        throughout this project's earlier scripts."""
-        share = total_force / len(node_ids)
-        for n in node_ids:
-            self.F[self.npn * int(n) + dof_index] += share
+        throughout this project's earlier scripts.
+
+        Raises ValueError for an empty node selection (previously a bare
+        ZeroDivisionError) or a dof_index outside 0..dofs_per_node-1."""
+        nodes = self._check_nodes(node_ids, "add_nodal_force")
+        dof = int(self._check_local_dofs(dof_index, "add_nodal_force")[0])
+        share = total_force / len(nodes)
+        for n in nodes:
+            self.F[self.npn * int(n) + dof] += share
 
     def add_consistent_edge_load(self, node_pairs, dof_index, traction, thickness=1.0):
         """Consistent nodal load for a uniform traction along a chain of
@@ -793,6 +1008,9 @@ class FESystem:
         edges (Tri6/Quad8) and 3-D element faces (Tet4/Tet10/Hex8/
         Hex20), via real Gauss quadrature instead of this method's own
         closed-form 2-node formula."""
+        node_pairs = [tuple(p) for p in node_pairs]
+        self._check_nodes([n for p in node_pairs for n in p], "add_consistent_edge_load")
+        dof_index = int(self._check_local_dofs(dof_index, "add_consistent_edge_load")[0])
         for n0, n1 in node_pairs:
             length = np.linalg.norm(self.mesh.nodes[n1] - self.mesh.nodes[n0])
             share = traction * thickness * length / 2.0
@@ -832,6 +1050,9 @@ class FESystem:
         pressure-normal-to-facet convention -- see facet_loads.py's own
         docstring for why that is explicitly out of scope here)."""
         from . import facet_loads
+        facets = [tuple(f) for f in facets]
+        self._check_nodes([n for f in facets for n in f], "add_consistent_facet_load")
+        dof_index = int(self._check_local_dofs(dof_index, "add_consistent_facet_load")[0])
         for facet_global_nodes in facets:
             facet_coords = self.mesh.nodes[list(facet_global_nodes)]
             share = facet_loads.consistent_facet_load_shares(
@@ -1088,7 +1309,7 @@ class FESystem:
             return FESystem._eigen_solve(Kff_csc.toarray(), Ff)
         return lu.solve(Ff)
 
-    def solve_static(self, verbose=False, method=None, **method_kwargs):
+    def _solve_static_raw(self, verbose=False, method=None, **method_kwargs):
         """Dense: SPD-aware Cholesky solve when Kff is SPD (the common,
         well-constrained case -- see _dense_spd_solve(), Wave 0 item
         5), falling back to the shared eigenvalue-based solve
@@ -1187,9 +1408,15 @@ class FESystem:
         a caller who wants multigrid still builds that hierarchy by
         hand and calls iterative_solvers.multigrid_solve() directly, as
         before this item."""
+        self._require_stiffness("solve_static")
         fixed = self.fixed_dofs_array
         u_fixed = self._fixed_dof_values_array(fixed)
         has_nonzero_dirichlet = bool(np.any(u_fixed))
+        if not np.any(self.F) and not has_nonzero_dirichlet:
+            warnings.warn(
+                "solve_static: the load vector F is all zeros and no non-zero displacement is "
+                "prescribed, so the solution is trivially zero. Add loads first "
+                "(add_nodal_force, add_consistent_edge_load, ...).", UserWarning, stacklevel=2)
 
         if method is not None:
             if self.backend not in ("scipy", "torch"):
@@ -1387,6 +1614,17 @@ class FESystem:
         U[free] = Uf
         return U
 
+    def solve_static(self, verbose=False, method=None, **method_kwargs):
+        U = self._solve_static_raw(verbose=verbose, method=method, **method_kwargs)
+        return self.field(U, label="displacement")
+
+    solve_static.__doc__ = (_solve_static_raw.__doc__ or "") + """
+
+        Returns an `FEField` -- a numpy.ndarray subclass, so it behaves exactly like the plain
+        vector returned before (U[2*i+1], norms, slicing, ...), plus named access:
+        U.component("uy", nodes="tip"), U.nodal, U.magnitude(), U.to_dataframe().
+        """
+
     def solve_modal(self, n_modes=4):
         """Generalized eigenproblem K*phi = omega^2*M*phi on the free DOFs.
         Returns (freq_hz (n_modes,), mode_shapes (n_dof, n_modes)).
@@ -1402,7 +1640,9 @@ class FESystem:
         dense matrix). Only k=n_modes eigenpairs are computed, so
         n_modes must be < the number of free DOFs (an eigsh
         requirement, not a dense-solve one -- see its docstring)."""
-        assert self.M is not None, "call assemble_mass() first"
+        if self.M is None:
+            raise RuntimeError("call assemble_mass() first (the mass matrix M has not been assembled)")
+        self._require_stiffness("this solve")
         free = self.free_dofs
         Kff = self._as_solve_matrix(self.K)[np.ix_(free, free)]
         Mff = self._as_solve_matrix(self.M)[np.ix_(free, free)]
@@ -1420,7 +1660,7 @@ class FESystem:
             full = np.zeros(self.n_dof)
             full[free] = eigvecs[:, m]
             mode_shapes[:, m] = full
-        return freq_hz[:n_modes], mode_shapes
+        return freq_hz[:n_modes], self.field(mode_shapes, label="mode shapes")
 
     def solve_linear_buckling(self, n_modes=4):
         """Module 19 (general-purpose extensions Phase 4): the linear
@@ -1620,7 +1860,9 @@ class FESystem:
         32) for the cheap O(n_elements) local alternative this method's
         own gap used to flag with no fix; fine for the mesh sizes this
         package targets."""
-        assert self.M is not None, "call assemble_mass() first"
+        if self.M is None:
+            raise RuntimeError("call assemble_mass() first (the mass matrix M has not been assembled)")
+        self._require_stiffness("this solve")
         free = self.free_dofs
         eigvals = eigh(self.K[np.ix_(free, free)], self.M[np.ix_(free, free)],
                         eigvals_only=True)
@@ -1771,7 +2013,9 @@ class FESystem:
         be a single value (applied to every retained mode) or an array
         of length n_modes. This is the method that makes modal
         superposition cheap: no n_dof x n_dof solve ever happens here."""
-        assert self.M is not None, "call assemble_mass() first"
+        if self.M is None:
+            raise RuntimeError("call assemble_mass() first (the mass matrix M has not been assembled)")
+        self._require_stiffness("this solve")
         freq_hz, mode_shapes = self.solve_modal(n_modes=n_modes)
         omega = 2 * np.pi * freq_hz
         free = self.free_dofs
@@ -1825,7 +2069,7 @@ class FESystem:
         Z = (-Omega**2 * self.M + 1j * Omega * self.C + self.K)[np.ix_(free, free)]
         U0 = np.zeros(self.n_dof, dtype=complex)
         U0[free] = np.linalg.solve(Z, F0_vector[free])
-        return U0
+        return self.field(U0, label="harmonic response")
 
     def solve_frequency_sweep(self, Omega_array, F0_vector):
         """solve_harmonic() at every frequency in Omega_array (rad/s).

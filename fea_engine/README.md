@@ -14,6 +14,26 @@
 
 </div>
 
+> [!IMPORTANT]
+> **Behaviour changes in the interface (v1.0.1).** Silent mistakes now fail loudly; valid calls are unchanged.
+> `assemble_stiffness` / `assemble_mass` / `assemble_lumped_mass` called a second time now **replace** the matrix
+> instead of silently doubling it (one-time `UserWarning`; pass `accumulate=True` to add on purpose).
+> `fix_dofs`, `add_nodal_force`, `add_consistent_edge_load` and `add_consistent_facet_load` raise `ValueError` for an empty
+> node selection, a node id outside the mesh, or a local DOF index outside `0..dofs_per_node-1`.
+> `solve_static` raises if `K` was never assembled and warns when the load vector is all zeros; a scalar density on a
+> plane or solid element raises an error that says to pass `rho * np.eye(n)`. See `tests/test_api_safety.py`.
+
+> [!NOTE]
+> **Named access (v1.0.1, additive).** Integer DOFs and node-id arrays still work; you can now also write
+> ```python
+> mesh.select_nodes(x=0.0, name="root"); mesh.select_nodes(x=0.4, name="tip")
+> s.fix_dofs("root", ["ux", "uy"]); s.add_nodal_force("tip", "uy", -20000.0)
+> U = s.solve_static()                      # FEField: an ndarray with names
+> U.component("uy", nodes="tip")            # == U[2*tip_nodes + 1]
+> U.nodal.shape, U.magnitude()              # (n_nodes, dofs_per_node), per-node |u|
+> ```
+> `FESystem.dof_names` lists the names for the current element; see `tests/test_named_api.py`.
+
 ## 🧭 Contents
 
 | | |
