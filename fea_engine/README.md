@@ -34,6 +34,15 @@
 > ```
 > `FESystem.dof_names` lists the names for the current element; see `tests/test_named_api.py`.
 
+> [!NOTE]
+> **Shared options and batch runs (v1.0.1, additive).**
+> ```python
+> from fea_engine import NewtonOptions, batch
+> opts = NewtonOptions(tol=1e-9, max_iter=40)          # None fields keep each driver's own default
+> lf, U = solve_nonlinear_static(system, mat, n_steps=20, options=opts)   # explicit keywords still win
+> results = batch.map(build_and_solve, params, n_jobs=4)                  # ordered; backend="thread" for lambdas
+> ```
+
 ## 🧭 Contents
 
 | | |

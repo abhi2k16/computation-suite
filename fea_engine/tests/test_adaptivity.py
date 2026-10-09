@@ -247,6 +247,7 @@ class TestAdaptiveRefineSolve:
             cheapest_uniform = min(h["n_dofs"] for h in uniform_meeting_target)
             assert cheapest_uniform >= adaptive_final["n_dofs"]
 
+    @pytest.mark.filterwarnings("ignore:.*load vector F is all zeros")
     def test_unknown_estimator_and_marking_raise(self):
         mesh = _cantilever_tri3()
         mat = Material(E=1000.0, nu=0.3)

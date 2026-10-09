@@ -3675,3 +3675,19 @@ def solve_transient_displacement_control(fesystem, mat, control_dof, u_target_fn
         fesystem.commit_all_states(u, mat, **kwargs)
 
     return t, U_hist, reaction_hist
+
+
+# ---------------------------------------------------------------------------
+# v1.0.1 (P2): shared convergence options. Every driver below gains a keyword-only
+# `options=NewtonOptions(...)`; explicit keywords still win, old calls are unchanged.
+# Applied here (not as decorators on each def) so the driver bodies stay untouched.
+# ---------------------------------------------------------------------------
+from .newton_options import NewtonOptions, accepts_options   # noqa: E402
+
+for _name in ("solve_contact_lagrange_static", "solve_contact_augmented_lagrange_static",
+              "solve_nonlinear_static", "solve_nonlinear_displacement_control",
+              "solve_nonlinear_arc_length", "solve_nonlinear_koiter_newton",
+              "solve_nonlinear_koiter_newton_generic", "solve_nonlinear_static_koiter_newton",
+              "solve_nonlinear_transient", "solve_transient_displacement_control"):
+    globals()[_name] = accepts_options(globals()[_name])
+del _name

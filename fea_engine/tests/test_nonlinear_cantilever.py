@@ -1,4 +1,4 @@
-"""
+r"""
 validate_nonlinear_cantilever.py -- validates fea_engine's geometric-
 nonlinearity module (element.TrussTL2D + nonlinear_solver.py) on a
 CANTILEVER BEAM under a transverse tip load, i.e. classic large-

@@ -572,7 +572,23 @@ class FESystem:
                 self.K[np.ix_(g, g)] += ke
 
     def assemble_mass(self, rho_or_matrix, accumulate=False, **kwargs):
-        """Consistent mass. rho_or_matrix: a scalar (beams, trusses) or a density matrix
+        """Assemble the consistent mass matrix ``M``.
+
+        Parameters
+        ----------
+        rho_or_matrix : float or ndarray
+            Scalar density for beams/trusses; a density matrix such as
+            ``rho * np.eye(2)`` for plane and solid elements.
+        accumulate : bool
+            Add to an existing ``M`` instead of replacing it.
+
+        Example
+        -------
+        >>> system.assemble_mass(7850.0 * np.eye(2), thickness=0.02)   # doctest: +SKIP
+
+        Notes
+        -----
+        Consistent mass. rho_or_matrix: a scalar (beams, trusses) or a density matrix
         (solids/plane elements: rho * np.eye(n)); a scalar given to an element that needs a
         matrix now raises a ValueError that says so. A repeated call REPLACES M (one-time
         UserWarning); accumulate=True adds instead -- see assemble_stiffness()."""
@@ -933,7 +949,25 @@ class FESystem:
 
     # -----------------------------------------------------------------
     def fix_dofs(self, node_ids, dof_indices, value=0.0):
-        """dof_indices: which local DOF(s) at each node to constrain
+        """Constrain local DOFs at some nodes (fixed, or prescribed to ``value``).
+
+        Parameters
+        ----------
+        node_ids : array-like of int, str, or list of str
+            Node ids, or the name(s) of node sets on the mesh.
+        dof_indices : int, str, or list of int/str
+            Local DOFs to constrain, by index or by name (see ``dof_names``).
+        value : float
+            Prescribed displacement (0 = fixed).
+
+        Example
+        -------
+        >>> system.fix_dofs(mesh.select_nodes(x=0.0, name="root"), ["ux", "uy"])  # doctest: +SKIP
+        >>> system.fix_dofs("root", [0, 1])                                      # doctest: +SKIP
+
+        Notes
+        -----
+        dof_indices: which local DOF(s) at each node to constrain
         (0-based, element-formulation-specific, e.g. 0,1 for u,v).
 
         value (Wave 16 item 131, docs/consolidated_future_roadmap.md,
@@ -984,7 +1018,24 @@ class FESystem:
                 self.fixed_dof_values[dof] = float(value)
 
     def add_nodal_force(self, node_ids, dof_index, total_force):
-        """Splits total_force evenly across node_ids at local DOF
+        """Apply a point load, split evenly over the selected nodes.
+
+        Parameters
+        ----------
+        node_ids : array-like of int, str, or list of str
+            Node ids or node-set name(s).
+        dof_index : int or str
+            Local DOF, by index or name (e.g. ``"uy"``).
+        total_force : float
+            Total force; each of the n nodes receives ``total_force / n``.
+
+        Example
+        -------
+        >>> system.add_nodal_force("tip", "uy", -20000.0)   # doctest: +SKIP
+
+        Notes
+        -----
+        Splits total_force evenly across node_ids at local DOF
         dof_index -- the same simplified load-lumping convention used
         throughout this project's earlier scripts.
 
@@ -1626,7 +1677,26 @@ class FESystem:
         """
 
     def solve_modal(self, n_modes=4):
-        """Generalized eigenproblem K*phi = omega^2*M*phi on the free DOFs.
+        """Natural frequencies and mode shapes of the constrained system.
+
+        Parameters
+        ----------
+        n_modes : int
+            Number of lowest modes.
+
+        Returns
+        -------
+        freq_hz : ndarray (n_modes,)
+        mode_shapes : FEField (n_dof, n_modes)
+
+        Example
+        -------
+        >>> f, shapes = system.solve_modal(n_modes=3)   # doctest: +SKIP
+        >>> shapes.component("uy", nodes="tip")         # doctest: +SKIP
+
+        Notes
+        -----
+        Generalized eigenproblem K*phi = omega^2*M*phi on the free DOFs.
         Returns (freq_hz (n_modes,), mode_shapes (n_dof, n_modes)).
 
         sparse=True: scipy.sparse.linalg.eigsh() with shift-invert

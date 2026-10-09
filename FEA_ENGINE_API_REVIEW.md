@@ -56,6 +56,17 @@ Tests: `fea_engine/tests/test_named_api.py` (58 tests). Old integer DOFs, node-i
 
 Decision: the "ndarray subclass" option from item 7 was chosen so no existing caller breaks.
 
+## 2d. Status: P2 implemented (v1.0.1, additive)
+
+Tests: `fea_engine/tests/test_newton_options_and_batch.py` (36 tests).
+
+| Item | Result |
+|---|---|
+| `NewtonOptions` | Frozen dataclass (`tol`, `max_iter`, `du_tol`, `energy_tol`, `line_search`, `verbose`), all `None` = "driver default" because defaults differ between drivers. All 10 nonlinear/contact/transient drivers gained keyword-only `options=`. Explicit keywords win; fields a driver lacks are ignored; calls without `options` are unchanged. Applied by a decorator at the end of `nonlinear_solver.py`, so no driver body was touched. |
+| `fea_engine.batch.map` | `map(fn, items, n_jobs=1, backend="process"\|"thread", on_error="raise"\|"collect", progress=None)`. Order preserved, `n_jobs=-1` = all cores, `BatchError` names the failing item, `Failed` placeholders when collecting. Same `n_jobs` convention as rom_engine. An `FEField` returned from a process worker loses its mesh (re-attach with `system.field(np.asarray(U))`). |
+| Docstrings | Short Parameters / Example headers added to `fix_dofs`, `add_nodal_force`, `assemble_mass`, `solve_modal`; the older design notes are kept below them under "Notes". `solve_static` and `assemble_stiffness` still have the long narrative only; moving the design history to a docs page is not done. |
+| Warnings | `tests/test_nonlinear_cantilever.py` docstring is now a raw string (no invalid-escape warning); the intended zero-load warning in `test_adaptivity` is filtered. |
+
 ## 3. Prioritised plan
 
 **P0: safety fixes, no API change.** Small, testable, backwards compatible.
