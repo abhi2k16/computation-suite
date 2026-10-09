@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 soar.py -- SOAR (Second-Order Arnoldi) moment-matching ROM: a
 SECOND-ORDER-structure-preserving alternative to krylov.py's own
@@ -140,7 +142,7 @@ SOARROM the first Krylov-family (moment-matching) method in this
 package with a provable passivity guarantee -- checked directly in
 test_soar.py, not just asserted from the theorem.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import lu_factor, lu_solve, eig
 

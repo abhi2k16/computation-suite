@@ -1,8 +1,10 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 Tests for dataset_diagnostics.py (Wave 10 item 104). Everything here
 runs unconditionally -- no torch dependency anywhere in this module.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

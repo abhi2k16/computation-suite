@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_mode_correction.py -- validates rom_engine.mode_correction against
 a real fea_engine cantilever beam (fea_fixtures.cantilever_beam_system()).
@@ -27,7 +29,7 @@ Checks (mirroring docs/classical_mor_roadmap.md Section 6):
      basis() is useful for more than just the one static load it was
      built from.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.linalg import eigh, qr

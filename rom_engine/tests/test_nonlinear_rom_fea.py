@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 Real-fixture validation of nonlinear_rom.py against fea_engine's own
 geometrically nonlinear Beam2DCorotational element -- the strongest
@@ -15,7 +17,7 @@ literature (He et al. 2023 and its ICE/STEP predecessors) targets, as
 opposed to test_nonlinear_beam.py's own cantilever fixture (built to
 validate the ELEMENT against the Euler elastica, a different purpose).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 elements -- fea_engine's element library.
 
@@ -16,7 +18,7 @@ To add a new element type: subclass Element in the appropriate submodule
 (+ B_matrix() for the generic Gauss loop, or override stiffness()/mass()
 directly), and add one line to ELEMENT_REGISTRY below.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from .base import (
     Element,
     gauss_legendre,

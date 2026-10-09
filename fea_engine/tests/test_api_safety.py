@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_api_safety.py -- v1.0.1 input-validation / safe re-assembly guards on FESystem.
 
@@ -5,7 +7,7 @@ Each test pins one behaviour found by probing the interface against PyMAPDL/PyDP
 (see FEA_ENGINE_API_REVIEW.md): silent wrong answers became clear errors or idempotent behaviour,
 and previously valid usage is unchanged (checked against the README example numbers).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import warnings
 
 import numpy as np

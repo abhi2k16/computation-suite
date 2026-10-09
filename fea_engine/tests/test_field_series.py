@@ -1,8 +1,10 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_field_series.py -- item C: FieldSeries, one container for load paths, time histories, modes.
 Additive: solver return values are unchanged, `system.series(...)` wraps them.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import pickle
 
 import numpy as np

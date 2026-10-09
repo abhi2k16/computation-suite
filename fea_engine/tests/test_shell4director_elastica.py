@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell4director_elastica.py -- Wave 4 item 47, Phase 3, roadmap doc
 steps 9-10 (docs/director_based_shell_element_roadmap.md Section 5):
@@ -50,7 +52,7 @@ Two checks:
    improving from ~49% (1 element) to ~94% (3 elements) -- a genuine
    convergence trend, not a coincidence at one specific mesh size.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.integrate import solve_bvp, cumulative_trapezoid

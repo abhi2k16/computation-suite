@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_koiter_newton.py -- validation for Module 20:
 nonlinear_solver.solve_nonlinear_koiter_newton() (single-branch Koiter-
@@ -38,7 +40,7 @@ Four lines of evidence:
    cubic coefficients this driver computes internally can be checked
    directly against hand-derived values, not just the end-to-end path.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

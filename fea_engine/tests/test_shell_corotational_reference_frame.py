@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell_corotational_reference_frame.py -- regression coverage for a
 real bug found during the geometric-nonlinear-shell roadmap's Phase D
@@ -36,7 +38,7 @@ in-plane rotation AND reversed (CW) winding, checked against the SAME
 physical answer an axis-aligned CCW mesh gives (physics cannot depend
 on how a mesh happens to be authored).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

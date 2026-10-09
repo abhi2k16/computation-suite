@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 nonlinear_solver.py -- Module 8: incremental Newton-Raphson drivers for
 geometric nonlinearity (large displacement / large rotation).
@@ -231,7 +233,7 @@ for the SciPy-vs-PyTorch solve choice.
   no change to the update math itself), was judged safe and IS applied
   to those two drivers as well.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import copy
 import warnings
 import numpy as np

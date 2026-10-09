@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 krylov.py -- Krylov-subspace moment-matching ROM (Besselink et al. 2013,
 Section 3 / eqs. 21-36), the paper's "numerical mathematics" family.
@@ -57,7 +59,7 @@ directly -- callers should check it, not assume a Galerkin-projected
 model inherits the full-order model's stability (it generally does NOT,
 unlike balanced truncation, where stability preservation is a theorem).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import lu_factor, lu_solve, eig
 

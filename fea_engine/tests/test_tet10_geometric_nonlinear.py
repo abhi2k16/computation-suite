@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_tet10_geometric_nonlinear.py -- validates Tet10SolidTL
 (elements/nonlinear_solids.py), the geometric-only (Total Lagrangian,
@@ -58,7 +60,7 @@ reproducible regardless of what else has run earlier in the same
 pytest session -- flagged here for whoever investigates the actual fix
 in gmsh_engine.py itself.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

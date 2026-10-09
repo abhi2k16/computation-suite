@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 sparse_vs_dense_cantilever.py -- Phase 2 (general-purpose extensions
 roadmap) worked example: FESystem(..., sparse=True) vs the default
@@ -13,7 +15,7 @@ package's biggest scaling limitation. See
 tests/test_sparse_assembly.py for the same comparison run as a pytest
 regression check.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import time
 import numpy as np
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

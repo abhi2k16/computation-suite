@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 intrusive_nonlinear_rom.py -- Wave 17 item 144 (fea_engine/docs/
 consolidated_future_roadmap.md): an INTRUSIVE nonlinear Galerkin ROM
@@ -169,7 +171,7 @@ real and SHOULD be run at least once on a torch-equipped machine, the
 same status every other torch addition in this codebase carries until
 that happens.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from typing import NamedTuple
 
 import numpy as np

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_topopt.py -- Wave 11 item 111 (docs/consolidated_future_roadmap.md):
 validates topopt.py -- the SIMP interpolation, the closed-form
@@ -9,7 +11,7 @@ work end-to-end on a new problem" claim this item exists to validate),
 the OC update's own volume-constraint/move-limit contract, and a real
 end-to-end compliance-minimization run on a short-cantilever domain.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

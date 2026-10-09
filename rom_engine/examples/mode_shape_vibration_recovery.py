@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 mode_shape_vibration_recovery.py -- end-to-end rom_engine.loewner
 example: full-field mode-shape recovery and time-domain vibration
@@ -28,7 +30,7 @@ every other example in this package builds its own model, rather than
 importing tests/ fixture code), with known closed-form ground-truth
 modal parameters.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")

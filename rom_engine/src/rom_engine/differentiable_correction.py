@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 differentiable_correction.py -- Wave 10 item 103 (fea_engine/docs/
 consolidated_future_roadmap.md): a DESIGN NOTE + prototype, not a full
@@ -56,7 +58,7 @@ Lambda=...) Newton solve). This item is explicitly scoped by the
 roadmap as "a DESIGN NOTE + prototype ... scoping the actual interface
 boundary ... is the first concrete step," not a full port of item 98.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 try:

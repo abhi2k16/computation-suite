@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_static_koiter_newton.py -- validation for Module 22:
 nonlinear_solver.solve_nonlinear_static_koiter_newton() (Koiter-Newton
@@ -35,7 +37,7 @@ Three lines of evidence:
    used) and still lands exactly on lambda=1.0 without ever
    overshooting past it.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

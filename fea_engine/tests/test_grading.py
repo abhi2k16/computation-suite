@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 tests/test_grading.py -- Phase 1 validation of fea_engine.grading.
 
@@ -6,7 +8,7 @@ Pure sizing-function math, no mesher and no element formulation involved
 validation item) -- everything here is checked against closed-form/
 geometric-series expectations, not against a solve.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

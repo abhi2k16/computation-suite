@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_pod_rm_analysis.py -- validates rom_engine.intrusive_nonlinear_rom.
 pod_rm_analysis() (Wave 17 item 145) against the roadmap's own two
@@ -17,7 +19,7 @@ Plus a small extra check that the symmetry/positive-definiteness report
 (`spd_report`) actually flags a genuinely non-SPD damping-like matrix
 as such, so that code path is exercised too.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_spd_solve.py -- Wave 0 item 5 (docs/consolidated_future_roadmap.md,
 source fem_implementation_lessons.md): validates
@@ -19,7 +21,7 @@ have caught a correctness regression):
    well-constrained linear-elastic K is always SPD) but the code path
    still needs to be correct for the day it's needed.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 geometry -- dimension-driven mesh/FESystem front end (shapes.py).
 
@@ -19,7 +21,7 @@ depended on it. The supported path for arbitrary/unstructured meshing
 needs is now just ``shapes``/``mesh.py``'s structured front end. See
 docs/generalized_mesh_grading_roadmap.md for the removal note.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from .shapes import (
     generate_mesh,
     default_element,

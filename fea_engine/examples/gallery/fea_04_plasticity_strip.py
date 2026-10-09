@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 fea_04_plasticity_strip.py -- Example Gallery: J2 (von Mises) plasticity
 with isotropic hardening, on a plate-with-a-hole strip under cyclic
@@ -24,7 +26,7 @@ the deformed mesh after unload -- localized at the hole, decaying
 into the far field, the real physical signature a uniform strip could
 not produce.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection, LineCollection

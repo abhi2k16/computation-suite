@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_differentiable.py -- Wave 10 (docs/consolidated_future_
 roadmap.md), source Saverio et al. 2026: validates fea_engine.
@@ -24,7 +26,7 @@ Two-tier structure, matching this module's own docstring:
     the same skip-cleanly convention test_autograd_tangent.py/test_
     torch_sparse_solver.py already established.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

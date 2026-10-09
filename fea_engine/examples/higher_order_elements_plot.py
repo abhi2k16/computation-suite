@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 higher_order_elements_plot.py -- Phase 1 (general-purpose extensions
 roadmap) worked example: visual verification companion to
@@ -12,7 +14,7 @@ elements' DEFORMED shapes (displacement exaggerated) drawn over their
 undeformed outlines, so the locking is visible as a shape, not just a
 number -- Quad4 barely curves, Quad8 traces the smooth bent beam.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon

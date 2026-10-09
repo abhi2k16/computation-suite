@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_critical_timestep_local.py -- validates FESystem.critical_timestep_local(),
 the cheap O(n_elements) local CFL estimate (Wave 6 item 32, docs/
@@ -30,7 +32,7 @@ over by picking a formula that happens to match.)
    real, physically meaningful stability boundary, not just a number
    that happens to satisfy check 1's algebra.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

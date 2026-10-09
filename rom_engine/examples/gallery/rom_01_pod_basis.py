@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 rom_01_pod_basis.py -- Example Gallery: Proper Orthogonal Decomposition
 basis extraction (pod.py) on a set of static cantilever-beam load
@@ -20,7 +22,7 @@ a genuinely INDEPENDENT random load, outside that trained subspace
 (must plateau above zero -- correctly showing the limits of a basis
 fit to a different load distribution, not a subtle bug).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import os
 import sys
 import numpy as np

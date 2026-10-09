@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_random_vibration.py -- validates rom_engine.random_vibration.psd_response()
 against a REAL, damped fea_engine cantilever beam
@@ -21,7 +23,7 @@ Checks:
      both against each other and against fea_engine's own full-order
      result for each DOF individually.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM

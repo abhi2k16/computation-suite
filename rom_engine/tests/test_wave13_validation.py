@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_wave13_validation.py -- Wave 13 item 120 (docs/consolidated_
 future_roadmap.md): validates the cross-configuration harness that
@@ -24,7 +26,7 @@ a future reader can tell "still working as designed" apart from
     matching item 118's own test file's numbers almost exactly (same
     underlying fixture, same AppliedLoadStrategy convention).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

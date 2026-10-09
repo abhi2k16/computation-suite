@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 solids.py -- isoparametric plane-stress and 3-D solid continuum
 elements (Quad4PlaneStress, Hex8Solid3D, Tri3PlaneStress, Tet4Solid3D).
@@ -5,7 +7,7 @@ elements (Quad4PlaneStress, Hex8Solid3D, Tri3PlaneStress, Tet4Solid3D).
 Split out of the original monolithic element.py during the
 fea_engine restructuring; no logic changed, only file location.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .base import (Element, gauss_product, jacobian, tet_quadrature_4pt,

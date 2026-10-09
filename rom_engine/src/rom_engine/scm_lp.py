@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 scm_lp.py -- the genuine classical Successive Constraint Method (SCM;
 Huynh, Rozza, Sen, Patera 2007): a rigorous lower bound on
@@ -67,7 +69,7 @@ against scm.py's already-measured ~1e-7 one on the SAME reference
 point of the SAME real fea_engine fixture, rather than assuming this
 LP-based construction is automatically sharper.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.optimize import linprog
 

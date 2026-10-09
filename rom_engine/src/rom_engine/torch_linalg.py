@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 torch_linalg.py -- Wave 9 addendum item 138 (docs/consolidated_future_
 roadmap.md): shared, backend-neutral torch-native dense linear-algebra
@@ -54,7 +56,7 @@ full-order model fed directly into balancing, or a batched sweep
 across many parameter points (not attempted in this item), and neither
 applies to those two modules' own works-on-something-small paths.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 _HAS_TORCH = False

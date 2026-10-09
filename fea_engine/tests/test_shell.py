@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell.py -- validation for Module 20 (general-purpose extensions
 roadmap Phase 7): material.D_shell()/shell_rho_matrix() and
@@ -94,7 +96,7 @@ everywhere) -- caught here by an explicit sign check
 missing it. Using z = -rho*sin(theta) instead fixes the winding; the
 `_cylindrical_arc_meshes()` helper below does this.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

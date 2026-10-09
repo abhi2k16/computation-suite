@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 frequency.py -- intrusive frequency-domain reduced-order modeling for
 linear structural dynamics.
@@ -48,7 +50,7 @@ Three cases, in increasing generality (all handled by from_MCK()):
     isn't a linear combination of M and K: the full 3-term {M, C, K}
     decomposition, theta(omega) = [-omega^2, i*omega, 1].
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .affine import AffineDecomposition

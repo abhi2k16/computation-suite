@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 attractor.py -- Wave 17 item 146 (fea_engine/docs/consolidated_future_
 roadmap.md): attractor / Poincare tooling for FE (full-order) and
@@ -68,7 +70,7 @@ closures over local variables (the standard Python multiprocessing
 constraint, not specific to this module). `n_jobs=1` (the default) runs
 serially with no such restriction.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass, field
 

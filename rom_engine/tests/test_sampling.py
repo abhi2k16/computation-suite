@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_sampling.py -- validates rom_engine.sampling.optimal_lhs and
 rom_engine.sampling.modal_force_samples.
@@ -19,7 +21,7 @@ Checks:
      [frac_min, frac_max] * reference_scale range for every sample and
      mode, and per-mode target_fracs ranges are honored independently.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.spatial.distance import pdist

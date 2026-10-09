@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 tests/test_mesh_fillet_notch.py -- Wave 5 items 26/27 (docs/
 consolidated_future_roadmap.md): grading.Notch (real implementation,
@@ -16,7 +18,7 @@ every one of the 4 corners/edges is exercised, not just the canonical
 one, so a winding bug in any single reflection path would show up as a
 check_quality() failure (inverted elements) rather than being silently
 missed."""
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.spatial import cKDTree

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 greedy.py -- weak-greedy reduced-basis training for
 frequency.FrequencyROM: instead of training a POD-on-FRF-snapshots
@@ -43,7 +45,7 @@ generic pattern that a future affine.py material-parameter greedy
 trainer could reuse with a different error indicator and full-order
 solver, not implemented here but noted as a natural generalization.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .frequency import FrequencyROM, build_pod_basis_from_frf_snapshots

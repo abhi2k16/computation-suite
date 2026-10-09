@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 ensemble_uq.py -- Wave 10 item 105 (fea_engine/docs/consolidated_
 future_roadmap.md, source Saverio et al. 2026 Section 4.4.2/Fig 16):
@@ -26,7 +28,7 @@ constructor touches `NeuralSurrogate` (which is itself torch-optional
 at IMPORT time, per nonlinear_rom.py's own `_HAS_TORCH` pattern --
 constructing a `NeuralSurrogate` is what actually requires torch, not
 importing the module that defines it)."""
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .nonlinear_rom import NeuralSurrogate

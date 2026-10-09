@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """Standalone validation of the new bending-membrane coupling term in
 Shell4MITCCorotational (added 2026-09-03, see elements/shells.py's
 _bending_membrane_coupling_force/_coupling_tangent_local and
@@ -17,7 +19,7 @@ tangent_stiffness()). Checks, in order:
   5. stiffness() (u=0 tangent) still reduces to Shell4MITC.stiffness()
      as before (no regression).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from fea_engine import Material, D_shell, Shell4MITC, Shell4MITCCorotational
 

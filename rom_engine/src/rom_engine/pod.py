@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 pod.py -- Proper Orthogonal Decomposition (POD) basis extraction.
 
@@ -36,7 +38,7 @@ vectors back through L^{-T} -- a standard trick (e.g. Chatterjee 2000,
 the extracted POD modes exactly M-orthonormal, i.e. behave under
 projection exactly like a truncated eigenbasis would.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

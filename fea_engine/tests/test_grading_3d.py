@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_grading_3d.py -- Wave 0 item 8 (docs/consolidated_future_roadmap.
 md, source generalized_mesh_grading_roadmap.md): validates the 3-D
@@ -15,7 +17,7 @@ still-correctly-raised unsupported-topology case (so the new support
 for Tet4/Hex8/Tet10/Hex20 didn't accidentally turn into "never raises
 at all").
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from fea_engine.mesh import (

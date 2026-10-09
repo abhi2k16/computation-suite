@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 iterative_solvers.py -- Wave 8 items 36-40 (docs/consolidated_future_
 roadmap.md, source fem_implementation_lessons.md Chapters 10-13):
@@ -61,7 +63,7 @@ its own separate CG dispatch"); `backend="auto"` still raises for
 `method=` -- see `solve_static()`'s own updated docstring for why that
 one case remains disallowed.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import scipy.sparse as sp
 from scipy.sparse.linalg import splu, spsolve, spsolve_triangular

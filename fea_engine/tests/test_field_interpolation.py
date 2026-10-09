@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_field_interpolation.py -- Wave 16 item 128 (docs/consolidated_
 future_roadmap.md, source: TensorMesh's `Forms` documentation page):
@@ -17,7 +19,7 @@ vector, not merely "something plausible". A self-consistency check
 utility's own quadrature-point placement agrees with the isoparametric
 mapping every element already uses internally.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

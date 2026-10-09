@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 rom_engine -- a small, from-scratch reduced-order-modeling package for
 structural engineering analysis.
@@ -685,7 +687,7 @@ three checks. Subharmonic-multiplier support remains unimplemented
 a materially larger extension (non-integer-multiple harmonics in the
 AFT scheme) than pseudo-arclength turned out to be, not attempted here.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from .pod import PodBasis, MultiFieldPOD, assemble_field_weight_matrix, trapezoidal_field_gram
 from .galerkin import GalerkinROM
 from .affine import AffineDecomposition

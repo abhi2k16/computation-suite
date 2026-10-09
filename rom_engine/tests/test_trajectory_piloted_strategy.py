@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_trajectory_piloted_strategy.py -- Wave 12 item 113 (docs/
 consolidated_future_roadmap.md, ICE-ROM/GAP_ANALYSIS.md gap #2):
@@ -35,7 +37,7 @@ claims to do: correctly subsample a visited trajectory and correctly
 reuse EnforcedDisplacementStrategy's own already-validated static
 solve-and-project mechanism at the selected points.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

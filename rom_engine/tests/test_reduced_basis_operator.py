@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_reduced_basis_operator.py -- Wave 13 item 118 (docs/consolidated_
 future_roadmap.md): validates RegularizedProjectionEncoder's decisive
@@ -23,7 +25,7 @@ Four lines of evidence:
      asserted below, versus the same-resolution case's ~0.03%.
   4. Input validation + LatentRefinementNet (torch-gated).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

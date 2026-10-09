@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_iter_state.py -- validation for Module 23: FESystem.init_iter_state()/
 update_iter_states(), the mixed-formulation internal-state mechanism
@@ -23,7 +25,7 @@ DIRECT, exactly-checkable fingerprint of every solve_nonlinear_static()
 correction actually reaching update_iter_states() with the correct
 elem-local delta_u slice.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

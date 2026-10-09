@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_frequency.py -- validates rom_engine.frequency.FrequencyROM and
 build_pod_basis_from_frf_snapshots() against a REAL, damped fea_engine
@@ -23,7 +25,7 @@ Checks (mirroring docs/frequency_domain_rom_roadmap.md Section 6):
   6. A frequency sweep via the reduced model is substantially faster
      than one via fea_engine's own full-order solve_frequency_sweep().
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM, build_pod_basis_from_frf_snapshots

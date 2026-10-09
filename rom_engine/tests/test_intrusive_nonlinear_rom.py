@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_intrusive_nonlinear_rom.py -- validates rom_engine.intrusive_
 nonlinear_rom.IntrusiveNonlinearROM (Wave 17 item 144) against real
@@ -27,7 +29,7 @@ fea_engine models, per the roadmap's own four-part validation criteria:
      check, not just a symmetry check) for a genuinely SPD/PSD
      full-order system.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.linalg import qr, eigh

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 hyperelastic_neo_hookean_demo.py -- Phase 6 (general-purpose
 extensions roadmap) worked example: Tet4NeoHookean (compressible
@@ -14,7 +16,7 @@ stiffness() (see Tet4NeoHookean's docstring for why it's FD, not a
 hand-derived closed form) is good enough for Newton to actually reach
 the correct equilibrium, not just self-consistent in isolation.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from fea_engine import Tet4NeoHookean, NeoHookeanMaterial, FESystem, D_solid3d, Material

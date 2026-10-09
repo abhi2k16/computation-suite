@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 fea_06_topology_optimization.py -- Example Gallery: SIMP density-based
 compliance topology optimization (topopt.py, Wave 11 item 111),
@@ -21,7 +23,7 @@ held exactly" signature this driver's own test suite already
 validates (test_topology_optimize_compliance_reduces_compliance_and_
 holds_volume), shown as a convergence curve here.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection

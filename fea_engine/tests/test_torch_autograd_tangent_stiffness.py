@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_torch_autograd_tangent_stiffness.py -- validation for item 93 of the
 PyTorch side-by-side extension (docs/consolidated_future_roadmap.md): the
@@ -53,7 +55,7 @@ the same run -- 30 passed, 1 benign warning, 0 failed. This is the same
 sandbox-then-user-machine validation path items 2/3 (autograd_tangent.py/
 torch_sparse_solver.py) already established.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

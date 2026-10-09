@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_backend_selection.py -- validates the backend= construction
 parameter on FESystem (solver.py) added on top of Wave 0 item 3
@@ -14,7 +16,7 @@ is covered by test_torch_sparse_solver.py's CHECK 6/CHECK 7, which are
 torch-gated the same way every other torch test in this package is
 (see that file's own docstring for why).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import pytest
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh
 from fea_engine.torch_sparse_solver import _HAS_TORCH

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_mesh_io.py -- Wave 14 item 122 (docs/consolidated_future_roadmap.
 md): meshio-based mesh file I/O. All tests here are torch-analogue
@@ -12,7 +14,7 @@ a MultiBlockMesh round trip, point_data/cell_data carrying over on
 write, the orphan-node cleanup, and the explicit dim-mismatch/
 unsupported-type error paths.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import os
 import tempfile
 

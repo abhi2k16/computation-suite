@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 sparse_vs_dense_plot.py -- Phase 2 (general-purpose extensions
 roadmap) worked example: visual verification companion to
@@ -13,7 +15,7 @@ line. Both panels are built from the SAME timing runs, so the numbers
 in the two panels are internally consistent by construction, not two
 separately-run experiments that happen to agree.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import time
 import numpy as np
 import matplotlib.pyplot as plt

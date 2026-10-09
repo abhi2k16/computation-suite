@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_mixed_assembly.py -- Wave 11 item 110 (docs/consolidated_future_
 roadmap.md): validates mixed_assembly.py's Taylor-Hood P2(Tet10)-
@@ -12,7 +14,7 @@ exact answer (a spatially CONSTANT pressure equal to kappa*div(u)) is
 known in closed form and the P1 pressure field is only asked to
 represent a constant, something it can do exactly.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

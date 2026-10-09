@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 shells.py -- Module 20 (general-purpose extensions roadmap Phase 7):
 Shell4MITC, a 4-node general shell element carrying MEMBRANE (in-plane
@@ -118,7 +120,7 @@ package's oversight):
   "Design history" below) -- so this was deferred rather than shipped
   as an always-inert "fix". Not attempted further this wave.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .base import Element, gauss_product, jacobian

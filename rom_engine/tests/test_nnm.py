@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 Tests for nnm.py -- HarmonicBalanceSystem (AFT bookkeeping, A(omega)
 block assembly), solve_nnm_backbone (natural-parameter NNM backbone
@@ -16,7 +18,7 @@ analytic textbook fold (the unit circle) plus a direct agreement check
 against solve_nnm_backbone itself on the SAME non-folding backbone.
 Real fea_engine validation lives in test_nnm_fea.py, not here.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.integrate import solve_ivp

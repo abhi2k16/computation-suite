@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_iterative_method_dispatch.py -- Wave 16 item 132 (docs/
 consolidated_future_roadmap.md, source: TensorMesh's `Sparse Solvers`
@@ -28,7 +30,7 @@ backend="auto" combined with method= still raises ValueError
 unchanged -- see TestGuardRails::test_method_with_backend_auto_raises_
 value_error below, untouched by this item.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

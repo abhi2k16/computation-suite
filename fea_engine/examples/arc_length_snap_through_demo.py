@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 arc_length_snap_through_demo.py -- Phase 5 (general-purpose extensions
 roadmap) worked example: nonlinear_solver.solve_nonlinear_arc_length()
@@ -16,7 +18,7 @@ form P(delta) = (E*A/L0^3)*delta*(h0-delta)*(2*h0-delta) used to
 validate every solver in this module (see test_arc_length.py /
 nonlinear_solver.py for the derivation).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from fea_engine import elements as elmod

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 nonlinear_dynamics.py -- generalized reduced nonlinear time integration.
 
@@ -27,7 +29,7 @@ its own internal Newton solve, exactly matching
 `docs/nonlinear_surrogate_rom_roadmap.md` Section 5's "PolynomialModalROM
 evaluated in 'direct' mode" phrasing).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

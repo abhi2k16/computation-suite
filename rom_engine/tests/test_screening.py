@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_screening.py -- validates rom_engine.screening.screen_physical_modes.
 
@@ -15,7 +17,7 @@ Checks (mirroring docs/loewner_modal_identification_roadmap.md Section 6):
      freq_pool too small for the requested n_roms/n_interp are both
      rejected loudly.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

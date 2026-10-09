@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_beam3d.py -- validation for Beam3DEulerBernoulli (Module 18,
 general-purpose extensions roadmap Phase 3).
@@ -47,7 +49,7 @@ written reference assembler):
    check that the registry/FESystem wiring, not just the element in
    isolation, is correct.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

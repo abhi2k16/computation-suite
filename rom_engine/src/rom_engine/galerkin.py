@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 galerkin.py -- intrusive Galerkin projection: given a reduced basis V
 (from pod.py, or an ordinary eigenbasis, or any other orthonormal-ish
@@ -34,7 +36,7 @@ hand-built K/M/F for a toy problem, as long as they're already
 assembled on the SAME (full) degree-of-freedom numbering the basis V
 was extracted on.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 

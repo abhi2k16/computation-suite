@@ -1,7 +1,9 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_units_and_plot.py -- v1.0.1 P3: unit labels (no conversion) and FEField.plot.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import pickle
 import warnings
 

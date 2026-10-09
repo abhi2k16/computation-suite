@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_wave1_newton_robustness.py -- Wave 1 (docs/consolidated_future_
 roadmap.md, source nonlinear_fem_lessons.md's appendix), items 9/10:
@@ -40,7 +42,7 @@ manufactured; CHECK 2 instead verifies the fallback mechanism itself,
 directly and deterministically, against a synthetic residual (tanh)
 chosen specifically because full Newton is KNOWN to overshoot on it.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from fea_engine import elements as elmod

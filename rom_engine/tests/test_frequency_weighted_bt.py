@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_frequency_weighted_bt.py -- validates
 rom_engine.balanced_truncation.FrequencyWeightedBalancedTruncationROM
@@ -29,7 +31,7 @@ Checks:
      own honest omission, for the same underlying reason (no
      independently-verified a priori bound for this method here).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine.balanced_truncation import (

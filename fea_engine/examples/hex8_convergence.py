@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 hex8_convergence.py -- mesh refinement study for item 4 in main.py.
 
@@ -9,7 +11,7 @@ scaled up alongside ny/nz so element aspect ratio stays roughly constant
 across the sweep (otherwise refining only ny/nz while holding nx fixed
 makes elements more slender in x, which is a different effect).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 

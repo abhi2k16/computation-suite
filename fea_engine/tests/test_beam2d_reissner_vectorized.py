@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_beam2d_reissner_vectorized.py -- validates Wave 17 item 147 (docs/
 consolidated_future_roadmap.md): the batched (all-elements-at-once
@@ -28,7 +30,7 @@ Two checks, matching this item's own stated validation criterion
     Newton iteration and time-stepping, not just at a single element
     evaluation.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from fea_engine import elements as elmod

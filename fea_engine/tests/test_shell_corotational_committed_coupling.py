@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell_corotational_committed_coupling.py -- validation for
 Wave 4 item 46, building block C (docs/shell_rotation_coupling_fix_
@@ -48,7 +50,7 @@ state=None (the only path every OTHER existing test in this project
 exercises) is completely unaffected either way, confirmed directly
 here (test 3).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

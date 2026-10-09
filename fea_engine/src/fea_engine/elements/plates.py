@@ -1,10 +1,12 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 plates.py -- Quad4MindlinPlate (selective reduced integration).
 
 Split out of the original monolithic element.py during the
 fea_engine restructuring; no logic changed, only file location.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .base import Element, gauss_product, jacobian

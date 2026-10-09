@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell4director_gl_curvature.py -- the Green-Lagrange curvature measure
 that became `Shell4Director`'s default on 2026-09-24 (see the
@@ -20,7 +22,7 @@ Checks:
    gives cos(40 deg) = 0.77 of it)
 5. cantilever strip: transverse stiffening matches the exact elastica at 24 deg
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.integrate import solve_bvp

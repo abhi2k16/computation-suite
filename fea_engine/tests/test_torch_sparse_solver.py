@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_torch_sparse_solver.py -- Wave 0 item 3 (docs/consolidated_future_
 roadmap.md, source tensormesh_comparative_analysis.md Section 6.1):
@@ -17,7 +19,7 @@ sandbox for the same reason; they are written to run for real, and
 SHOULD be run at least once, in any environment with a working torch
 install.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

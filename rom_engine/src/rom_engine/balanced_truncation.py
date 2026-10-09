@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 balanced_truncation.py -- balanced truncation (Besselink et al. 2013,
 Section 4 / eqs. 37-58), the paper's "systems and control" family, and
@@ -90,7 +92,7 @@ symptoms (an artificial noise floor a few orders of magnitude above
 machine epsilon in the smallest computed Hankel singular values) that
 show up if this step is skipped.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import solve_continuous_lyapunov, cholesky, eigh, LinAlgError, matrix_balance
 

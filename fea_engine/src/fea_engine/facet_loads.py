@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 facet_loads.py -- Wave 15 item 127 (docs/consolidated_future_roadmap.md,
 source: TensorMesh's "Elements and Quadrature" documentation page's
@@ -67,7 +69,7 @@ node-ordering mistake this project's history (GMSH_NODE_ORDER,
 meshio's node-order finding) has repeatedly found by checking directly
 rather than trusting a hand derivation.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import math
 
 import numpy as np

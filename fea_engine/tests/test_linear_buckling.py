@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_linear_buckling.py -- validation for Module 19 (general-purpose
 extensions roadmap Phase 4): geometric_stiffness() on
@@ -31,7 +33,7 @@ Four lines of evidence:
    check above, end to end through FESystem -- not just the element
    matrices in isolation (check 2), but the full assemble + solve path.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_koiter_newton_generic.py -- validation for Module 24:
 nonlinear_solver.solve_nonlinear_koiter_newton_generic() (the GENERIC,
@@ -46,7 +48,7 @@ docs/general_purpose_extensions_roadmap.md Section 11:
    (still mathematically valid) primary path to near machine precision
    the whole way, exactly reproducing lambda = k1*u1/F1.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 nonlinear_rom.py -- shared regression protocol for reduced nonlinear-
 force models, plus two concrete model families.
@@ -55,7 +57,7 @@ from the source PDF's OCR-damaged equation blocks (the same gap
 documented in the skill's own `SKILL.md` fidelity notes). This is
 recorded here rather than silently assumed away.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from itertools import combinations_with_replacement
 from collections import Counter

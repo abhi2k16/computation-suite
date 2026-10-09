@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 nnm.py -- generalized multi-harmonic-balance (HBM) continuation for
 nonlinear normal mode (NNM) backbone curves.
@@ -60,7 +62,7 @@ See `docs/nonlinear_surrogate_rom_roadmap.md` Section 6 (original design)
 and Section 11 (pseudo-arclength addendum) for the full design
 background this module implements against.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

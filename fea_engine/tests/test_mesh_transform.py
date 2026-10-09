@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_mesh_transform.py -- Wave 11 item 106 (docs/consolidated_future_
 roadmap.md): validates MeshTransformation (mesh_transform.py) against
@@ -25,7 +27,7 @@ own module docstring), which a naive "just reuse the tensor-family
 JxW formula" implementation would silently get wrong for any element
 whose natural-coordinate node winding gives a negative detJ.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

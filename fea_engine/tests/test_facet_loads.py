@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_facet_loads.py -- Wave 15 item 127 (docs/consolidated_future_
 roadmap.md, source: TensorMesh's "Elements and Quadrature" documentation
@@ -33,7 +35,7 @@ Three layers of decisive checks, not "runs without raising":
    edge_load() on a straight edge (both methods must agree to floating-
    point precision when the geometry is one both can handle).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

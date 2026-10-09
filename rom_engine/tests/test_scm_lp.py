@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_scm_lp.py -- validates rom_engine.scm_lp.LPSingularValueLowerBound
 and certified_error_bound() against a REAL, damped fea_engine
@@ -27,7 +29,7 @@ Checks:
   5. greedy_train() behaves sensibly, mirroring test_scm.py's own
      check for the simplified bound's greedy loop.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM, SingularValueLowerBound

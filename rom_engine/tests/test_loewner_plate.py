@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_loewner_plate.py -- validates rom_engine.loewner/rom_engine.screening
 against plate_fixtures.build_paper_plate_system(): a materially harder,
@@ -10,7 +12,7 @@ This mirrors the working prototype's fem_rom_comparison.py workflow,
 re-pointed at rom_engine's LoewnerROM / screen_physical_modes /
 modal_assurance_criterion instead of the prototype's flat functions.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from rom_engine.loewner import LoewnerROM

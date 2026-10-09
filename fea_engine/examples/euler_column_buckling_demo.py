@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 euler_column_buckling_demo.py -- Module 19 (general-purpose extensions
 roadmap Phase 4): linear buckling eigenvalue solver demo.
@@ -10,7 +12,7 @@ closed form P_cr = pi^2*EI/L^2 -- the same mesh-refinement-convergence
 story every other benchmark in this project tells, applied to the new
 buckling capability.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from fea_engine import Beam2DEulerBernoulli, FESystem

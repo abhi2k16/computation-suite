@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 r"""
 validate_nonlinear_cantilever.py -- validates fea_engine's geometric-
 nonlinearity module (element.TrussTL2D + nonlinear_solver.py) on a
@@ -58,7 +60,7 @@ Five checks:
      and the converged equilibrium is independent of the number of
      load steps used to reach it.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import os
 import numpy as np
 import matplotlib.pyplot as plt

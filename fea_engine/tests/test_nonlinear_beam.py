@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 validate_nonlinear_beam.py -- validates fea_engine's new geometrically
 nonlinear BEAM element, element.Beam2DCorotational (a 2-node planar
@@ -44,7 +46,7 @@ Six checks:
      hand-derived formula, so there's no hand-derivation to get wrong),
      across a wide range of load levels reaching order-one rotations.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import os
 import numpy as np
 import matplotlib.pyplot as plt

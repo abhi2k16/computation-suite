@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 shells_director.py -- Wave 4 item 47 (docs/shells.md Section 1.3 and
 Section 4.6): Phase 1 of a NEW, director-based (degenerated/
@@ -57,7 +59,7 @@ machinery) turned out to be UNNECESSARY for this design -- see
 registered in `ELEMENT_REGISTRY` -- see the class docstring's own
 "STATUS" note on what Phase 3 validates and what remains open.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .base import Element, gauss_product, jacobian

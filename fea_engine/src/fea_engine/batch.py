@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 batch.py -- run many independent FE jobs (parameter sweeps, load cases, datasets).
 
@@ -17,7 +19,7 @@ without its mesh (names are kept, node-set access is not). Re-attach with
 ``system.field(np.asarray(U))`` in the parent if you need ``nodes="tip"``.
 """
 from __future__ import annotations
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 
 import sys
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed

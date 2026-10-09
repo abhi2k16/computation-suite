@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_torch_mesh_transform.py -- Wave 9 addendum item 135 (docs/
 consolidated_future_roadmap.md): validates MeshTransformation's
@@ -28,7 +30,7 @@ Wave 9 precedent):
       review, then real user-machine confirmation" path every prior
       torch-gated item in this project has followed).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

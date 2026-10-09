@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 greedy_frequency_training.py -- end-to-end rom_engine.greedy example.
 
@@ -20,7 +22,7 @@ script shows both: which frequencies each strategy actually trains on,
 and how each performs on a held-out test set concentrated near the
 model's real resonances.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 

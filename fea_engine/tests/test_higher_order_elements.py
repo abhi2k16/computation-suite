@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_higher_order_elements.py -- validates the Phase 1 (general-purpose
 extensions roadmap) higher-order elements: Quad8PlaneStress,
@@ -43,7 +45,7 @@ solution for a prismatic beam (not just a beam-theory approximation),
 so the target isn't an engineering estimate -- it's mathematically
 exact, making this a decisive, not just qualitative, comparison.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from fea_engine import (
     FESystem, Material, D_plane_stress, D_solid3d,

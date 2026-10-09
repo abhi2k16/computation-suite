@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_nonhomogeneous_dirichlet.py -- Wave 16 item 131 (docs/consolidated_
 future_roadmap.md, source: TensorMesh's `Boundary Conditions`
@@ -15,7 +17,7 @@ this project's own "fails loudly rather than silently" precedent
 (Wave 0 item 6's singular-system handling, mesh_transform.py's
 _check_scope(), etc.).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 adaptivity.py -- Wave 8 items 41-45 (docs/consolidated_future_roadmap.md,
 source fem_implementation_lessons.md Chapters 14-15): a posteriori
@@ -29,7 +31,7 @@ fem_implementation_lessons.md names as "provably cannot degenerate,"
 as opposed to repeated green-refinement closure, which the book
 flags as able to produce arbitrarily thin triangles.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 validation.py -- one standard way to check ANY reduced model against its full-order model.
 
@@ -17,7 +19,7 @@ Honest limits: the report is only as meaningful as the test inputs. Use inputs t
 training, and include a few outside the training range to see extrapolation behaviour; the report
 does not know what is inside or outside the training set.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from dataclasses import dataclass, field
 import time
 import numpy as np

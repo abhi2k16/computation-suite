@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 rom_02_galerkin_parametric_rom.py -- Example Gallery: affine parametric
 Galerkin ROM (pod.py + galerkin.py + affine.py) on a two-region
@@ -16,7 +18,7 @@ the FULL-ORDER (fea_engine) curve plotted UNDERNEATH the ROM curve so
 any visible mismatch would be obvious, plus a printed online/offline
 timing speedup exactly like the source script reports.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import os
 import sys
 import numpy as np

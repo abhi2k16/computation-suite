@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 rom_03_greedy_frequency_training.py -- Example Gallery: adaptive
 (greedy) vs. uniform-grid training for a frequency-domain ROM
@@ -20,7 +22,7 @@ full-order-vs-both-ROMs frequency response sweep panel (so the greedy
 basis's resonance-seeking behavior is visible directly, not just in a
 bar chart), plus a saved PNG instead of a plt.show() bar chart.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import os
 import sys
 import numpy as np

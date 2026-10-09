@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 neural_operator.py -- Wave 13 item 117 (fea_engine/docs/consolidated_
 future_roadmap.md): an excitation-to-response operator for the
@@ -46,7 +48,7 @@ optional way every other trainable component in this package is
     `_HAS_TORCH`/`_require_torch()` convention `nonlinear_rom.py`
     already establishes).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from itertools import combinations_with_replacement
 from collections import Counter

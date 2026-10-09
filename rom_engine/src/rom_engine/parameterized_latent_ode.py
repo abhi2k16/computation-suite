@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 parameterized_latent_ode.py -- Wave 13 item 119 (fea_engine/docs/
 consolidated_future_roadmap.md): a parameterized latent-ODE model,
@@ -40,7 +42,7 @@ optional way every other trainable component in this package is:
     (only instantiating `ParameterizedLatentODE` needs torch;
     importing this module never does).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 _HAS_TORCH = False

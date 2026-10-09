@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_beam3d_corotational.py -- validation for Wave 4 item 23
 (docs/consolidated_future_roadmap.md): elements.Beam3DCorotational, the
@@ -63,7 +65,7 @@ structure for the analogous shell element:
    load -- the same qualitative acceptance criterion
    test_nonlinear_beam.py's own CHECK 6 uses for Beam2DCorotational.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.spatial.transform import Rotation as R

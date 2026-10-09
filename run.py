@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 run.py -- run any fea_engine / rom_engine script with a chosen CPU core
 count for the underlying numpy/scipy (OpenBLAS) and, if used, torch
@@ -41,7 +43,7 @@ On Windows PowerShell:
 
     $env:OPENBLAS_NUM_THREADS=8; $env:OMP_NUM_THREADS=8; $env:MKL_NUM_THREADS=8; python path\to\script.py
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import argparse
 import os
 import runpy

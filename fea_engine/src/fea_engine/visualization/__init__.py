@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 visualization -- optional plotting helpers.
 
@@ -13,6 +15,6 @@ fea_engine.mesh's own plot_mesh_2d/plot_mesh_3d/plot_mesh_annotated
 (plain matplotlib, no Gmsh dependency) remain in mesh.py, unchanged, and
 are the supported rendering path.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 
 __all__: list = []

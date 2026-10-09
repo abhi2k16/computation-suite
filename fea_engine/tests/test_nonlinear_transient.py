@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_nonlinear_transient.py -- validates nonlinear_solver.solve_nonlinear_transient(),
 the Newmark-Newton nonlinear implicit time integrator (Module 15 /
@@ -29,7 +31,7 @@ Three checks, following the roadmap doc's own validation plan (Section 4):
    to within Newmark's own numerical-damping/drift tolerance over a
    several-period window.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_soar.py -- validates rom_engine.soar's SOARROM against a small
 synthetic system (exact moment-matching self-consistency) and a REAL,
@@ -46,7 +48,7 @@ Checks:
      docstring and per test_passivity.py's existing, honestly-reported
      8-passive/1-violation sweep of first-order reduction methods.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eig, eigh
 from rom_engine.soar import soar_basis, SOARROM

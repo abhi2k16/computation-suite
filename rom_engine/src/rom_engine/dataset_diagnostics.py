@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 dataset_diagnostics.py -- Wave 10 item 104 (fea_engine/docs/
 consolidated_future_roadmap.md, source: Saverio, Bucci, Farro, Content
@@ -34,7 +36,7 @@ environment.
 Not blocking anything else in this wave -- a "nice to have" the next
 time a training dataset is built, per the roadmap item's own framing.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.spatial.distance import cdist, pdist
 

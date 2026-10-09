@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_hankel_norm.py -- validates rom_engine.hankel_norm.OptimalHankelNormROM
 against a REAL, damped fea_engine cantilever beam, using fea_engine's own
@@ -48,7 +50,7 @@ Checks:
      rather than forcing a directional claim the theorem does not
      actually make.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine.hankel_norm import OptimalHankelNormROM

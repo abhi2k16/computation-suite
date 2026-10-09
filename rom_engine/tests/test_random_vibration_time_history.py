@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_random_vibration_time_history.py -- Wave 12 item 116 (docs/
 consolidated_future_roadmap.md, ICE-ROM/GAP_ANALYSIS.md gap #5):
@@ -6,7 +8,7 @@ method from ICE-ROM/validation/dynamic_comparison.py's own ad hoc
 prototype (already used there to validate a real flat-beam ICE-ROM
 dynamic reproduction).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

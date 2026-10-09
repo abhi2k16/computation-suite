@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_loewner.py -- validates rom_engine.loewner.LoewnerROM.
 
@@ -18,7 +20,7 @@ Checks (mirroring docs/loewner_modal_identification_roadmap.md Section 6):
      and a wrong omega_beta are all rejected loudly rather than
      silently producing a meaningless answer.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import inspect
 import numpy as np
 import pytest

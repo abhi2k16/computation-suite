@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_torch_transient_backend.py -- validation for items 94 AND 95 of the
 PyTorch side-by-side extension (docs/consolidated_future_roadmap.md, "Wave
@@ -64,7 +66,7 @@ ControlBackend) -- see test_torch_autograd_tangent_stiffness.py's own
 updated SANDBOX NOTE for the full combined-run result (30 passed, 1
 benign warning, 0 failed across every torch-gated test this wave added).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

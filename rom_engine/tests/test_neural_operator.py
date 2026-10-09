@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_neural_operator.py -- Wave 13 item 117 (docs/consolidated_future_
 roadmap.md): validates `reduced_eom_residual_trajectory()` (pure NumPy,
@@ -22,7 +24,7 @@ Four lines of evidence for the residual function:
      of the ODE at all) must give a LARGE residual -- confirms the
      function actually discriminates, not just returns "small" always.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

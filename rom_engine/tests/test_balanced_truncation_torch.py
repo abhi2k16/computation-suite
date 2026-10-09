@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_balanced_truncation_torch.py -- Wave 9 addendum item 138 (docs/
 consolidated_future_roadmap.md): validates balanced_truncation.py's
@@ -28,7 +30,7 @@ Same two-part split as this project's established convention:
       torch here); written to run for real, and SHOULD be run at least
       once on a torch-equipped machine.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

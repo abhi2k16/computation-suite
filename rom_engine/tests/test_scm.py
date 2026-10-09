@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_scm.py -- validates rom_engine.scm.SingularValueLowerBound and
 certified_error_bound() against a REAL, damped fea_engine cantilever
@@ -30,7 +32,7 @@ Checks:
      forever or stall), and the reported gap at each newly-added point
      was genuinely the worst available at that iteration.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM, SingularValueLowerBound, certified_error_bound

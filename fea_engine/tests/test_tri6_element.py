@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_tri6_element.py -- validates Tri6PlaneStress (Wave 0 item 7,
 docs/consolidated_future_roadmap.md, source geometry_meshing_
@@ -15,7 +17,7 @@ interior node -- see that file's CHECK 5 docstring for the geometric
 argument), so a shared-edge midpoint really is interior after just two
 triangles.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from fea_engine import FESystem, Material, D_plane_stress, Tri6PlaneStress, mesh
 

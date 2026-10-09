@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 tests/test_build_mesh_dispatcher.py -- Phase 4 validation: build_mesh()'s
 complexity-driven dispatch and the rotational-DOF safety gate (docs/
@@ -15,7 +17,7 @@ and docs/generalized_mesh_grading_roadmap.md) -- that direction's tests
 below now confirm build_mesh() raises MeshGradingError instead of
 confirming it reached a (now nonexistent) Gmsh code path.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

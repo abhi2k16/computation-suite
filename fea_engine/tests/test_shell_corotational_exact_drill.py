@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell_corotational_exact_drill.py -- validation for Wave 4 item 18
 (docs/consolidated_future_roadmap.md): the EXACT single-axis (SO(3))
@@ -68,7 +70,7 @@ Five lines of evidence:
    correctly with the rest of the element rather than being an
    isolated-state artifact.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.spatial.transform import Rotation as R

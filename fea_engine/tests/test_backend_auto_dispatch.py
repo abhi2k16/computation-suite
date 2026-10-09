@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_backend_auto_dispatch.py -- Wave 11 item 108 (docs/consolidated_
 future_roadmap.md): validates backend="auto" (backend_dispatch.py) --
@@ -8,7 +10,7 @@ would (the only backend actually runnable in this sandbox, since torch
 isn't installed here -- see backend_dispatch.py's own docstring for why
 "auto" never needs torch at construction time).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

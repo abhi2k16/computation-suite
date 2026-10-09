@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_beam2d_reissner.py -- validates Beam2DReissner (Wave 17 item 140,
 docs/consolidated_future_roadmap.md): the geometrically exact planar
@@ -40,7 +42,7 @@ Five checks, exactly the roadmap's own validation plan for item 140:
     system in general -- a known property, not a bug -- so this is
     reused rather than invented).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from fea_engine import elements as elmod

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 topopt.py -- Wave 11 item 111 (docs/consolidated_future_roadmap.md,
 source tensormesh_analysis_report.md's "Differentiability" section,
@@ -54,7 +56,7 @@ Matlab", 2001) is included to avoid obvious checkerboarding -- density
 filtering (a genuinely different, arguably better-founded technique) is
 a natural follow-on, not attempted here.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .solver import FESystem

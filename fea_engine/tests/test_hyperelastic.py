@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_hyperelastic.py -- validation for Module 19 (general-purpose
 extensions roadmap Phase 6): material.NeoHookeanMaterial /
@@ -36,7 +38,7 @@ Four lines of evidence:
    is good enough for Newton to actually converge to the correct
    equilibrium, not just "mathematically self-consistent" in isolation.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 screening.py -- automated cross-ROM stability screening for
 non-intrusive Loewner-pencil modal identification.
@@ -36,7 +38,7 @@ this module, but the convention is set here for any future one) should
 follow the same pattern: no function silently reads global RNG state a
 caller cannot see or control.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from typing import NamedTuple
 
 import numpy as np

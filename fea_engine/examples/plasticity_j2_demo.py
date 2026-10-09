@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 plasticity_j2_demo.py -- Phase 6 (general-purpose extensions roadmap)
 worked example: Hex8PlasticJ2 (small-strain J2 plasticity, continuum).
@@ -9,7 +11,7 @@ validated 1-D closed form at every step: this is the roadmap's
 headline validation requirement ("uniaxial stress path should match
 PlasticMaterial1D's already-validated 1-D result exactly").
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from fea_engine import Hex8PlasticJ2, PlasticMaterialJ2, FESystem

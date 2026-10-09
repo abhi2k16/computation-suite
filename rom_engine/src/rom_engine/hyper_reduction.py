@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 hyper_reduction.py -- hyper-reduction for nonlinear ROMs: ECSW, DEIM/QDEIM, gappy reconstruction.
 
@@ -36,7 +38,7 @@ HONEST LIMITS.
 This module never imports fea_engine. Callers pass plain arrays and callbacks (see the tests for a
 fea_engine-based wiring).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import qr, lu_factor, lu_solve
 

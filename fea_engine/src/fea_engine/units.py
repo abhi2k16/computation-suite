@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 units.py -- unit LABELS (no conversion engine).
 
@@ -15,7 +17,7 @@ the labels will not stop you; `check_consistent` only catches two *labelled* obj
 disagree. Consistent sets: SI (m, N, kg, s -> Pa) and MM_N_TONNE (mm, N, tonne, s -> MPa).
 """
 from __future__ import annotations
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 
 from dataclasses import dataclass
 

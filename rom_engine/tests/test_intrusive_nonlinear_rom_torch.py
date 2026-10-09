@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_intrusive_nonlinear_rom_torch.py -- torch-backend addendum to Wave
 17 item 144 (fea_engine/docs/consolidated_future_roadmap.md), validates
@@ -29,7 +31,7 @@ built on, rather than a new synthetic system -- so any agreement here
 is on the real, genuinely nonlinear Beam2DReissner cantilever this
 whole Wave 17 track targets, not a toy linear system.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

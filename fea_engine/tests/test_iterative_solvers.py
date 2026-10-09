@@ -1,10 +1,12 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_iterative_solvers.py -- Wave 8 items 36-39 (docs/consolidated_
 future_roadmap.md): fill-reducing reordering, preconditioners,
 conjugate gradients, and classical stationary iterations
 (iterative_solvers.py).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 import scipy.sparse as sp

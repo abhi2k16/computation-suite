@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 loewner_fixtures.py -- synthetic ground-truth system + FRF-sampling
 helpers for validating rom_engine.loewner / rom_engine.screening.
@@ -18,7 +20,7 @@ exactly the boundary that keeps that true: everything on this side of
 `frf()` "knows" the system, everything that consumes its OUTPUT does
 not.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 

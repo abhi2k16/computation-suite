@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell_corotational_mixed_formulation.py -- validation for the
 Module 23 mixed-formulation ATTEMPT at Shell4MITCCorotational's von
@@ -45,7 +47,7 @@ Three checks:
    does not exercise a real Newton solve, so it is unaffected by the
    divergence documented above.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.integrate import solve_bvp, cumulative_trapezoid

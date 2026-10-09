@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell_director_kinematics.py -- validation for Wave 4 item 47,
 Phase 1 (docs/director_based_shell_element_roadmap.md Sections 1-2):
@@ -51,7 +53,7 @@ Six lines of evidence:
    necessary sanity check: zero displacement gives exactly zero
    drilling angle.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

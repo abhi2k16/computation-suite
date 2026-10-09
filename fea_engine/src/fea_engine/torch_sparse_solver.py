@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 torch_sparse_solver.py -- Wave 0 item 3 (docs/consolidated_future_
 roadmap.md, source tensormesh_comparative_analysis.md Section 6.1): a
@@ -82,7 +84,7 @@ tests/test_torch_sparse_solver.py pass, on CPU (device="cpu"):
 Run so far on CPU only -- device="cuda" is implemented and available
 on this same install but not yet separately exercised.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import scipy.sparse as sp
 

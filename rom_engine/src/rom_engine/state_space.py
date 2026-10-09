@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 state_space.py -- convert a second-order structural system (M, C, K),
 plus an explicit INPUT map B and OUTPUT map Cout, into first-order
@@ -56,7 +58,7 @@ model before deciding on a specific port, though krylov.py/
 balanced_truncation.py are only really useful with a genuinely small
 number of inputs/outputs (that's the whole point of the "port" view).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_metrics.py -- validates rom_engine.metrics.modal_assurance_criterion
 and rom_engine.metrics.r_squared.
@@ -26,7 +28,7 @@ Checks (r_squared):
      via flattening, not rejected.
   10. Mismatched shapes and a zero-variance y_true both raise.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from rom_engine.metrics import modal_assurance_criterion, r_squared

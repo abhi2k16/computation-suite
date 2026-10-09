@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_augmented_lagrangian_contact.py -- Wave 3 item 15 (docs/
 consolidated_future_roadmap.md): validates nonlinear_solver.
@@ -38,7 +40,7 @@ Four lines of evidence:
    zero displacement and lambda=0; a load that never reaches the wall
    never activates contact and lambda stays exactly 0 throughout.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

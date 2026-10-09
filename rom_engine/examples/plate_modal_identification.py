@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 plate_modal_identification.py -- end-to-end rom_engine.loewner /
 rom_engine.screening example: non-intrusive modal identification on
@@ -45,7 +47,7 @@ demonstrate and validate the IDENTIFICATION METHOD against a real,
 paper-matched structural model's own honest ground truth -- not to
 reproduce the paper's exact Table 2 numbers.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 postprocess.py -- Module 7: derived dynamic-response quantities.
 
@@ -13,7 +15,7 @@ FEM system doesn't have a simple Miles'-equation-style shortcut, so
 variance_from_psd() does the numerical integration directly rather than
 assuming a formula that would only be valid for a idealized SDOF.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

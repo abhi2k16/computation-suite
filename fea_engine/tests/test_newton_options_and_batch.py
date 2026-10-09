@@ -1,8 +1,10 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_newton_options_and_batch.py -- v1.0.1 P2: shared NewtonOptions and batch.map.
 Both are additive; drivers called without `options=` behave exactly as before.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import inspect
 import os
 

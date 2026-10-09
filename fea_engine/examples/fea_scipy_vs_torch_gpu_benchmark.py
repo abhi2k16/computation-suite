@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 fea_scipy_vs_torch_gpu_benchmark.py -- fea_engine solver-backend benchmark:
 SciPy (CPU, sparse direct LU) vs. PyTorch (CPU, sparse Jacobi-
@@ -49,7 +51,7 @@ Every solved displacement field is cross-checked against SciPy's
 answer (relative max-abs error) before it's trusted for the plot --
 this project's standing practice throughout its example galleries.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import gc
 import os
 import time

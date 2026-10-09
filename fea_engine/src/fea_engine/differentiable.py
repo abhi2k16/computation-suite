@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 differentiable.py -- Wave 10 (docs/consolidated_future_roadmap.md),
 sourced from Saverio, Bucci, Farro, Content & Sipp, "An end-to-end
@@ -75,7 +77,7 @@ like an ADDITIONAL, trainable internal-force term. Every function
 below (corrected_residual, corrected_tangent, adjoint_gradient's own
 derivation) is consistent with this one convention.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 try:

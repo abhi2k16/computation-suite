@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 mixed_assembly.py -- Wave 11 item 110 (docs/consolidated_future_
 roadmap.md, source tensormesh_analysis_report.md's "Mixed Assembly"
@@ -82,7 +84,7 @@ Block system, per element and assembled globally:
 (`m = [1,1,1,0,0,0]`, the trace/divergence operator on Voigt strain),
 `Kpp = integral(Np^T Np) dV / kappa`.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .elements.base import jacobian

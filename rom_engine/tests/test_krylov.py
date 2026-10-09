@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_krylov.py -- validates rom_engine.krylov.KrylovROM against a REAL,
 damped fea_engine cantilever beam (fea_fixtures.damped_cantilever_beam_system()),
@@ -59,7 +61,7 @@ Section 7, Phase 3):
      function, not a universal guarantee that every extra k always
      halves the error.)
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eig, eigh
 from rom_engine.krylov import KrylovROM, arnoldi_basis, two_sided_arnoldi_bases

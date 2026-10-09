@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 plate_fixtures.py -- the "Example 1" simply-supported rectangular steel
 plate benchmark from:
@@ -47,7 +49,7 @@ mechanism). This fixture is a legitimate, independent "truth" system
 for benchmarking non-intrusive identification against -- not a
 reproduction of the paper's exact Table 2 numbers.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 

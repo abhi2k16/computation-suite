@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 mesh.py -- Module 2: geometric mesh generation and boundary-node
 selection.
@@ -31,7 +33,7 @@ you opt into (built by geometry_engine.py when Gmsh actually returns
 more than one element type, see that module), not something imposed on
 the single-type case.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from dataclasses import dataclass, field
 import numpy as np
 from scipy.spatial import cKDTree

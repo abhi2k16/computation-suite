@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 hankel_norm.py -- optimal Hankel norm approximation (Adamjan-Arov-Krein
 1971 theory; explicit state-space realization due to Glover, "All
@@ -146,7 +148,7 @@ of honestly omitting a method it cannot back with a verified guarantee
 frequency_response() directly against the full-order model, exactly
 like those two classes' own tests already do.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import warnings
 
 import numpy as np

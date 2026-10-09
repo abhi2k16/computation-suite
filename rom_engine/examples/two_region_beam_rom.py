@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 two_region_beam_rom.py -- end-to-end rom_engine example.
 
@@ -30,7 +32,7 @@ Every ROM answer in the sweep is cross-checked against a real
 fea_engine full-order solve so the printed accuracy numbers are
 genuine, not illustrative.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import time
 import numpy as np
 

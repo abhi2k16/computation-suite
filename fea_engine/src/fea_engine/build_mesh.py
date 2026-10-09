@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 build_mesh.py -- Phase 4 of docs/generalized_mesh_grading_roadmap.md: the
 single entry point that decides, from a feature list and the target
@@ -29,7 +31,7 @@ the Gmsh path now raises `MeshGradingError` with an explanation instead
 of silently falling back to a different (unverified-for-that-case) mesh
 path.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from .grading import Hole, MeshGradingError, DEFAULT_GROWTH_RATIO
 from . import mesh as mesh_mod
 from .elements.plates import Quad4MindlinPlate

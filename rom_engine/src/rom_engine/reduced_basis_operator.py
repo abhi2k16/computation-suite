@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 reduced_basis_operator.py -- Wave 13 item 118 (fea_engine/docs/
 consolidated_future_roadmap.md): a discretization-robust encoder/
@@ -57,7 +59,7 @@ trainable component in this package is:
     coordinate (e.g. an exact POD projection), when such ground truth
     is available for training.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.interpolate import RBFInterpolator
 

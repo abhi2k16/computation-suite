@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 fea_03_hertzian_contact.py -- Example Gallery: an elastic block pressed
 onto a rigid circular obstacle, using GapContactCurvedFriction
@@ -24,7 +26,7 @@ different, non-penalty contact formulation) -- the SHAPE is the
 point, and is checked against zero force outside the patch, not
 against a closed-form Hertz pressure profile.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle

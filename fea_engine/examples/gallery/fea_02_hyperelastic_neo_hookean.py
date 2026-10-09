@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 fea_02_hyperelastic_neo_hookean.py -- Example Gallery: large-strain
 Neo-Hookean hyperelasticity (Tet4NeoHookean), mirroring TensorMesh's
@@ -18,7 +20,7 @@ solve of the SAME tet/material via the ordinary Tet4Solid3D element
 load and visibly diverge as the load grows, the real, honest
 "hyperelastic vs. linear" signature (not asserted, shown).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Line3DCollection

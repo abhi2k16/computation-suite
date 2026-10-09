@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell4director_phase3.py -- validation for Wave 4 item 47, Phase 3
 (docs/director_based_shell_element_roadmap.md Section 5, steps 7-8):
@@ -57,7 +59,7 @@ tangent_stiffness()/strain_energy() calls):
    physics violation would) -- the practical form of the decisive claim
    a caller of internal_force() actually observes.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

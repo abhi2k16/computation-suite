@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_explicit_nonlinear_transient.py -- validates nonlinear_solver.
 solve_transient_explicit_nonlinear(), the nonlinear central-difference
@@ -25,7 +27,7 @@ IMPLICIT nonlinear driver, adapted to the explicit method:
    nonlinear internal-force substitution is physically sound, not just
    "runs without error."
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

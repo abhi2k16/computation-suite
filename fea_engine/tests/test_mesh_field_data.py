@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_mesh_field_data.py -- Wave 14 items 121 and 123 (docs/consolidated_
 future_roadmap.md), scoped directly against TensorMesh's own Meshes
@@ -17,7 +19,7 @@ in this package (the entire codebase before this wave) only ever touches
 .nodes/.elements/.blocks/.dim, none of which changed shape or meaning
 here.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from fea_engine.mesh import (

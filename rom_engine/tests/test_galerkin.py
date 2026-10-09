@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_galerkin.py -- validates rom_engine.galerkin.GalerkinROM against
 real fea_engine cantilever-beam models.
@@ -25,7 +27,7 @@ Checks:
      recomputed, and gives the same answer as passing F to
      reduce_system() directly.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.linalg import eigh, qr

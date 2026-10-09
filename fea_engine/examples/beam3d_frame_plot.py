@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 beam3d_frame_plot.py -- Phase 3 (general-purpose extensions roadmap)
 worked example: visual verification companion to
@@ -10,7 +12,7 @@ displacement against test_beam3d.py's independently-assembled
 reference value, so the picture and the validated number are shown
 together, not just the picture on its own.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 

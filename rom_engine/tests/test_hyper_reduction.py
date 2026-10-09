@@ -1,5 +1,7 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """Hyper-reduction (hyper_reduction.py): ECSW on a real fea_engine nonlinear beam, DEIM/QDEIM on synthetic data."""
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

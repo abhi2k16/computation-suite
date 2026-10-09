@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 Tests for differentiable_correction.py (Wave 10 item 103). See
 docs/differentiable_rom_correction_design.md for the design note this
@@ -5,7 +7,7 @@ prototype implements. reduced_residual() runs UNCONDITIONALLY (pure
 NumPy); calibrate_reduced_correction_explicit()/ScalarModalCorrection
 are torch-gated.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

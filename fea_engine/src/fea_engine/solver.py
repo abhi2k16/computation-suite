@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 solver.py -- Module 4: global assembly, boundary conditions, and the
 linear/eigenvalue solve.
@@ -43,7 +45,7 @@ material/physics, e.g. different D matrices per block) or a single
 plain value reused for every block (the common case: one physics, just
 more than one element topology) -- see _per_block_arg().
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import warnings
 
 import numpy as np

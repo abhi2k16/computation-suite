@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 rom_06_dataset_diagnostics_uq.py -- Example Gallery: training-dataset
 diagnostics (dataset_diagnostics.py: coverage, PCA dimensionality,
@@ -40,7 +42,7 @@ EI2, with the true full-order fea_engine curve overlaid, showing the
 ensemble spread widening in the low-EI1 (highly nonlinear 1/EI-ish
 response) region where the surrogate is genuinely least certain.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import os
 import sys
 import numpy as np

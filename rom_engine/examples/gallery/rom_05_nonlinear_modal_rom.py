@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 rom_05_nonlinear_modal_rom.py -- Example Gallery: geometrically nonlinear
 reduced-order modeling (nonlinear_rom.py's PolynomialModalROM, the
@@ -23,7 +25,7 @@ Panel 2: relative error of the ROM's mid-span deflection vs. load
 level, on a log scale -- the actual accuracy claim, not just "the
 curves look close."
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "tests"))
 

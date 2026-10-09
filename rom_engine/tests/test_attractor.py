@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_attractor.py -- validates rom_engine.attractor (Wave 17 item 146,
 fea_engine/docs/consolidated_future_roadmap.md).
@@ -19,7 +21,7 @@ frequency_sweep/amplitude_sweep, and the n_jobs=parallel path), each
 checked against an independent closed-form or synthetic-signal
 reference rather than merely "runs without crashing".
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.integrate import solve_ivp

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 arc_length_snap_through_plot.py -- Phase 5 (general-purpose extensions
 roadmap) worked example: visual verification companion to
@@ -11,7 +13,7 @@ plotted together against the closed-form curve -- the "S-shaped"
 snap-through curve made visible, and each solver's actual REACH along
 it shown directly rather than described in words.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 

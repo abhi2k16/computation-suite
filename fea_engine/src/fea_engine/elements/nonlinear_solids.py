@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 nonlinear_solids.py -- Module 19 (general-purpose extensions roadmap
 Phase 6): nonlinear continuum elements, Hex8PlasticJ2 (small-strain J2
@@ -22,7 +24,7 @@ extension -- material/geometric NONLINEARITY on TOP of existing
 elements -- mirroring how beams3d.py was split out for Phase 3 rather
 than folded into beams.py.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .base import gauss_product, jacobian, tet_quadrature_4pt

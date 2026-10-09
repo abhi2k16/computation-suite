@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_node_to_segment_contact.py -- Wave 3 items 16-17 (docs/
 consolidated_future_roadmap.md): validates closest_point_on_segment_2d(),
@@ -45,7 +47,7 @@ Six lines of evidence:
    contact.py's own CHECK 3 structure), and mu=0 reproduces
    NodeToSegmentContact2D's own (frictionless) force exactly.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

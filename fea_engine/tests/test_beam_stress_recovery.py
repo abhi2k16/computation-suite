@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_beam_stress_recovery.py -- Wave 12 item 115 (docs/consolidated_
 future_roadmap.md, ICE-ROM/GAP_ANALYSIS.md gap #4): validates
@@ -46,7 +48,7 @@ Checks, in increasing order of how much of the formula they exercise:
      scalar-call-in-a-loop reference (an independent, dumb, obviously-
      correct implementation of "the same thing done N times").
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

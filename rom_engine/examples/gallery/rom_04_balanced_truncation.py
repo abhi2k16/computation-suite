@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 rom_04_balanced_truncation.py -- Example Gallery: state-space balanced
 truncation model-order reduction (balanced_truncation.py) on a
@@ -28,7 +30,7 @@ establishes it: first modally truncate to a moderate, well-conditioned
 number of undamped modes (plain eigh(K,M)), THEN balance-and-truncate
 further from that intermediate model.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import os
 import numpy as np
 import matplotlib.pyplot as plt

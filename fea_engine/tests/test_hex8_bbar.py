@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_hex8_bbar.py -- Wave 2 item 11 (docs/consolidated_future_roadmap.
 md, source general_purpose_extensions_roadmap.md / nonlinear_fem_
@@ -22,7 +24,7 @@ Three lines of evidence:
    (ratio collapsing further from 1.0) as nu->0.5, while Hex8SolidBbar
    should stay comparatively stable.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from fea_engine import Hex8Solid3D, Hex8SolidBbar, FESystem, D_solid3d, Material
 from fea_engine.mesh import box_mesh

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 shell_demo.py -- Phase 7 (general-purpose extensions roadmap) worked
 example: Shell4MITC (MITC4 general shell element -- membrane + bending
@@ -27,7 +29,7 @@ Two demonstrations, matching the roadmap's own validation plan:
    bending-locking limitation) don't need to match at any one coarse
    mesh, only in their converged limits.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from fea_engine import (Shell4MITC, D_shell, Material, D_mindlin_plate,

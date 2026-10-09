@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 random_vibration.py -- PSD (power spectral density) random-vibration
 response, built as a thin layer on top of frequency.FrequencyROM's
@@ -25,7 +27,7 @@ one-concept-per-module convention (the same reasoning `greedy.py`/
 machinery) with the two extra lines PSD propagation needs, and nothing
 about it is specific to how the underlying ROM was built.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

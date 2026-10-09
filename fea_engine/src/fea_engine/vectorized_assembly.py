@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 vectorized_assembly.py -- Wave 11 item 107 (docs/consolidated_future_
 roadmap.md): a tensorized (no Python loop over elements) global
@@ -69,7 +71,7 @@ duplicate-index accumulation `scipy.sparse.coo_matrix` performs on
 tests/test_torch_vectorized_assembly.py, not merely assumed identical
 because both are called "COO".
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .mesh_transform import MeshTransformation

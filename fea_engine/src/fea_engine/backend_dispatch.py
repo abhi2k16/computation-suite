@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 backend_dispatch.py -- Wave 11 item 108 (docs/consolidated_future_
 roadmap.md, source tensormesh_analysis_report.md Sec 5 "Sparse
@@ -45,7 +47,7 @@ path can plausibly pay off. Two hard constraints, not heuristics:
     doesn't get the GPU/CG speedup and uses the same safe SciPy path
     `backend="scipy"` would have used anyway.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 #: Free-dof count above which "auto" prefers the torch/CG path, IF the

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 loads.py -- Module 6: load definitions.
 
@@ -16,7 +18,7 @@ call `load.force_at(t, n_dof, npn)` (transient) or read `.pattern`/
 `.F0`/`.freqs`/`.psd` directly (harmonic/PSD) -- nothing else in the
 package needs to change.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from dataclasses import dataclass, field
 from typing import Callable
 import numpy as np

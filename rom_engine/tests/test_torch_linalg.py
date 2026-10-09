@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_torch_linalg.py -- Wave 9 addendum item 138 (docs/consolidated_
 future_roadmap.md): validates rom_engine.torch_linalg.py's standalone
@@ -33,7 +35,7 @@ project's established convention:
       to run for real, and SHOULD be run at least once on a torch-
       equipped machine.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.linalg import solve_continuous_lyapunov, solve_sylvester

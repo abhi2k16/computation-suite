@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 beam2d_reissner_vectorized.py -- Wave 17 item 147 (docs/consolidated_
 future_roadmap.md): a batched (all-elements-at-once NumPy) internal_
@@ -53,7 +55,7 @@ tangent_stiffness() calls to < 1e-12 relative error, on the same random
 large-rotation states test_beam2d_reissner.py's own CHECK (a) uses --
 this item's own stated validation criterion.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .vectorized_assembly import scatter_global_stiffness

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_plate_fixtures.py -- validates plate_fixtures.build_paper_plate_system()
 against the closed-form Navier solution for a simply-supported rectangular
@@ -16,7 +18,7 @@ Checks:
      of their stated coordinates (the mesh is fine enough to resolve
      them, not a coarse mismatch).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import plate_fixtures as pf
 

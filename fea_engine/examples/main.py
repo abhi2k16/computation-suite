@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 main.py -- Module 5: post-processing, visualization, and execution
 pipeline.
@@ -46,7 +48,7 @@ effect of the integration scheme is isolated from everything else:
        case here where reduced integration is both stable and slightly
        more accurate, with no caveats
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 

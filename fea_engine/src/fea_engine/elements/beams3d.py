@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 beams3d.py -- Module 18 (general-purpose extensions roadmap Phase 3):
 a linear 3-D frame element, Beam3DEulerBernoulli. The 2-D beam
@@ -21,7 +23,7 @@ blocks are the SAME Euler-Bernoulli bending physics, just oriented
 differently, and a fixed local coordinate SIGN convention is the only
 thing that differs between them).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .base import Element

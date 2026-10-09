@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_membrane_expansion.py -- Wave 12 item 112 (docs/consolidated_
 future_roadmap.md, ICE-ROM/GAP_ANALYSIS.md gap #1): validates
@@ -20,7 +22,7 @@ Three independent lines of evidence:
      from -- the actual "does this do what it says" sanity check on
      real fea_engine data.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

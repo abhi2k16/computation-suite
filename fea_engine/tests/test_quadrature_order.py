@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_quadrature_order.py -- Wave 15 item 125 (docs/consolidated_future_
 roadmap.md, source: TensorMesh's "Elements and Quadrature" documentation
@@ -27,7 +29,7 @@ Two decisive claims are checked directly, not assumed:
    result, the decisive signature of having reached the integrand's true
    degree rather than merely using more points.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from math import factorial

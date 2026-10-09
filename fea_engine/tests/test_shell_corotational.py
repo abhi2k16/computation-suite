@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell_corotational.py -- validation for Phases A and B of
 docs/geometric_nonlinear_shell_roadmap.md: elements.Shell4MITCCorotational,
@@ -64,7 +66,7 @@ A's complex-step version"):
    linear-scaling (smaller deflection than naive linear scaling would
    predict) characteristic of large-deflection bending.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

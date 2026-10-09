@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_beam2d_reissner_vectorized_torch.py -- validates the Wave 17 item
 147 torch addendum (docs/consolidated_future_roadmap.md,
@@ -54,7 +56,7 @@ Three checks, matching this item's own stated validation criteria:
     yet separately exercised" honest framing for its own untested CUDA
     path.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

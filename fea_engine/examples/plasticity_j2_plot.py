@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 plasticity_j2_plot.py -- Phase 6 (general-purpose extensions roadmap)
 worked example: visual verification companion to plasticity_j2_demo.py.
@@ -9,7 +11,7 @@ curve and the exact elastic-unload line (slope E) -- the visual
 signature of correct plasticity (a sharp kink at yield, a straight-line
 unload with permanent set) made directly checkable by eye.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 

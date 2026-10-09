@@ -1,5 +1,7 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """Component mode synthesis (cms.py), validated against a real fea_engine clamped-clamped beam split in two."""
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.linalg import eigh

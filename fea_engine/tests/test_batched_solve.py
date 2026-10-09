@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_batched_solve.py -- Wave 11 item 109 (docs/consolidated_future_
 roadmap.md): validates solve_batched()/solve_static_batched()
@@ -8,7 +10,7 @@ independently-solved reference exactly), for both dense and sparse K,
 and the real end-to-end multi-load-case FESystem use case this item was
 built for (a ROM/surrogate training-snapshot sweep).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.sparse import csr_matrix

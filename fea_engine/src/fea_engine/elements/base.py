@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 element.py -- Module 3: Gauss-Legendre integration core engine +
 element formulations.
@@ -55,7 +57,7 @@ FESystem's SciPy-vs-PyTorch backend= choice), never a silent
 replacement of the existing (honestly-labeled-unsafe) reduced_
 stiffness() default.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.special import roots_jacobi   # required dep (scipy>=1.8) -- see
                                           # tri_quadrature()/tet_quadrature()

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_beam2d_reissner_autograd.py -- validates
 fea_engine.autograd_tangent.beam2d_reissner_tangent_autograd() (Wave 17
@@ -33,7 +35,7 @@ so both checks validate the same state space):
    check that the torch strain-energy expression above is genuinely
    frame-invariant, not just numerically close by coincidence).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

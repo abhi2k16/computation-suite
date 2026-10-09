@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 autograd_tangent.py -- Wave 0 item 2 (docs/consolidated_future_
 roadmap.md, source tensormesh_comparative_analysis.md Section 6.3): an
@@ -47,7 +49,7 @@ module uses bare `torch` ops only -- no `tensormesh`/`torch-sla`
 package import anywhere, TensorMesh's own docs were consulted only as
 design inspiration for §6.3's suggested approach.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .elements.base import jacobian, tet_quadrature_4pt, gauss_product

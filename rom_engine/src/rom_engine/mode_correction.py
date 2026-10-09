@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 mode_correction.py -- mode acceleration and modal truncation augmentation
 (Besselink, Tabak, Lutowska, van de Wouw, Nijmeijer, Rixen, Hochstenbach
@@ -31,7 +33,7 @@ K, F, and the basis are plain numpy arrays (or a basis object with a .V
 attribute, e.g. a fitted pod.PodBasis or a galerkin.GalerkinROM's own
 .V), on the same full DOF numbering throughout.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

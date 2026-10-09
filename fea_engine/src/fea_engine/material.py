@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 material.py -- material/section data and constitutive (stress-strain)
 matrix builders.
@@ -15,7 +17,7 @@ No other module needs to change -- fea_engine.elements element classes
 just take whatever D their stiffness() expects as a plain array/tuple
 argument.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from dataclasses import dataclass, field
 import numpy as np
 

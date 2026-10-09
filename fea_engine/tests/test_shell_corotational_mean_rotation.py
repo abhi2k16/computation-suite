@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell_corotational_mean_rotation.py -- validation for Wave 4 item 46
 building block A (docs/shell_rotation_coupling_fix_roadmap.md,
@@ -51,7 +53,7 @@ Four lines of evidence:
    internal_force()/tangent_stiffness() evaluation, so slow or
    non-converging behavior would be a real practical blocker.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from scipy.spatial.transform import Rotation as R

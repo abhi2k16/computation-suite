@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 newton_options.py -- one shared options object for the nonlinear drivers.
 
@@ -22,7 +24,7 @@ Rules (kept simple on purpose):
 * Old calls without ``options=`` behave exactly as before.
 """
 from __future__ import annotations
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 
 import functools
 import inspect

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_arc_length.py -- validation for Module 19 (general-purpose
 extensions roadmap Phase 5): nonlinear_solver.solve_nonlinear_arc_length()
@@ -36,7 +38,7 @@ Three lines of evidence:
    land on the same equilibrium points, interpolated to a shared delta
    grid, wherever their paths overlap.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

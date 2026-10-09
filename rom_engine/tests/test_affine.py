@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_affine.py -- validates rom_engine.affine.AffineDecomposition against
 a real two-region fea_engine beam model.
@@ -24,7 +26,7 @@ Checks:
      (order-of-magnitude, not a tight bound) to avoid a flaky test on
      a shared/slow sandbox machine.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import time
 import numpy as np
 import pytest

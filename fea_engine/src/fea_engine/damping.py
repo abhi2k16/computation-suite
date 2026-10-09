@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 damping.py -- damping models needed by solver.py's dynamics solve
 methods (solve_transient_implicit/explicit, solve_harmonic, ...).
@@ -7,7 +9,7 @@ Split out of the original config.py during the fea_engine restructuring
 property specification, not a constitutive/material law) -- no logic
 changed, only file location.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from dataclasses import dataclass
 import numpy as np
 

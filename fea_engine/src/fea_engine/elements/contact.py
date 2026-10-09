@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 contact.py -- gap/contact elements: GapContactPenalty (flat-wall,
 fixed normal), GapContactCurvedFriction (updating normal + Coulomb
@@ -16,7 +18,7 @@ fea_engine restructuring; no logic changed, only file location (this
 docstring paragraph and everything below the historical GapContact*
 classes is new, Wave 3).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .base import Element

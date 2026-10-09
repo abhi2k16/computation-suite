@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 certified_bound_cantilever.py -- end-to-end rom_engine.scm example.
 
@@ -36,7 +38,7 @@ This script does two things honestly, in order:
      and why re-implementing it is noted as optional future work rather
      than done here.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.linalg import eigh
 

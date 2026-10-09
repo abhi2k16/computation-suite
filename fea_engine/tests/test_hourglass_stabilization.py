@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_hourglass_stabilization.py -- Wave 2 item 12 (docs/consolidated_
 future_roadmap.md, source nonlinear_fem_lessons.md's appendix Sec.
@@ -29,7 +31,7 @@ per-feature validation depth:
    Hex8's documented shear locking (ratio vs. Euler-Bernoulli moves
    closer to 1.0 than full integration's own ~0.71).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from fea_engine import Hex8Solid3D, FESystem, D_solid3d, Material
 from fea_engine.mesh import box_mesh

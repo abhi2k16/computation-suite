@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 Tests for ensemble_uq.py (Wave 10 item 105). EnsembleUQ itself is
 tested UNCONDITIONALLY (no torch needed) via a hand-built, seed-
@@ -9,7 +11,7 @@ neural_surrogate_ensemble() -- the real NeuralSurrogate-based use case
 -- is torch-gated, mirroring every other NeuralSurrogate-touching test
 in this package (test_nonlinear_rom.py::TestNeuralSurrogate).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

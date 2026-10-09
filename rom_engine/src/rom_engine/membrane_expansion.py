@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 membrane_expansion.py -- Wave 12 item 112 (docs/consolidated_future_
 roadmap.md, ICE-ROM/GAP_ANALYSIS.md gap #1): the paper's own membrane-
@@ -39,7 +41,7 @@ n_modes)), matching every mode-shape and snapshot-matrix convention
 already established elsewhere in this package (`pod.py`, `galerkin.py`,
 `AppliedLoadStrategy`'s own `V` parameter).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .nonlinear_rom import _monomial_indices

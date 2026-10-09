@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_plasticity_kinematic.py -- Wave 2 item 14 (docs/consolidated_
 future_roadmap.md, source nonlinear_fem_lessons.md appendix status
@@ -42,7 +44,7 @@ Six lines of evidence:
 6. test_rigid_body_modes_and_zero_state -- standard minimum-correctness
    structural sanity check.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

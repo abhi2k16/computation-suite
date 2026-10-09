@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 scm.py -- a genuinely CERTIFIED (rigorously provable, not just a
 practical indicator) lower bound on sigma_min(A(omega)), the quantity
@@ -58,7 +60,7 @@ not the classical LP-based algorithm -- so nothing here should be
 confused with, or cited as, the Huynh/Rozza/Sen/Patera or Chen et al.
 methods themselves.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 

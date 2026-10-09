@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_singular_system.py -- Wave 0 item 6 (docs/consolidated_future_
 roadmap.md, source fem_implementation_lessons.md): validates
@@ -27,7 +29,7 @@ fixed dofs:
    it would hide what is actually a missing-boundary-condition modeling
    error.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 grading.py -- Module: geometry-agnostic mesh-grading / sizing-function
 logic, shared by mesh.py's structured front end and geometry/gmsh_engine.py's
@@ -38,7 +40,7 @@ dispatcher (Phase 4), which is the layer that actually knows about
 is deliberate: sizing-function math should be testable without importing any
 element code at all.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from dataclasses import dataclass, field
 import numpy as np
 

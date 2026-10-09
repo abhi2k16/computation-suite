@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 euler_column_buckling_plot.py -- Phase 4 (general-purpose extensions
 roadmap) worked example: visual verification companion to
@@ -14,7 +16,7 @@ of solve_linear_buckling()) overlaid on the undeformed column, which
 should look exactly like the textbook half-sine-wave pin-pin buckling
 shape -- a qualitative sanity check a table of numbers can't give you.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 

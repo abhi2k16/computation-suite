@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 wave13_validation.py -- Wave 13 item 120 (fea_engine/docs/consolidated_
 future_roadmap.md): a cross-configuration validation harness tying
@@ -46,7 +48,7 @@ executed. Needs confirmation on a machine with PyTorch installed,
 exactly like `ExcitationResponseOperator`'s and
 `ParameterizedLatentODE`'s own torch-gated tests.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .nonlinear_rom import AppliedLoadStrategy, PolynomialModalROM

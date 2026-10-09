@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_torch_vectorized_assembly.py -- Wave 9 addendum item 136 (docs/
 consolidated_future_roadmap.md): validates assemble_stiffness_
@@ -27,7 +29,7 @@ test file) and this project's established convention:
       authored in (no usable torch here); written to run for real, and
       SHOULD be run at least once on a torch-equipped machine.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

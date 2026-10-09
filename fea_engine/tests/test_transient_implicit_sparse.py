@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_transient_implicit_sparse.py -- Wave 16 item 134 (docs/
 consolidated_future_roadmap.md, source: TensorMesh's `Time Integration`
@@ -24,7 +26,7 @@ free-vibration energy-decay check (not just formula-matching) to catch
 a plausible-but-wrong implementation the machine-precision numerical
 checks alone might miss.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

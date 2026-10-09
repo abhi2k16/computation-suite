@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 fea_engine -- a small, additive from-scratch FEA package.
 
@@ -60,7 +62,7 @@ behind a small registry or a subclass, so extending the package means
 ADDING a function/class, not editing existing ones. See each module's
 docstring for the specific extension point.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from . import (material, damping, mesh, grading, build_mesh, geometry, elements, loads, solver,
                postprocess, nonlinear_solver, iterative_solvers, adaptivity)
 

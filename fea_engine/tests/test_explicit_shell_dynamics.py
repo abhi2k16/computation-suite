@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_explicit_shell_dynamics.py -- validates Wave 6 item 33 (docs/
 consolidated_future_roadmap.md: "Explicit dynamics for the corotational
@@ -35,7 +37,7 @@ would be a natural follow-up if a real use case needs it (mirroring
 Wave 4 item 24's own "scoped-down probe, not a full run" precedent for
 the exact same sandbox constraint).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

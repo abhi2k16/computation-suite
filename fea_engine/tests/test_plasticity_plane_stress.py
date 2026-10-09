@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_plasticity_plane_stress.py -- Wave 2 item 13 (docs/consolidated_
 future_roadmap.md, source general_purpose_extensions_roadmap.md):
@@ -33,7 +35,7 @@ Mirrors tests/test_plasticity_j2.py's five-line-of-evidence structure
    body modes (2 translations + 1 rotation) at u=0, zero internal
    force at u=0.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

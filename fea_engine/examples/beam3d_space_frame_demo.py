@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 beam3d_space_frame_demo.py -- Module 18 (general-purpose extensions
 roadmap Phase 3): Beam3DEulerBernoulli demo.
@@ -12,7 +14,7 @@ reduction check (this element's bending block matches
 Beam2DEulerBernoulli exactly) to make that guarantee visible without
 reading the test file.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from fea_engine import (Beam3DEulerBernoulli, Beam2DEulerBernoulli, Material,

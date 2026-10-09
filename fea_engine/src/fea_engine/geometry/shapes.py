@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 geometry.py -- Module 11: a single, dimension-driven entry point for
 mesh generation + FEM system setup.
@@ -25,7 +27,7 @@ to GEOMETRY_REGISTRY or ELEMENT_DEFAULTS -- nothing else here changes,
 the same registry convention as config.CONSTITUTIVE_REGISTRY and
 element.ELEMENT_REGISTRY.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from .. import mesh as meshmod
 from .. import elements as elemmod

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 sampling.py -- generalized Optimal Latin Hypercube Sampling (OLHS)
 design-of-experiments core.
@@ -22,7 +24,7 @@ convention already established for this package's other randomized
 constructions (`rom_engine.loewner`/`rom_engine.screening`, see
 docs/loewner_modal_identification_roadmap.md Section 2).
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 from scipy.stats import qmc
 from scipy.spatial.distance import pdist

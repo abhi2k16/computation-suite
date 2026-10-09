@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 mesh_transform.py -- Wave 11 item 106 (docs/consolidated_future_roadmap.md,
 source: tensormesh_analysis_report.md's "Elements and Quadrature" section,
@@ -125,7 +127,7 @@ explicitly numpy-only and raise a clear `NotImplementedError` if handed
 a `backend="torch"` instance, rather than silently mishandling a torch
 tensor via `np.einsum`.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 from .elements.base import (Element, gauss_product, jacobian,  # noqa: F401 (jacobian kept for parity/reference)

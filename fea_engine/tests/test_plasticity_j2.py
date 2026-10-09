@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_plasticity_j2.py -- validation for Module 19 (general-purpose
 extensions roadmap Phase 6): material.PlasticMaterialJ2 /
@@ -34,7 +36,7 @@ tangent in this project gets:
    at u=0) -- the same minimum-correctness check every other element
    in this package gets.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

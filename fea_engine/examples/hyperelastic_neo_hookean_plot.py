@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 hyperelastic_neo_hookean_plot.py -- Phase 6 (general-purpose
 extensions roadmap) worked example: visual verification companion to
@@ -12,7 +14,7 @@ comparison along the loading path (not just the final numbers) --
 work and energy should track each other at every step, not just agree
 once at the end.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 

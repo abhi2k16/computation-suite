@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 cms.py -- component mode synthesis: Guyan (static) condensation and Craig-Bampton substructure
 reduction, plus coupling of reduced substructures into one reduced model.
@@ -30,7 +32,7 @@ CHECKED IN THE TESTS against full-order eigenfrequencies of a beam split into tw
 including the exactness limit (keeping all fixed-interface modes reproduces the full model) and the
 expected monotone improvement with the number of retained modes.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 from dataclasses import dataclass
 import numpy as np
 from scipy.linalg import eigh

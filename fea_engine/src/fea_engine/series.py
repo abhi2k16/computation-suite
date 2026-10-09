@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 series.py -- FieldSeries: one container for multi-step results.
 
@@ -26,7 +28,7 @@ The series stores ONE ``(n_steps, n_dof)`` array; each step is a view of a row, 
 and iterating copy nothing.
 """
 from __future__ import annotations
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 
 import numpy as np
 

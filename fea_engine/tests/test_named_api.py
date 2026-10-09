@@ -1,10 +1,12 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_named_api.py -- v1.0.1 P1 interface: named DOFs, named node sets, FEField results.
 
 Everything here is ADDITIVE: integer DOF indices, node-id arrays and plain-array behaviour of the
 solver outputs keep working (the older tests cover that); these tests pin the new named access.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import inspect
 import json
 import pickle

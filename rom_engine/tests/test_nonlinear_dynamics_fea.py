@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 Real-fixture validation of nonlinear_dynamics.integrate_newmark_surrogate()
 against fea_engine's own geometrically nonlinear Beam2DCorotational
@@ -25,7 +27,7 @@ pointwise R^2 for a fitted-vs-exact nonlinear force model -- both are
 checked so a real degradation in the FULL window isn't silently
 excused by only looking at the short one.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_shell4director_phase2.py -- validation for Wave 4 item 47,
 Phase 2 (docs/director_based_shell_element_roadmap.md Section 5,
@@ -44,7 +46,7 @@ Four lines of evidence:
    doc), consistent with `Shell4MITC._local_frame_and_coords()`'s own
    e3.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import pytest
 

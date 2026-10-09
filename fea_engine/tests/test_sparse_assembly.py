@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 test_sparse_assembly.py -- validates FESystem(..., sparse=True) (Phase
 2, docs/general_purpose_extensions_roadmap.md Section 7): a storage-
@@ -14,7 +16,7 @@ dense as problem size grows, on a large-enough model that dense
 assembly/storage genuinely becomes the bottleneck the roadmap doc
 identifies it as.
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import time
 import numpy as np
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

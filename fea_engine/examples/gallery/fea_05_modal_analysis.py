@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Abhijeet <abhijeetshandilya19@gmail.com>
+# SPDX-License-Identifier: MIT
 """
 fea_05_modal_analysis.py -- Example Gallery: generalized eigenproblem
 modal analysis (FESystem.solve_modal()), mirroring TensorMesh's
@@ -11,7 +13,7 @@ the classical Euler-Bernoulli cantilever bending-frequency formula
 for the two bending-dominated modes -- an independent, closed-form
 reference, not just "the eigensolver ran."
 """
-__author__ = "Abhijeet"
+__author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection, LineCollection
