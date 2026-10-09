@@ -58,6 +58,7 @@ reproducible regardless of what else has run earlier in the same
 pytest session -- flagged here for whoever investigates the actual fix
 in gmsh_engine.py itself.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

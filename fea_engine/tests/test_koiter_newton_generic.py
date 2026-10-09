@@ -46,6 +46,7 @@ docs/general_purpose_extensions_roadmap.md Section 11:
    (still mathematically valid) primary path to near machine precision
    the whole way, exactly reproducing lambda = k1*u1/F1.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

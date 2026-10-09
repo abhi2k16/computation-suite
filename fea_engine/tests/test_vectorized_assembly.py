@@ -8,6 +8,7 @@ the numbers" (the same phrasing this project used for Wave 10 item
 102's vmap batching), so the decisive check here is numerical agreement
 with the default path, not merely "produces something plausible".
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

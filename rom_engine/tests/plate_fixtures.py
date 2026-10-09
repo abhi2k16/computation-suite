@@ -47,6 +47,7 @@ mechanism). This fixture is a legitimate, independent "truth" system
 for benchmarking non-intrusive identification against -- not a
 reproduction of the paper's exact Table 2 numbers.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 

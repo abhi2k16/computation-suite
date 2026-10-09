@@ -75,6 +75,7 @@ like an ADDITIONAL, trainable internal-force term. Every function
 below (corrected_residual, corrected_tangent, adjoint_gradient's own
 derivation) is consistent with this one convention.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 try:

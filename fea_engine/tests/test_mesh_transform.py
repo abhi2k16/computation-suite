@@ -25,6 +25,7 @@ own module docstring), which a naive "just reuse the tensor-family
 JxW formula" implementation would silently get wrong for any element
 whose natural-coordinate node winding gives a negative detJ.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

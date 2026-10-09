@@ -15,6 +15,7 @@ this project's own "fails loudly rather than silently" precedent
 (Wave 0 item 6's singular-system handling, mesh_transform.py's
 _check_scope(), etc.).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

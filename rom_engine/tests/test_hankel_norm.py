@@ -48,6 +48,7 @@ Checks:
      rather than forcing a directional claim the theorem does not
      actually make.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine.hankel_norm import OptimalHankelNormROM

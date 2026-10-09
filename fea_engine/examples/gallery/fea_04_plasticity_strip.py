@@ -24,6 +24,7 @@ the deformed mesh after unload -- localized at the hole, decaying
 into the far field, the real physical signature a uniform strip could
 not produce.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection, LineCollection

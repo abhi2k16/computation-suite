@@ -25,6 +25,7 @@ to GEOMETRY_REGISTRY or ELEMENT_DEFAULTS -- nothing else here changes,
 the same registry convention as config.CONSTITUTIVE_REGISTRY and
 element.ELEMENT_REGISTRY.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from .. import mesh as meshmod
 from .. import elements as elemmod

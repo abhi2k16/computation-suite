@@ -12,6 +12,7 @@ exact answer (a spatially CONSTANT pressure equal to kappa*div(u)) is
 known in closed form and the P1 pressure field is only asked to
 represent a constant, something it can do exactly.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

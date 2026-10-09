@@ -50,6 +50,7 @@ Two checks:
    improving from ~49% (1 element) to ~94% (3 elements) -- a genuine
    convergence trend, not a coincidence at one specific mesh size.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.integrate import solve_bvp, cumulative_trapezoid

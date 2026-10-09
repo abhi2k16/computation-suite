@@ -64,6 +64,7 @@ A's complex-step version"):
    linear-scaling (smaller deflection than naive linear scaling would
    predict) characteristic of large-deflection bending.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

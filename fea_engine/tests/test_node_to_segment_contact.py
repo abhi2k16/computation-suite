@@ -45,6 +45,7 @@ Six lines of evidence:
    contact.py's own CHECK 3 structure), and mu=0 reproduces
    NodeToSegmentContact2D's own (frictionless) force exactly.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

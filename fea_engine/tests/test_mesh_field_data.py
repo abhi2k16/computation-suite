@@ -17,6 +17,7 @@ in this package (the entire codebase before this wave) only ever touches
 .nodes/.elements/.blocks/.dim, none of which changed shape or meaning
 here.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from fea_engine.mesh import (

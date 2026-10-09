@@ -25,6 +25,7 @@ IMPLICIT nonlinear driver, adapted to the explicit method:
    nonlinear internal-force substitution is physically sound, not just
    "runs without error."
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

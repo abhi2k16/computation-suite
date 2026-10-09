@@ -29,6 +29,7 @@ fem_implementation_lessons.md names as "provably cannot degenerate,"
 as opposed to repeated green-refinement closure, which the book
 flags as able to produce arbitrarily thin triangles.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

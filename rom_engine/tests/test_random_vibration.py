@@ -21,6 +21,7 @@ Checks:
      both against each other and against fea_engine's own full-order
      result for each DOF individually.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM

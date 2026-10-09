@@ -19,6 +19,7 @@ module). So this file gates on fea_engine.autograd_tangent._HAS_TORCH
 itself (the SAME robust any-exception detection the module's own
 _require_torch() guard relies on) rather than a bare importorskip.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

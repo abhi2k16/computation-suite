@@ -25,6 +25,7 @@ Checks:
      recomputed, and gives the same answer as passing F to
      reduce_system() directly.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.linalg import eigh, qr

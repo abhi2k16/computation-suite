@@ -43,6 +43,7 @@ generic pattern that a future affine.py material-parameter greedy
 trainer could reuse with a different error indicator and full-order
 solver, not implemented here but noted as a natural generalization.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .frequency import FrequencyROM, build_pod_basis_from_frf_snapshots

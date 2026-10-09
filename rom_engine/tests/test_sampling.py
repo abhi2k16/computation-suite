@@ -19,6 +19,7 @@ Checks:
      [frac_min, frac_max] * reference_scale range for every sample and
      mode, and per-mode target_fracs ranges are honored independently.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.spatial.distance import pdist

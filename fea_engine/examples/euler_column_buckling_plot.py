@@ -14,6 +14,7 @@ of solve_linear_buckling()) overlaid on the undeformed column, which
 should look exactly like the textbook half-sine-wave pin-pin buckling
 shape -- a qualitative sanity check a table of numbers can't give you.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 

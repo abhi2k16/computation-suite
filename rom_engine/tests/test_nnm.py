@@ -16,6 +16,7 @@ analytic textbook fold (the unit circle) plus a direct agreement check
 against solve_nnm_backbone itself on the SAME non-folding backbone.
 Real fea_engine validation lives in test_nnm_fea.py, not here.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.integrate import solve_ivp

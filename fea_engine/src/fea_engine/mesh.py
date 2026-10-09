@@ -31,6 +31,7 @@ you opt into (built by geometry_engine.py when Gmsh actually returns
 more than one element type, see that module), not something imposed on
 the single-type case.
 """
+__author__ = "Abhijeet"
 from dataclasses import dataclass, field
 import numpy as np
 from scipy.spatial import cKDTree

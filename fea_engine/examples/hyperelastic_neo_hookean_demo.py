@@ -14,6 +14,7 @@ stiffness() (see Tet4NeoHookean's docstring for why it's FD, not a
 hand-derived closed form) is good enough for Newton to actually reach
 the correct equilibrium, not just self-consistent in isolation.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from fea_engine import Tet4NeoHookean, NeoHookeanMaterial, FESystem, D_solid3d, Material

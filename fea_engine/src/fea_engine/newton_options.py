@@ -22,6 +22,7 @@ Rules (kept simple on purpose):
 * Old calls without ``options=`` behave exactly as before.
 """
 from __future__ import annotations
+__author__ = "Abhijeet"
 
 import functools
 import inspect

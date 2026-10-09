@@ -6,6 +6,7 @@ displacement, 1-D J2 return-mapping plasticity).
 Split out of the original monolithic element.py during the
 fea_engine restructuring; no logic changed, only file location.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .base import Element

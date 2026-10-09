@@ -6,5 +6,6 @@ imports pyplot, since several tests (test_nonlinear_beam,
 test_nonlinear_cantilever) save validation plots as a side effect and
 must not require a display.
 """
+__author__ = "Abhijeet"
 import matplotlib
 matplotlib.use("Agg")

@@ -22,6 +22,7 @@ convention already established for this package's other randomized
 constructions (`rom_engine.loewner`/`rom_engine.screening`, see
 docs/loewner_modal_identification_roadmap.md Section 2).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.stats import qmc
 from scipy.spatial.distance import pdist

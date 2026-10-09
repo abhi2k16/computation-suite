@@ -22,6 +22,7 @@ Checks:
      grows, and exactly zero once n_modes reaches the snapshot
      matrix's own rank (Eckart-Young sanity check).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from rom_engine import PodBasis

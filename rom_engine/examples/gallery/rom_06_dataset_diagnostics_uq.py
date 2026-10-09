@@ -40,6 +40,7 @@ EI2, with the true full-order fea_engine curve overlaid, showing the
 ensemble spread widening in the low-EI1 (highly nonlinear 1/EI-ish
 response) region where the surrogate is genuinely least certain.
 """
+__author__ = "Abhijeet"
 import os
 import sys
 import numpy as np

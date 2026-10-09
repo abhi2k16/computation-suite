@@ -1,4 +1,5 @@
 """Hyper-reduction (hyper_reduction.py): ECSW on a real fea_engine nonlinear beam, DEIM/QDEIM on synthetic data."""
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

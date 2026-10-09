@@ -41,6 +41,7 @@ On Windows PowerShell:
 
     $env:OPENBLAS_NUM_THREADS=8; $env:OMP_NUM_THREADS=8; $env:MKL_NUM_THREADS=8; python path\to\script.py
 """
+__author__ = "Abhijeet"
 import argparse
 import os
 import runpy

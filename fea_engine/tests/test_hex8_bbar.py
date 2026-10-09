@@ -22,6 +22,7 @@ Three lines of evidence:
    (ratio collapsing further from 1.0) as nu->0.5, while Hex8SolidBbar
    should stay comparatively stable.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from fea_engine import Hex8Solid3D, Hex8SolidBbar, FESystem, D_solid3d, Material
 from fea_engine.mesh import box_mesh

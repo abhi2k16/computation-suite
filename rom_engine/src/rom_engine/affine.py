@@ -37,6 +37,7 @@ size n_dof. A parameter sweep of a million (E_1, E_2) pairs over a
 100,000-DOF FE model becomes a million tiny (n_modes x n_modes) linear
 solves, not a million full re-assemblies + full solves.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

@@ -15,6 +15,7 @@ literature (He et al. 2023 and its ICE/STEP predecessors) targets, as
 opposed to test_nonlinear_beam.py's own cantilever fixture (built to
 validate the ELEMENT against the Euler elastica, a different purpose).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

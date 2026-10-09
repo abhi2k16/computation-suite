@@ -22,6 +22,7 @@ Also covers the supporting pieces MultiFieldPOD depends on:
   - the sign convention (stable across a sign-flipped snapshot set).
   - reconstruct_field().
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from rom_engine import MultiFieldPOD, assemble_field_weight_matrix, trapezoidal_field_gram

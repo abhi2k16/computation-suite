@@ -685,6 +685,7 @@ three checks. Subharmonic-multiplier support remains unimplemented
 a materially larger extension (non-integer-multiple harmonics in the
 AFT scheme) than pseudo-arclength turned out to be, not attempted here.
 """
+__author__ = "Abhijeet"
 from .pod import PodBasis, MultiFieldPOD, assemble_field_weight_matrix, trapezoidal_field_gram
 from .galerkin import GalerkinROM
 from .affine import AffineDecomposition

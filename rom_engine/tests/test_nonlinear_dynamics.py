@@ -8,6 +8,7 @@ checkable without any FE package. Real fea_engine validation lives in
 tests/test_nonlinear_dynamics_fea.py (Section 9's flat-beam dynamic
 comparison), not here.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.integrate import solve_ivp

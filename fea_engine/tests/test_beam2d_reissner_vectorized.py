@@ -28,6 +28,7 @@ Two checks, matching this item's own stated validation criterion
     Newton iteration and time-stepping, not just at a single element
     evaluation.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from fea_engine import elements as elmod

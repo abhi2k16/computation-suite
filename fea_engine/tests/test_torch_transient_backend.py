@@ -64,6 +64,7 @@ ControlBackend) -- see test_torch_autograd_tangent_stiffness.py's own
 updated SANDBOX NOTE for the full combined-run result (30 passed, 1
 benign warning, 0 failed across every torch-gated test this wave added).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

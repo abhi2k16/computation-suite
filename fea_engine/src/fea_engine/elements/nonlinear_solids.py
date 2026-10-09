@@ -22,6 +22,7 @@ extension -- material/geometric NONLINEARITY on TOP of existing
 elements -- mirroring how beams3d.py was split out for Phase 3 rather
 than folded into beams.py.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .base import gauss_product, jacobian, tet_quadrature_4pt

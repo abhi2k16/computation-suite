@@ -27,6 +27,7 @@ fixed dofs:
    it would hide what is actually a missing-boundary-condition modeling
    error.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

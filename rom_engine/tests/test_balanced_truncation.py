@@ -49,6 +49,7 @@ Checks (mirroring docs/classical_mor_roadmap.md Section 6):
      than forcing a directional assertion the paper's own DIFFERENT
      benchmark system doesn't guarantee in general).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine.balanced_truncation import BalancedTruncationROM

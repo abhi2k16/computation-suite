@@ -27,6 +27,7 @@ Checks:
   5. greedy_train() behaves sensibly, mirroring test_scm.py's own
      check for the simplified bound's greedy loop.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM, SingularValueLowerBound

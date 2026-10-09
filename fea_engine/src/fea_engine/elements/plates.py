@@ -4,6 +4,7 @@ plates.py -- Quad4MindlinPlate (selective reduced integration).
 Split out of the original monolithic element.py during the
 fea_engine restructuring; no logic changed, only file location.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .base import Element, gauss_product, jacobian

@@ -33,6 +33,7 @@ project's established convention:
       to run for real, and SHOULD be run at least once on a torch-
       equipped machine.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.linalg import solve_continuous_lyapunov, solve_sylvester

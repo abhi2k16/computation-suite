@@ -1,4 +1,5 @@
 """Component mode synthesis (cms.py), validated against a real fea_engine clamped-clamped beam split in two."""
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.linalg import eigh

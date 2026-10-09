@@ -38,6 +38,7 @@ Four lines of evidence:
    zero displacement and lambda=0; a load that never reaches the wall
    never activates contact and lambda stays exactly 0 throughout.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

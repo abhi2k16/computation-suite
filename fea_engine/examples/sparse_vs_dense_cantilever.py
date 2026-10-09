@@ -13,6 +13,7 @@ package's biggest scaling limitation. See
 tests/test_sparse_assembly.py for the same comparison run as a pytest
 regression check.
 """
+__author__ = "Abhijeet"
 import time
 import numpy as np
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

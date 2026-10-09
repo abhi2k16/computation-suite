@@ -27,6 +27,7 @@ Checks (mirroring docs/classical_mor_roadmap.md Section 6):
      basis() is useful for more than just the one static load it was
      built from.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.linalg import eigh, qr

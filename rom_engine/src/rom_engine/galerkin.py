@@ -34,6 +34,7 @@ hand-built K/M/F for a toy problem, as long as they're already
 assembled on the SAME (full) degree-of-freedom numbering the basis V
 was extracted on.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 

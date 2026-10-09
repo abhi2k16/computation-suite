@@ -10,6 +10,7 @@ undeformed (wireframe) against its exaggerated deformed shape under the
 tip load -- a genuinely curved, non-flat shell actually bending, shown
 in 3-D, the qualitative check a table of numbers alone can't give.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 

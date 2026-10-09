@@ -12,6 +12,7 @@ comparison along the loading path (not just the final numbers) --
 work and energy should track each other at every step, not just agree
 once at the end.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 

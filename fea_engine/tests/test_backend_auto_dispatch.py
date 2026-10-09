@@ -8,6 +8,7 @@ would (the only backend actually runnable in this sandbox, since torch
 isn't installed here -- see backend_dispatch.py's own docstring for why
 "auto" never needs torch at construction time).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

@@ -67,6 +67,7 @@ against scm.py's already-measured ~1e-7 one on the SAME reference
 point of the SAME real fea_engine fixture, rather than assuming this
 LP-based construction is automatically sharper.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.optimize import linprog
 

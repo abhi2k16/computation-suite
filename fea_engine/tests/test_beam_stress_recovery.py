@@ -46,6 +46,7 @@ Checks, in increasing order of how much of the formula they exercise:
      scalar-call-in-a-loop reference (an independent, dumb, obviously-
      correct implementation of "the same thing done N times").
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

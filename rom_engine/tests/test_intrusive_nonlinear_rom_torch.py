@@ -29,6 +29,7 @@ built on, rather than a new synthetic system -- so any agreement here
 is on the real, genuinely nonlinear Beam2DReissner cantilever this
 whole Wave 17 track targets, not a toy linear system.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

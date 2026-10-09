@@ -29,6 +29,7 @@ Three checks, following the roadmap doc's own validation plan (Section 4):
    to within Newmark's own numerical-damping/drift tolerance over a
    several-period window.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

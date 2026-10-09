@@ -18,6 +18,7 @@ exactly the boundary that keeps that true: everything on this side of
 `frf()` "knows" the system, everything that consumes its OUTPUT does
 not.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 

@@ -26,6 +26,7 @@ Checks (r_squared):
      via flattening, not rejected.
   10. Mismatched shapes and a zero-variance y_true both raise.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from rom_engine.metrics import modal_assurance_criterion, r_squared

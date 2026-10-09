@@ -6,6 +6,7 @@ tracking, and the solution-driven adaptive refinement loop
 (adaptivity.py). Scoped to Tri3PlaneStress throughout -- see that
 module's own docstring for why.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

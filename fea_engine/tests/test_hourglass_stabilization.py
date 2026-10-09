@@ -29,6 +29,7 @@ per-feature validation depth:
    Hex8's documented shear locking (ratio vs. Euler-Bernoulli moves
    closer to 1.0 than full integration's own ~0.71).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from fea_engine import Hex8Solid3D, FESystem, D_solid3d, Material
 from fea_engine.mesh import box_mesh

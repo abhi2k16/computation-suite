@@ -118,6 +118,7 @@ on the user's own PyTorch-equipped machine (Windows, NVIDIA GeForce GTX
 2.7.0/CUDA 12.6) -- see tests/test_beam2d_reissner_vectorized_torch.py,
 written to run for real there.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .vectorized_assembly import scatter_global_stiffness

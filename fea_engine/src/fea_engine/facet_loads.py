@@ -67,6 +67,7 @@ node-ordering mistake this project's history (GMSH_NODE_ORDER,
 meshio's node-order finding) has repeatedly found by checking directly
 rather than trusting a hand derivation.
 """
+__author__ = "Abhijeet"
 import math
 
 import numpy as np

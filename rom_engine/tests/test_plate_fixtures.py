@@ -16,6 +16,7 @@ Checks:
      of their stated coordinates (the mesh is fine enough to resolve
      them, not a coarse mismatch).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import plate_fixtures as pf
 

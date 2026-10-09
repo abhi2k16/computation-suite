@@ -47,6 +47,7 @@ re-threading a bare tuple through every later call. See
 docs/loewner_modal_identification_roadmap.md for the full design
 background and phased plan.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eig
 

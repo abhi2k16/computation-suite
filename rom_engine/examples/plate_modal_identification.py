@@ -45,6 +45,7 @@ demonstrate and validate the IDENTIFICATION METHOD against a real,
 paper-matched structural model's own honest ground truth -- not to
 reproduce the paper's exact Table 2 numbers.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")

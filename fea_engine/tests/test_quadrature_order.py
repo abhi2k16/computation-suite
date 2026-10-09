@@ -27,6 +27,7 @@ Two decisive claims are checked directly, not assumed:
    result, the decisive signature of having reached the integrand's true
    degree rather than merely using more points.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from math import factorial

@@ -19,6 +19,7 @@ depended on it. The supported path for arbitrary/unstructured meshing
 needs is now just ``shapes``/``mesh.py``'s structured front end. See
 docs/generalized_mesh_grading_roadmap.md for the removal note.
 """
+__author__ = "Abhijeet"
 from .shapes import (
     generate_mesh,
     default_element,

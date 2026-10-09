@@ -18,6 +18,7 @@ solve of the SAME tet/material via the ordinary Tet4Solid3D element
 load and visibly diverge as the load grows, the real, honest
 "hyperelastic vs. linear" signature (not asserted, shown).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Line3DCollection

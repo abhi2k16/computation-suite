@@ -94,6 +94,7 @@ everywhere) -- caught here by an explicit sign check
 missing it. Using z = -rho*sin(theta) instead fixes the winding; the
 `_cylindrical_arc_meshes()` helper below does this.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

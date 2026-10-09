@@ -23,6 +23,7 @@ Panel 2: relative error of the ROM's mid-span deflection vs. load
 level, on a log scale -- the actual accuracy claim, not just "the
 curves look close."
 """
+__author__ = "Abhijeet"
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "tests"))
 

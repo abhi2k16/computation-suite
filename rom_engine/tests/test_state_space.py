@@ -17,6 +17,7 @@ Checks (mirroring docs/classical_mor_roadmap.md Section 6):
   4. B/Cout selection actually behaves like a selection (picking the
      tip DOF out of a bigger model returns just that DOF's row/column).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eig, eigh
 from rom_engine.state_space import to_state_space

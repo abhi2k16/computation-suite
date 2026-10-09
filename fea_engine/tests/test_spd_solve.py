@@ -19,6 +19,7 @@ have caught a correctness regression):
    well-constrained linear-elastic K is always SPD) but the code path
    still needs to be correct for the day it's needed.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

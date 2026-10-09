@@ -10,6 +10,7 @@ growth-ratio solver's realized effect on the actual radial node spacing --
 none of this depends on any specific Element class, so it's checkable
 without importing elements/ at all.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.spatial import cKDTree

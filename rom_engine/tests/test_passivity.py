@@ -21,6 +21,7 @@ Checks:
      Galerkin ones), so this is a genuine, open question this test
      answers empirically for this fixture.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM

@@ -14,6 +14,7 @@ dense as problem size grows, on a large-enough model that dense
 assembly/storage genuinely becomes the bottleneck the roadmap doc
 identifies it as.
 """
+__author__ = "Abhijeet"
 import time
 import numpy as np
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

@@ -18,6 +18,7 @@ either one was obtained:
     -- force samples, displacement samples, NNM amplitude samples,
     whatever a caller is checking a regression fit against.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

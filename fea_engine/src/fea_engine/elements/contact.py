@@ -16,6 +16,7 @@ fea_engine restructuring; no logic changed, only file location (this
 docstring paragraph and everything below the historical GapContact*
 classes is new, Wave 3).
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .base import Element

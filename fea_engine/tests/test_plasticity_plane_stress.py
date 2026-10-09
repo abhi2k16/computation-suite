@@ -33,6 +33,7 @@ Mirrors tests/test_plasticity_j2.py's five-line-of-evidence structure
    body modes (2 translations + 1 rotation) at u=0, zero internal
    force at u=0.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

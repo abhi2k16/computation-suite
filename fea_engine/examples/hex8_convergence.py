@@ -9,6 +9,7 @@ scaled up alongside ny/nz so element aspect ratio stays roughly constant
 across the sweep (otherwise refining only ny/nz while holding nx fixed
 makes elements more slender in x, which is a different effect).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -17,6 +17,7 @@ sandbox for the same reason; they are written to run for real, and
 SHOULD be run at least once, in any environment with a working torch
 install.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh

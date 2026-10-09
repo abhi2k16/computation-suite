@@ -16,6 +16,7 @@ To add a new element type: subclass Element in the appropriate submodule
 (+ B_matrix() for the generic Gauss loop, or override stiffness()/mass()
 directly), and add one line to ELEMENT_REGISTRY below.
 """
+__author__ = "Abhijeet"
 from .base import (
     Element,
     gauss_legendre,

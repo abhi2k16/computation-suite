@@ -46,6 +46,7 @@ executed. Needs confirmation on a machine with PyTorch installed,
 exactly like `ExcitationResponseOperator`'s and
 `ParameterizedLatentODE`'s own torch-gated tests.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .nonlinear_rom import AppliedLoadStrategy, PolynomialModalROM

@@ -28,6 +28,7 @@ every other example in this package builds its own model, rather than
 importing tests/ fixture code), with known closed-form ground-truth
 modal parameters.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")

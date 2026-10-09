@@ -23,6 +23,7 @@ Four lines of evidence:
      asserted below, versus the same-resolution case's ~0.03%.
   4. Input validation + LatentRefinementNet (torch-gated).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

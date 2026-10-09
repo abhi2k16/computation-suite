@@ -13,6 +13,7 @@ line. Both panels are built from the SAME timing runs, so the numbers
 in the two panels are internally consistent by construction, not two
 separately-run experiments that happen to agree.
 """
+__author__ = "Abhijeet"
 import time
 import numpy as np
 import matplotlib.pyplot as plt

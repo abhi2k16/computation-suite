@@ -18,6 +18,7 @@ a pytest regression check, and
 docs/general_purpose_extensions_roadmap.md Section 3 for the design
 background.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from fea_engine import (
     FESystem, Material, D_plane_stress, Quad4PlaneStress, Quad8PlaneStress, mesh,

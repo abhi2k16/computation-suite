@@ -68,6 +68,7 @@ closures over local variables (the standard Python multiprocessing
 constraint, not specific to this module). `n_jobs=1` (the default) runs
 serially with no such restriction.
 """
+__author__ = "Abhijeet"
 from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass, field
 

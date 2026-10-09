@@ -58,6 +58,7 @@ not the classical LP-based algorithm -- so nothing here should be
 confused with, or cited as, the Huynh/Rozza/Sen/Patera or Chen et al.
 methods themselves.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

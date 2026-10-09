@@ -15,6 +15,7 @@ still-correctly-raised unsupported-topology case (so the new support
 for Tet4/Hex8/Tet10/Hex20 didn't accidentally turn into "never raises
 at all").
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from fea_engine.mesh import (

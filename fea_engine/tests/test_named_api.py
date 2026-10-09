@@ -4,6 +4,7 @@ test_named_api.py -- v1.0.1 P1 interface: named DOFs, named node sets, FEField r
 Everything here is ADDITIVE: integer DOF indices, node-id arrays and plain-array behaviour of the
 solver outputs keep working (the older tests cover that); these tests pin the new named access.
 """
+__author__ = "Abhijeet"
 import inspect
 import json
 import pickle

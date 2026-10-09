@@ -1,3 +1,5 @@
+__author__ = "Abhijeet"
+
 import numpy as np
 from fea_engine import elements as elmod
 from fea_engine.material import Material, D_plane_stress, D_solid3d

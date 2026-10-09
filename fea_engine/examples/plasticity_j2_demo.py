@@ -9,6 +9,7 @@ validated 1-D closed form at every step: this is the roadmap's
 headline validation requirement ("uniaxial stress path should match
 PlasticMaterial1D's already-validated 1-D result exactly").
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from fea_engine import Hex8PlasticJ2, PlasticMaterialJ2, FESystem

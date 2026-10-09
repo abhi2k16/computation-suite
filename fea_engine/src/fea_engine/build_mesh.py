@@ -29,6 +29,7 @@ the Gmsh path now raises `MeshGradingError` with an explanation instead
 of silently falling back to a different (unverified-for-that-case) mesh
 path.
 """
+__author__ = "Abhijeet"
 from .grading import Hole, MeshGradingError, DEFAULT_GROWTH_RATIO
 from . import mesh as mesh_mod
 from .elements.plates import Quad4MindlinPlate

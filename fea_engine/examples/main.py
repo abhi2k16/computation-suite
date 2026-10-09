@@ -46,6 +46,7 @@ effect of the integration scheme is isolated from everything else:
        case here where reduced integration is both stable and slightly
        more accurate, with no caveats
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -46,6 +46,7 @@ Checks:
      docstring and per test_passivity.py's existing, honestly-reported
      8-passive/1-violation sweep of first-order reduction methods.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eig, eigh
 from rom_engine.soar import soar_basis, SOARROM

@@ -45,6 +45,7 @@ Three checks:
    does not exercise a real Newton solve, so it is unaffected by the
    divergence documented above.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.integrate import solve_bvp, cumulative_trapezoid

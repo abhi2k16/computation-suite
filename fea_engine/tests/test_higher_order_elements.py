@@ -43,6 +43,7 @@ solution for a prismatic beam (not just a beam-theory approximation),
 so the target isn't an engineering estimate -- it's mathematically
 exact, making this a decisive, not just qualitative, comparison.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from fea_engine import (
     FESystem, Material, D_plane_stress, D_solid3d,

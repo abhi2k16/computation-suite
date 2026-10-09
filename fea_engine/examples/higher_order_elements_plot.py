@@ -12,6 +12,7 @@ elements' DEFORMED shapes (displacement exaggerated) drawn over their
 undeformed outlines, so the locking is visible as a shape, not just a
 number -- Quad4 barely curves, Quad8 traces the smooth bent beam.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon

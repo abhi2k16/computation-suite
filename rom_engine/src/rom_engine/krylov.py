@@ -57,6 +57,7 @@ directly -- callers should check it, not assume a Galerkin-projected
 model inherits the full-order model's stability (it generally does NOT,
 unlike balanced truncation, where stability preservation is a theorem).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import lu_factor, lu_solve, eig
 

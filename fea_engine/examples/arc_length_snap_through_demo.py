@@ -16,6 +16,7 @@ form P(delta) = (E*A/L0^3)*delta*(h0-delta)*(2*h0-delta) used to
 validate every solver in this module (see test_arc_length.py /
 nonlinear_solver.py for the derivation).
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from fea_engine import elements as elmod

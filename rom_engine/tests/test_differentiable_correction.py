@@ -5,6 +5,7 @@ prototype implements. reduced_residual() runs UNCONDITIONALLY (pure
 NumPy); calibrate_reduced_correction_explicit()/ScalarModalCorrection
 are torch-gated.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

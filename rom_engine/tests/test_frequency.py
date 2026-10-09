@@ -23,6 +23,7 @@ Checks (mirroring docs/frequency_domain_rom_roadmap.md Section 6):
   6. A frequency sweep via the reduced model is substantially faster
      than one via fea_engine's own full-order solve_frequency_sweep().
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM, build_pod_basis_from_frf_snapshots

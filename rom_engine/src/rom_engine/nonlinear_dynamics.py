@@ -27,6 +27,7 @@ its own internal Newton solve, exactly matching
 `docs/nonlinear_surrogate_rom_roadmap.md` Section 5's "PolynomialModalROM
 evaluated in 'direct' mode" phrasing).
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

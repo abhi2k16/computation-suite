@@ -35,6 +35,7 @@ own docstring). A caller with a genuinely singular/near-singular system
 should keep using `FESystem.solve_static()`'s own per-call handling
 instead.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

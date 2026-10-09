@@ -45,6 +45,7 @@ path can plausibly pay off. Two hard constraints, not heuristics:
     doesn't get the GPU/CG speedup and uses the same safe SciPy path
     `backend="scipy"` would have used anyway.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 #: Free-dof count above which "auto" prefers the torch/CG path, IF the

@@ -12,6 +12,7 @@ reduction check (this element's bending block matches
 Beam2DEulerBernoulli exactly) to make that guarantee visible without
 reading the test file.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from fea_engine import (Beam3DEulerBernoulli, Beam2DEulerBernoulli, Material,

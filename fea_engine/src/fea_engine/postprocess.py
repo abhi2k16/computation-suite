@@ -13,6 +13,7 @@ FEM system doesn't have a simple Miles'-equation-style shortcut, so
 variance_from_psd() does the numerical integration directly rather than
 assuming a formula that would only be valid for a idealized SDOF.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

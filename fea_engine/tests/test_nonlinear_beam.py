@@ -44,6 +44,7 @@ Six checks:
      hand-derived formula, so there's no hand-derivation to get wrong),
      across a wide range of load levels reaching order-one rotations.
 """
+__author__ = "Abhijeet"
 import os
 import numpy as np
 import matplotlib.pyplot as plt

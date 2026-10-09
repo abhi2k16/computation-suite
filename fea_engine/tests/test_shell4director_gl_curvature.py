@@ -20,6 +20,7 @@ Checks:
    gives cos(40 deg) = 0.77 of it)
 5. cantilever strip: transverse stiffening matches the exact elastica at 24 deg
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.integrate import solve_bvp

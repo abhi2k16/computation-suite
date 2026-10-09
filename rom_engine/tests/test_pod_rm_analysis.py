@@ -17,6 +17,7 @@ Plus a small extra check that the symmetry/positive-definiteness report
 (`spd_report`) actually flags a genuinely non-SPD damping-like matrix
 as such, so that code path is exercised too.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

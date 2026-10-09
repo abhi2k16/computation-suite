@@ -125,6 +125,7 @@ explicitly numpy-only and raise a clear `NotImplementedError` if handed
 a `backend="torch"` instance, rather than silently mishandling a torch
 tensor via `np.einsum`.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .elements.base import (Element, gauss_product, jacobian,  # noqa: F401 (jacobian kept for parity/reference)

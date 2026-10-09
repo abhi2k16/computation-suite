@@ -37,6 +37,7 @@ generalization.
    snap-through, not a degenerate case that happens to coincide with
    statics).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

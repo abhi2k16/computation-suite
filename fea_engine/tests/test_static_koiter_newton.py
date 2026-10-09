@@ -35,6 +35,7 @@ Three lines of evidence:
    used) and still lands exactly on lambda=1.0 without ever
    overshooting past it.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

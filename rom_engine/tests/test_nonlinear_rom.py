@@ -17,6 +17,7 @@ Real-fixture validation against an actual `fea_engine`
 tests/test_nonlinear_rom_fea.py (Step 2's later "real fea_engine
 validation" task), not here.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

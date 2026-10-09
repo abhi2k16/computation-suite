@@ -9,6 +9,7 @@ neural_surrogate_ensemble() -- the real NeuralSurrogate-based use case
 -- is torch-gated, mirroring every other NeuralSurrogate-touching test
 in this package (test_nonlinear_rom.py::TestNeuralSurrogate).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

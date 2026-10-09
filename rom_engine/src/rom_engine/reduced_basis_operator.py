@@ -57,6 +57,7 @@ trainable component in this package is:
     coordinate (e.g. an exact POD projection), when such ground truth
     is available for training.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.interpolate import RBFInterpolator
 

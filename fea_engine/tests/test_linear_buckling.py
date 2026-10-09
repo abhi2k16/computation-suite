@@ -31,6 +31,7 @@ Four lines of evidence:
    check above, end to end through FESystem -- not just the element
    matrices in isolation (check 2), but the full assemble + solve path.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

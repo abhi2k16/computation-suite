@@ -24,6 +24,7 @@ Two-tier structure, matching this module's own docstring:
     the same skip-cleanly convention test_autograd_tangent.py/test_
     torch_sparse_solver.py already established.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

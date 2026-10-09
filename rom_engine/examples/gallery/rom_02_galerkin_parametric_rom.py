@@ -16,6 +16,7 @@ the FULL-ORDER (fea_engine) curve plotted UNDERNEATH the ROM curve so
 any visible mismatch would be obvious, plus a printed online/offline
 timing speedup exactly like the source script reports.
 """
+__author__ = "Abhijeet"
 import os
 import sys
 import numpy as np

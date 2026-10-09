@@ -58,6 +58,7 @@ Five checks:
      and the converged equilibrium is independent of the number of
      load steps used to reach it.
 """
+__author__ = "Abhijeet"
 import os
 import numpy as np
 import matplotlib.pyplot as plt

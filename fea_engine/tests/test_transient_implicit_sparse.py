@@ -24,6 +24,7 @@ free-vibration energy-decay check (not just formula-matching) to catch
 a plausible-but-wrong implementation the machine-precision numerical
 checks alone might miss.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

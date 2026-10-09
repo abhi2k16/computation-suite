@@ -36,6 +36,7 @@ Four lines of evidence:
    is good enough for Newton to actually converge to the correct
    equilibrium, not just "mathematically self-consistent" in isolation.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

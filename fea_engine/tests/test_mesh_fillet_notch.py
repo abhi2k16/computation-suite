@@ -16,6 +16,7 @@ every one of the 4 corners/edges is exercised, not just the canonical
 one, so a winding bug in any single reflection path would show up as a
 check_quality() failure (inverted elements) rather than being silently
 missed."""
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.spatial import cKDTree

@@ -46,6 +46,7 @@ instead. It is a genuine single-field case for check 1 exactly as
 specified, and its bending-dominated modes satisfy the same
 zeta = D/(2*rhoA*omega) relation used for check 2.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.linalg import eigh

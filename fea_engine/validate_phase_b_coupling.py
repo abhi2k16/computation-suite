@@ -17,6 +17,7 @@ tangent_stiffness()). Checks, in order:
   5. stiffness() (u=0 tangent) still reduces to Shell4MITC.stiffness()
      as before (no regression).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from fea_engine import Material, D_shell, Shell4MITC, Shell4MITCCorotational
 

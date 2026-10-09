@@ -29,6 +29,7 @@ Checks:
      own honest omission, for the same underlying reason (no
      independently-verified a priori bound for this method here).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine.balanced_truncation import (

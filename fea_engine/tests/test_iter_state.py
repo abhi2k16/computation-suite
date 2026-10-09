@@ -23,6 +23,7 @@ DIRECT, exactly-checkable fingerprint of every solve_nonlinear_static()
 correction actually reaching update_iter_states() with the correct
 elem-local delta_u slice.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

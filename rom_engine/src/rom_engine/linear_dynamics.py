@@ -25,6 +25,7 @@ The load may be given as an array of shape (n_steps+1, n) sampled at t_k = k*dt,
 CHECKED against closed-form single-DOF solutions (free decay, step load) and against each other and
 the full-order response on a real fea_engine beam (see tests/test_linear_dynamics.py).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh, expm, lu_factor, lu_solve
 

@@ -20,6 +20,7 @@ full-order-vs-both-ROMs frequency response sweep panel (so the greedy
 basis's resonance-seeking behavior is visible directly, not just in a
 bar chart), plus a saved PNG instead of a plt.show() bar chart.
 """
+__author__ = "Abhijeet"
 import os
 import sys
 import numpy as np

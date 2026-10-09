@@ -36,6 +36,7 @@ HONEST LIMITS.
 This module never imports fea_engine. Callers pass plain arrays and callbacks (see the tests for a
 fea_engine-based wiring).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import qr, lu_factor, lu_solve
 

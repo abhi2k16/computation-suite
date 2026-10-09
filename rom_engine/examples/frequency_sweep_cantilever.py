@@ -17,6 +17,7 @@ offline/online design exists for: build the reduced basis and project
 {M, C, K} onto it ONCE, then every subsequent frequency costs a tiny
 reduced solve instead of a full-order factorization.
 """
+__author__ = "Abhijeet"
 import time
 import numpy as np
 from scipy.linalg import eigh

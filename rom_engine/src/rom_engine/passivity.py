@@ -62,6 +62,7 @@ from a stable, passive full-order model -- see
 tests/test_passivity.py for what was actually found on this package's
 real fixture, reported honestly either way.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

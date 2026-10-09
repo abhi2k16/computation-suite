@@ -7,6 +7,7 @@ Split out of the original config.py during the fea_engine restructuring
 property specification, not a constitutive/material law) -- no logic
 changed, only file location.
 """
+__author__ = "Abhijeet"
 from dataclasses import dataclass
 import numpy as np
 

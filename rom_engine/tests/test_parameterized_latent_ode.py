@@ -20,6 +20,7 @@ test below reproduces this exact comparison and asserts on it
 directly, rather than merely checking the corrected version's error
 against an arbitrary tolerance.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

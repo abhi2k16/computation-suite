@@ -17,6 +17,7 @@ without its mesh (names are kept, node-set access is not). Re-attach with
 ``system.field(np.asarray(U))`` in the parent if you need ``nodes="tip"``.
 """
 from __future__ import annotations
+__author__ = "Abhijeet"
 
 import sys
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed

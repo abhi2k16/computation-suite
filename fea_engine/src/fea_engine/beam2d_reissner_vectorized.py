@@ -53,6 +53,7 @@ tangent_stiffness() calls to < 1e-12 relative error, on the same random
 large-rotation states test_beam2d_reissner.py's own CHECK (a) uses --
 this item's own stated validation criterion.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .vectorized_assembly import scatter_global_stiffness

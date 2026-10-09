@@ -30,6 +30,7 @@ over by picking a formula that happens to match.)
    real, physically meaningful stability boundary, not just a number
    that happens to satisfy check 1's algebra.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

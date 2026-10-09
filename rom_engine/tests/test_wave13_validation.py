@@ -24,6 +24,7 @@ a future reader can tell "still working as designed" apart from
     matching item 118's own test file's numbers almost exactly (same
     underlying fixture, same AppliedLoadStrategy convention).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

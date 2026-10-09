@@ -46,6 +46,7 @@ optional way every other trainable component in this package is
     `_HAS_TORCH`/`_require_torch()` convention `nonlinear_rom.py`
     already establishes).
 """
+__author__ = "Abhijeet"
 import numpy as np
 from itertools import combinations_with_replacement
 from collections import Counter

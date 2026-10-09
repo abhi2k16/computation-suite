@@ -56,6 +56,7 @@ Lambda=...) Newton solve). This item is explicitly scoped by the
 roadmap as "a DESIGN NOTE + prototype ... scoping the actual interface
 boundary ... is the first concrete step," not a full port of item 98.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 try:

@@ -48,6 +48,7 @@ Three cases, in increasing generality (all handled by from_MCK()):
     isn't a linear combination of M and K: the full 3-term {M, C, K}
     decomposition, theta(omega) = [-omega^2, i*omega, 1].
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .affine import AffineDecomposition

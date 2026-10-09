@@ -55,6 +55,7 @@ from the source PDF's OCR-damaged equation blocks (the same gap
 documented in the skill's own `SKILL.md` fidelity notes). This is
 recorded here rather than silently assumed away.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from itertools import combinations_with_replacement
 from collections import Counter

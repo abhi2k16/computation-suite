@@ -90,6 +90,7 @@ symptoms (an artificial noise floor a few orders of magnitude above
 machine epsilon in the smallest computed Hankel singular values) that
 show up if this step is skipped.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import solve_continuous_lyapunov, cholesky, eigh, LinAlgError, matrix_balance
 

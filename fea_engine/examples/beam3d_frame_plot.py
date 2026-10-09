@@ -10,6 +10,7 @@ displacement against test_beam3d.py's independently-assembled
 reference value, so the picture and the validated number are shown
 together, not just the picture on its own.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -82,6 +82,7 @@ Block system, per element and assembled globally:
 (`m = [1,1,1,0,0,0]`, the trace/divergence operator on Voigt strain),
 `Kpp = integral(Np^T Np) dV / kappa`.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .elements.base import jacobian

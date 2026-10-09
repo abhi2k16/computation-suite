@@ -27,6 +27,7 @@ single-shot solver) from solve_nnm_backbone() itself, so it is a
 genuine independent check, not solve_nnm_backbone() checked against
 itself.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

@@ -25,6 +25,7 @@ pointwise R^2 for a fitted-vs-exact nonlinear force model -- both are
 checked so a real degradation in the FULL window isn't silently
 excused by only looking at the short one.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

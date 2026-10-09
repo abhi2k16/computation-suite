@@ -30,6 +30,7 @@ CHECKED IN THE TESTS against full-order eigenfrequencies of a beam split into tw
 including the exactness limit (keeping all fixed-interface modes reproduces the full model) and the
 expected monotone improvement with the number of retained modes.
 """
+__author__ = "Abhijeet"
 from dataclasses import dataclass
 import numpy as np
 from scipy.linalg import eigh

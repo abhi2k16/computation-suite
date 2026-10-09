@@ -14,6 +14,7 @@ confirmed backward compatibility (an all-zero-BC batch is bit-for-bit
 unaffected by this item, matching solve_static()'s own IDENTICAL-cost-
 when-unused convention).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

@@ -5,6 +5,7 @@ md): geometric multigrid for structured Quad4 rectangle grids
 mesh.rectangle_mesh()'s plain nx-by-ny grids -- see that docstring
 for exactly why this pair of grids admits an EXACT nested hierarchy.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 import scipy.sparse as sp

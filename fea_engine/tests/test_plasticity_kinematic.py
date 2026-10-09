@@ -42,6 +42,7 @@ Six lines of evidence:
 6. test_rigid_body_modes_and_zero_state -- standard minimum-correctness
    structural sanity check.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

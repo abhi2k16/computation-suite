@@ -49,6 +49,7 @@ Every solved displacement field is cross-checked against SciPy's
 answer (relative max-abs error) before it's trusted for the plot --
 this project's standing practice throughout its example galleries.
 """
+__author__ = "Abhijeet"
 import gc
 import os
 import time

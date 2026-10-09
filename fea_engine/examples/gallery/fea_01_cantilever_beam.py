@@ -18,6 +18,7 @@ does not converge EXACTLY to 1-D beam theory (root effects / shear
 flexibility a slender-beam formula ignores), so the honest claim here
 is "approaches," not "matches" -- shown directly rather than asserted.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection, LineCollection

@@ -231,6 +231,7 @@ for the SciPy-vs-PyTorch solve choice.
   no change to the update math itself), was judged safe and IS applied
   to those two drivers as well.
 """
+__author__ = "Abhijeet"
 import copy
 import warnings
 import numpy as np

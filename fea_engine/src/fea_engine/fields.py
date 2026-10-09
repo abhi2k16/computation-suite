@@ -23,6 +23,7 @@ A mode-shape matrix from `solve_modal()` has shape (n_dof, n_modes) and the same
 Metadata is only valid while the array still has the full nodal length; a slice such as `U[free]` is
 still an FEField but the nodal accessors then raise a clear error instead of returning wrong data.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

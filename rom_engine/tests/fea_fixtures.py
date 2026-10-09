@@ -12,6 +12,7 @@ arrays (K, M, free-dof indices, ...), keeping the actual test files
 just as FE-package-agnostic as rom_engine's library code -- fea_engine
 is confined to this one file.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from fea_engine.material import EI_beam, Material, Section
 from fea_engine.mesh import Mesh, MultiBlockMesh

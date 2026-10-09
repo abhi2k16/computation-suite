@@ -40,6 +40,7 @@ manufactured; CHECK 2 instead verifies the fallback mechanism itself,
 directly and deterministically, against a synthetic residual (tanh)
 chosen specifically because full Newton is KNOWN to overshoot on it.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from fea_engine import elements as elmod

@@ -16,6 +16,7 @@ call `load.force_at(t, n_dof, npn)` (transient) or read `.pattern`/
 `.F0`/`.freqs`/`.psd` directly (harmonic/PSD) -- nothing else in the
 package needs to change.
 """
+__author__ = "Abhijeet"
 from dataclasses import dataclass, field
 from typing import Callable
 import numpy as np

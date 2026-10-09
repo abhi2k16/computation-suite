@@ -5,6 +5,7 @@ elements (Quad4PlaneStress, Hex8Solid3D, Tri3PlaneStress, Tet4Solid3D).
 Split out of the original monolithic element.py during the
 fea_engine restructuring; no logic changed, only file location.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .base import (Element, gauss_product, jacobian, tet_quadrature_4pt,

@@ -24,6 +24,7 @@ different, non-penalty contact formulation) -- the SHAPE is the
 point, and is checked against zero force outside the patch, not
 against a closed-form Hertz pressure profile.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle

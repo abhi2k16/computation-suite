@@ -51,6 +51,7 @@ Six lines of evidence:
    necessary sanity check: zero displacement gives exactly zero
    drilling angle.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

@@ -14,6 +14,7 @@ is covered by test_torch_sparse_solver.py's CHECK 6/CHECK 7, which are
 torch-gated the same way every other torch test in this package is
 (see that file's own docstring for why).
 """
+__author__ = "Abhijeet"
 import pytest
 from fea_engine import FESystem, Material, D_plane_stress, Quad4PlaneStress, mesh
 from fea_engine.torch_sparse_solver import _HAS_TORCH

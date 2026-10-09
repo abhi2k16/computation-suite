@@ -33,6 +33,7 @@ so both checks validate the same state space):
    check that the torch strain-energy expression above is genuinely
    frame-invariant, not just numerically close by coincidence).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

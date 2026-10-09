@@ -40,6 +40,7 @@ optional way every other trainable component in this package is:
     (only instantiating `ParameterizedLatentODE` needs torch;
     importing this module never does).
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 _HAS_TORCH = False

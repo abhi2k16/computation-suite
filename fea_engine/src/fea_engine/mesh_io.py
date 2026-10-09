@@ -74,6 +74,7 @@ real, scoped-out future work, not silently half-done; attach whatever
 fields you need via `register_point_data()`/`register_element_data()`
 after reading.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from .mesh import Mesh, MultiBlockMesh
 

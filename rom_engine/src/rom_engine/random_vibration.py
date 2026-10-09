@@ -25,6 +25,7 @@ one-concept-per-module convention (the same reasoning `greedy.py`/
 machinery) with the two extra lines PSD propagation needs, and nothing
 about it is specific to how the underlying ROM was built.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

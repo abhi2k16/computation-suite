@@ -28,6 +28,7 @@ backend="auto" combined with method= still raises ValueError
 unchanged -- see TestGuardRails::test_method_with_backend_auto_raises_
 value_error below, untouched by this item.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

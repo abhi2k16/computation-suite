@@ -36,6 +36,7 @@ Three lines of evidence:
    land on the same equilibrium points, interpolated to a shared delta
    grid, wherever their paths overlap.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

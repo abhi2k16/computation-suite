@@ -54,6 +54,7 @@ full-order model fed directly into balancing, or a batched sweep
 across many parameter points (not attempted in this item), and neither
 applies to those two modules' own works-on-something-small paths.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 _HAS_TORCH = False

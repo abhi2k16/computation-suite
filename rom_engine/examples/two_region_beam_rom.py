@@ -30,6 +30,7 @@ Every ROM answer in the sweep is cross-checked against a real
 fea_engine full-order solve so the printed accuracy numbers are
 genuine, not illustrative.
 """
+__author__ = "Abhijeet"
 import time
 import numpy as np
 

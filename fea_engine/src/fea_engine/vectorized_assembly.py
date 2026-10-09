@@ -69,6 +69,7 @@ duplicate-index accumulation `scipy.sparse.coo_matrix` performs on
 tests/test_torch_vectorized_assembly.py, not merely assumed identical
 because both are called "COO".
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .mesh_transform import MeshTransformation

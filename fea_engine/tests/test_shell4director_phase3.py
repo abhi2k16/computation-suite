@@ -57,6 +57,7 @@ tangent_stiffness()/strain_energy() calls):
    physics violation would) -- the practical form of the decisive claim
    a caller of internal_force() actually observes.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

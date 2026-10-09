@@ -54,6 +54,7 @@ Matlab", 2001) is included to avoid obvious checkerboarding -- density
 filtering (a genuinely different, arguably better-founded technique) is
 a natural follow-on, not attempted here.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .solver import FESystem

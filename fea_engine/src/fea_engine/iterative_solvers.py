@@ -61,6 +61,7 @@ its own separate CG dispatch"); `backend="auto"` still raises for
 `method=` -- see `solve_static()`'s own updated docstring for why that
 one case remains disallowed.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import scipy.sparse as sp
 from scipy.sparse.linalg import splu, spsolve, spsolve_triangular

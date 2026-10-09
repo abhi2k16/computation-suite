@@ -51,6 +51,7 @@ Four lines of evidence:
    internal_force()/tangent_stiffness() evaluation, so slow or
    non-converging behavior would be a real practical blocker.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.spatial.transform import Rotation as R

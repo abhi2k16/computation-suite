@@ -9,6 +9,7 @@ curve and the exact elastic-unload line (slope E) -- the visual
 signature of correct plasticity (a sharp kink at yield, a straight-line
 unload with permanent set) made directly checkable by eye.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -57,6 +57,7 @@ machinery) turned out to be UNNECESSARY for this design -- see
 registered in `ELEMENT_REGISTRY` -- see the class docstring's own
 "STATUS" note on what Phase 3 validates and what remains open.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .base import Element, gauss_product, jacobian

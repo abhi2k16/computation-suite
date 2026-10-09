@@ -22,6 +22,7 @@ Four lines of evidence for the residual function:
      of the ODE at all) must give a LARGE residual -- confirms the
      function actually discriminates, not just returns "small" always.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

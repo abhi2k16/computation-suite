@@ -34,6 +34,7 @@ tangent in this project gets:
    at u=0) -- the same minimum-correctness check every other element
    in this package gets.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

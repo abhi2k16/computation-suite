@@ -21,6 +21,7 @@ blocks are the SAME Euler-Bernoulli bending physics, just oriented
 differently, and a fixed local coordinate SIGN convention is the only
 thing that differs between them).
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .base import Element

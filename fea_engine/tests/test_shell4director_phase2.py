@@ -44,6 +44,7 @@ Four lines of evidence:
    doc), consistent with `Shell4MITC._local_frame_and_coords()`'s own
    e3.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

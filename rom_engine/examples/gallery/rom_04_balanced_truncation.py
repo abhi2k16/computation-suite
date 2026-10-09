@@ -28,6 +28,7 @@ establishes it: first modally truncate to a moderate, well-conditioned
 number of undamped modes (plain eigh(K,M)), THEN balance-and-truncate
 further from that intermediate model.
 """
+__author__ = "Abhijeet"
 import os
 import numpy as np
 import matplotlib.pyplot as plt

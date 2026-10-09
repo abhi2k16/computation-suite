@@ -1,3 +1,5 @@
+__author__ = "Abhijeet"
+
 import numpy as np
 from fea_engine import geometry as geo
 from fea_engine import elements as elmod

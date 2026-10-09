@@ -118,6 +118,7 @@ package's oversight):
   "Design history" below) -- so this was deferred rather than shipped
   as an always-inert "fix". Not attempted further this wave.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .base import Element, gauss_product, jacobian

@@ -8,6 +8,7 @@ independently-solved reference exactly), for both dense and sparse K,
 and the real end-to-end multi-load-case FESystem use case this item was
 built for (a ROM/surrogate training-snapshot sweep).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.sparse import csr_matrix

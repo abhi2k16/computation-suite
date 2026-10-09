@@ -43,6 +43,7 @@ material/physics, e.g. different D matrices per block) or a single
 plain value reused for every block (the common case: one physics, just
 more than one element topology) -- see _per_block_arg().
 """
+__author__ = "Abhijeet"
 import warnings
 
 import numpy as np

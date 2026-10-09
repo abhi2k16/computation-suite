@@ -1,4 +1,5 @@
 """linear_dynamics.py: closed-form SDOF checks, method cross-checks, and a real fea_engine beam."""
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

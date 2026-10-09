@@ -10,6 +10,7 @@ This mirrors the working prototype's fem_rom_comparison.py workflow,
 re-pointed at rom_engine's LoewnerROM / screen_physical_modes /
 modal_assurance_criterion instead of the prototype's flat functions.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from rom_engine.loewner import LoewnerROM

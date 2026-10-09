@@ -59,6 +59,7 @@ Section 7, Phase 3):
      function, not a universal guarantee that every extra k always
      halves the error.)
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eig, eigh
 from rom_engine.krylov import KrylovROM, arnoldi_basis, two_sided_arnoldi_bases

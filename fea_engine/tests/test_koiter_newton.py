@@ -38,6 +38,7 @@ Four lines of evidence:
    cubic coefficients this driver computes internally can be checked
    directly against hand-derived values, not just the end-to-end path.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

@@ -36,6 +36,7 @@ this module, but the convention is set here for any future one) should
 follow the same pattern: no function silently reads global RNG state a
 caller cannot see or control.
 """
+__author__ = "Abhijeet"
 from typing import NamedTuple
 
 import numpy as np

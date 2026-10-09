@@ -2,6 +2,7 @@
 test_field_series.py -- item C: FieldSeries, one container for load paths, time histories, modes.
 Additive: solver return values are unchanged, `system.series(...)` wraps them.
 """
+__author__ = "Abhijeet"
 import pickle
 
 import numpy as np

@@ -47,6 +47,7 @@ module uses bare `torch` ops only -- no `tensormesh`/`torch-sla`
 package import anywhere, TensorMesh's own docs were consulted only as
 design inspiration for §6.3's suggested approach.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .elements.base import jacobian, tet_quadrature_4pt, gauss_product

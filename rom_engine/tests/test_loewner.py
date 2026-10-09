@@ -18,6 +18,7 @@ Checks (mirroring docs/loewner_modal_identification_roadmap.md Section 6):
      and a wrong omega_beta are all rejected loudly rather than
      silently producing a meaningless answer.
 """
+__author__ = "Abhijeet"
 import inspect
 import numpy as np
 import pytest

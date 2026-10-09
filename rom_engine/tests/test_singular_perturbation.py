@@ -27,6 +27,7 @@ Checks:
      DC) -- it should not have traded away BT's global-accuracy
      property to fix the DC-specific one.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine.balanced_truncation import BalancedTruncationROM, SingularPerturbationROM

@@ -47,6 +47,7 @@ written reference assembler):
    check that the registry/FESystem wiring, not just the element in
    isolation, is correct.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

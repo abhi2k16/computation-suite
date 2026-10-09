@@ -63,6 +63,7 @@ structure for the analogous shell element:
    load -- the same qualitative acceptance criterion
    test_nonlinear_beam.py's own CHECK 6 uses for Beam2DCorotational.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.spatial.transform import Rotation as R

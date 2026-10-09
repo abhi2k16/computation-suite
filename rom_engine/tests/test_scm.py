@@ -30,6 +30,7 @@ Checks:
      forever or stall), and the reported gap at each newly-added point
      was genuinely the worst available at that iteration.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import FrequencyROM, SingularValueLowerBound, certified_error_bound

@@ -6,6 +6,7 @@ Pure sizing-function math, no mesher and no element formulation involved
 validation item) -- everything here is checked against closed-form/
 geometric-series expectations, not against a solve.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

@@ -82,6 +82,7 @@ tests/test_torch_sparse_solver.py pass, on CPU (device="cpu"):
 Run so far on CPU only -- device="cuda" is implemented and available
 on this same install but not yet separately exercised.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import scipy.sparse as sp
 

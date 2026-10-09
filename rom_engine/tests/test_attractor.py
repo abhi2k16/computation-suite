@@ -19,6 +19,7 @@ frequency_sweep/amplitude_sweep, and the n_jobs=parallel path), each
 checked against an independent closed-form or synthetic-signal
 reference rather than merely "runs without crashing".
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.integrate import solve_ivp

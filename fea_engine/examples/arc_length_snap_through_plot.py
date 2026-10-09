@@ -11,6 +11,7 @@ plotted together against the closed-form curve -- the "S-shaped"
 snap-through curve made visible, and each solver's actual REACH along
 it shown directly rather than described in words.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 

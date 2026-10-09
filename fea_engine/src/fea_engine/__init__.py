@@ -60,6 +60,7 @@ behind a small registry or a subclass, so extending the package means
 ADDING a function/class, not editing existing ones. See each module's
 docstring for the specific extension point.
 """
+__author__ = "Abhijeet"
 from . import (material, damping, mesh, grading, build_mesh, geometry, elements, loads, solver,
                postprocess, nonlinear_solver, iterative_solvers, adaptivity)
 

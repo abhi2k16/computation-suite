@@ -39,6 +39,7 @@ n_modes)), matching every mode-shape and snapshot-matrix convention
 already established elsewhere in this package (`pod.py`, `galerkin.py`,
 `AppliedLoadStrategy`'s own `V` parameter).
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from .nonlinear_rom import _monomial_indices

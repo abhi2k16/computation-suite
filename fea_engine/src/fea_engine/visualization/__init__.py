@@ -13,5 +13,6 @@ fea_engine.mesh's own plot_mesh_2d/plot_mesh_3d/plot_mesh_annotated
 (plain matplotlib, no Gmsh dependency) remain in mesh.py, unchanged, and
 are the supported rendering path.
 """
+__author__ = "Abhijeet"
 
 __all__: list = []

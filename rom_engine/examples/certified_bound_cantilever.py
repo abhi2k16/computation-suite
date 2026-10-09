@@ -36,6 +36,7 @@ This script does two things honestly, in order:
      and why re-implementing it is noted as optional future work rather
      than done here.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 

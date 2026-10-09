@@ -27,6 +27,7 @@ fea_engine models, per the roadmap's own four-part validation criteria:
      check, not just a symmetry check) for a genuinely SPD/PSD
      full-order system.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.linalg import qr, eigh

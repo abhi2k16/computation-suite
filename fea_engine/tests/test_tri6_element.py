@@ -15,6 +15,7 @@ interior node -- see that file's CHECK 5 docstring for the geometric
 argument), so a shared-edge midpoint really is interior after just two
 triangles.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from fea_engine import FESystem, Material, D_plane_stress, Tri6PlaneStress, mesh
 

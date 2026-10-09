@@ -6,6 +6,7 @@ method from ICE-ROM/validation/dynamic_comparison.py's own ad hoc
 prototype (already used there to validate a real flat-beam ICE-ROM
 dynamic reproduction).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

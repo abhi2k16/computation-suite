@@ -21,6 +21,7 @@ held exactly" signature this driver's own test suite already
 validates (test_topology_optimize_compliance_reduces_compliance_and_
 holds_volume), shown as a convergence curve here.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection

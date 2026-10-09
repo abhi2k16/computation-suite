@@ -35,6 +35,7 @@ claims to do: correctly subsample a visited trajectory and correctly
 reuse EnforcedDisplacementStrategy's own already-validated static
 solve-and-project mechanism at the selected points.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

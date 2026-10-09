@@ -33,6 +33,7 @@ Three layers of decisive checks, not "runs without raising":
    edge_load() on a straight edge (both methods must agree to floating-
    point precision when the geometry is one both can handle).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

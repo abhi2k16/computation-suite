@@ -13,6 +13,7 @@ Checks (per docs/phase4_error_bounds_greedy_roadmap.md Section 6):
      that justifies greedy sampling's extra complexity, checked by
      actually comparing both, not assumed.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 from rom_engine import greedy_train_frequency_basis, build_pod_basis_from_frf_snapshots, FrequencyROM

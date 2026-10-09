@@ -26,6 +26,7 @@ constructor touches `NeuralSurrogate` (which is itself torch-optional
 at IMPORT time, per nonlinear_rom.py's own `_HAS_TORCH` pattern --
 constructing a `NeuralSurrogate` is what actually requires torch, not
 importing the module that defines it)."""
+__author__ = "Abhijeet"
 import numpy as np
 
 from .nonlinear_rom import NeuralSurrogate

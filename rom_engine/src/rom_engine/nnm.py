@@ -60,6 +60,7 @@ See `docs/nonlinear_surrogate_rom_roadmap.md` Section 6 (original design)
 and Section 11 (pseudo-arclength addendum) for the full design
 background this module implements against.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

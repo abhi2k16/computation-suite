@@ -10,6 +10,7 @@ closed form P_cr = pi^2*EI/L^2 -- the same mesh-refinement-convergence
 story every other benchmark in this project tells, applied to the new
 buckling capability.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 from fea_engine import Beam2DEulerBernoulli, FESystem

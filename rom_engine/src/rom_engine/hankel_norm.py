@@ -146,6 +146,7 @@ of honestly omitting a method it cannot back with a verified guarantee
 frequency_response() directly against the full-order model, exactly
 like those two classes' own tests already do.
 """
+__author__ = "Abhijeet"
 import warnings
 
 import numpy as np

@@ -31,6 +31,7 @@ K, F, and the basis are plain numpy arrays (or a basis object with a .V
 attribute, e.g. a fitted pod.PodBasis or a galerkin.GalerkinROM's own
 .V), on the same full DOF numbering throughout.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

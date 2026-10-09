@@ -20,6 +20,7 @@ script shows both: which frequencies each strategy actually trains on,
 and how each performs on a held-out test set concentrated near the
 model's real resonances.
 """
+__author__ = "Abhijeet"
 import numpy as np
 from scipy.linalg import eigh
 

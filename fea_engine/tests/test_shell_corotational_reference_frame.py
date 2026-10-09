@@ -36,6 +36,7 @@ in-plane rotation AND reversed (CW) winding, checked against the SAME
 physical answer an axis-aligned CCW mesh gives (physics cannot depend
 on how a mesh happens to be authored).
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

@@ -36,6 +36,7 @@ vectors back through L^{-T} -- a standard trick (e.g. Chatterjee 2000,
 the extracted POD modes exactly M-orthonormal, i.e. behave under
 projection exactly like a truncated eigenbasis would.
 """
+__author__ = "Abhijeet"
 import numpy as np
 
 

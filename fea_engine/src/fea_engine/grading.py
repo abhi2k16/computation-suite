@@ -38,6 +38,7 @@ dispatcher (Phase 4), which is the layer that actually knows about
 is deliberate: sizing-function math should be testable without importing any
 element code at all.
 """
+__author__ = "Abhijeet"
 from dataclasses import dataclass, field
 import numpy as np
 

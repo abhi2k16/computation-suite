@@ -11,6 +11,7 @@ the classical Euler-Bernoulli cantilever bending-frequency formula
 for the two bending-dominated modes -- an independent, closed-form
 reference, not just "the eigensolver ran."
 """
+__author__ = "Abhijeet"
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import PolyCollection, LineCollection

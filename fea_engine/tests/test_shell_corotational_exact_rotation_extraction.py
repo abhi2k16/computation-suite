@@ -51,6 +51,7 @@ Five lines of evidence:
    are small, non-zero, and of the expected order -- confirms this
    isn't a construction that's only ever exactly zero or broken.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 from scipy.spatial.transform import Rotation as R

@@ -15,6 +15,7 @@ Checks (mirroring docs/loewner_modal_identification_roadmap.md Section 6):
      freq_pool too small for the requested n_roms/n_interp are both
      rejected loudly.
 """
+__author__ = "Abhijeet"
 import numpy as np
 import pytest
 

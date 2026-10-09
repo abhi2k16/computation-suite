@@ -5,6 +5,7 @@ Each test pins one behaviour found by probing the interface against PyMAPDL/PyDP
 (see FEA_ENGINE_API_REVIEW.md): silent wrong answers became clear errors or idempotent behaviour,
 and previously valid usage is unchanged (checked against the README example numbers).
 """
+__author__ = "Abhijeet"
 import warnings
 
 import numpy as np
