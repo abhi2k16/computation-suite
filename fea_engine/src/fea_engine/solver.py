@@ -335,6 +335,54 @@ class FESystem:
         self._units = resolve(units)
         return self
 
+    def series(self, history, steps=None, step_name="step", step_unit=None, label="displacement",
+               axis=0):
+        """Wrap a multi-step result as a `FieldSeries` (same access style for every solver).
+
+        Parameters
+        ----------
+        history : array (n_steps, n_dof), or list of (n_dof,) vectors
+            E.g. the ``U_hist`` returned by the nonlinear and transient drivers.
+        steps : array (n_steps,), optional
+            Load factors, times, ... (default 0..n_steps-1).
+        step_name, step_unit : str
+            Describe the steps; ``step_name="time"`` picks up the unit system's time unit.
+        label : str
+            Name of the quantity.
+        axis : {0, 1}
+            0 if steps are rows (drivers), 1 if they are columns (``solve_modal`` mode shapes).
+
+        Example
+        -------
+        >>> lf, hist = solve_nonlinear_static(system, mat, n_steps=20)       # doctest: +SKIP
+        >>> path = system.series(hist, steps=lf, step_name="load factor")    # doctest: +SKIP
+        >>> path.history("uy", "tip", reduce="mean")                         # doctest: +SKIP
+        """
+        from .series import FieldSeries
+        if axis not in (0, 1):
+            raise ValueError("series: axis must be 0 (steps are rows) or 1 (steps are columns).")
+        data = np.asarray(history)
+        if data.ndim != 2:
+            raise ValueError(f"series: history must be 2-D, got shape {data.shape}.")
+        if axis == 1:
+            data = data.T
+        if data.dtype.kind not in "fc":
+            data = data.astype(float)
+        if step_unit is None:
+            if step_name == "time" and self._units is not None:
+                step_unit = self._units.time
+            elif step_name == "frequency":
+                step_unit = "Hz"
+        template = self.field(np.zeros(self.n_dof), label=label)
+        return FieldSeries(data, template, steps=steps, step_name=step_name, step_unit=step_unit,
+                           label=label)
+
+    def modal_series(self, n_modes=4):
+        """`solve_modal` result as a `FieldSeries`: steps are the frequencies in Hz, step i is mode i."""
+        freq, shapes = self.solve_modal(n_modes=n_modes)
+        return self.series(np.asarray(shapes), steps=freq, step_name="frequency", step_unit="Hz",
+                           label="mode shapes", axis=1)
+
     def field(self, data, label=None):
         """Wrap a full-length vector (n_dof,) or matrix (n_dof, k) as an `FEField` that knows this
         system's DOF layout, so values can be read by name -- e.g. for results from the nonlinear

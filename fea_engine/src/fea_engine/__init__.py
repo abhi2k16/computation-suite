@@ -36,6 +36,7 @@ fields           : FEField -- the ndarray-subclass solution vector returned by t
                     named access (U.component("uy", nodes="tip"), U.nodal, U.magnitude())
 newton_options   : NewtonOptions -- shared tol/max_iter/line_search settings for the nonlinear drivers
 batch            : batch.map(fn, items, n_jobs=...) for parameter sweeps and load cases
+series           : FieldSeries -- multi-step results (load path, time history, modes) with one access style
 iterative_solvers: Wave 8 items 36-40 (docs/consolidated_future_roadmap.md) --
                     fill-reducing reordering, preconditioners, conjugate
                     gradients, classical stationary iterations, and geometric
@@ -109,6 +110,7 @@ from .elements import (Element, gauss_product, Quad4PlaneStress, Hex8Solid3D,
                         ELEMENT_REGISTRY)
 from .solver import FESystem
 from .fields import FEField
+from .series import FieldSeries
 from .newton_options import NewtonOptions
 from . import batch, units
 from .iterative_solvers import (
@@ -158,7 +160,7 @@ __all__ = [
     "NodeToSegmentContact2D", "NodeToSegmentContact2DFriction",
     "closest_point_on_segment_2d", "find_contact_pairs_2d",
     "ELEMENT_REGISTRY",
-    "FESystem", "FEField", "NewtonOptions", "batch", "units",
+    "FESystem", "FEField", "FieldSeries", "NewtonOptions", "batch", "units",
     "reverse_cuthill_mckee", "fill_in_count", "permuted_solve",
     "jacobi_preconditioner", "ssor_preconditioner", "incomplete_cholesky0",
     "preconditioned_cg", "jacobi_solve", "gauss_seidel_solve", "sor_solve",

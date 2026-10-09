@@ -51,6 +51,16 @@
 > U.plot("uy", deform=True, scale=100)      # contour on the mesh, colour bar "uy [m]"
 > ```
 
+> [!NOTE]
+> **Multi-step results (v1.0.1, additive).** One access style for load paths, time histories and modes:
+> ```python
+> lf, hist = solve_nonlinear_static(system, mat, n_steps=20)      # return values unchanged
+> path = system.series(hist, steps=lf, step_name="load factor")
+> path.history("uy", "tip", reduce="mean")                        # load-displacement curve
+> path.at(0.5).plot("uy")                                         # step nearest to 0.5
+> system.modal_series(5).at(120.0)                                # mode closest to 120 Hz
+> ```
+
 ## 🧭 Contents
 
 | | |
