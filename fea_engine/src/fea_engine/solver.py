@@ -142,6 +142,7 @@ class FESystem:
         self.mesh = mesh
         self.thickness = thickness
         self.sparse = sparse
+        self._units = None          # unit LABELS only; see set_units() / fea_engine.units
         self.multi_block = isinstance(elem_formulation, dict)
 
         if self.multi_block:
@@ -317,6 +318,23 @@ class FESystem:
         except ValueError as err:
             raise ValueError(f"{who}: {err}") from None
 
+    @property
+    def units(self):
+        """The `UnitSystem` label attached with `set_units` (None = unlabelled)."""
+        return self._units
+
+    @units.setter
+    def units(self, value):
+        self.set_units(value)
+
+    def set_units(self, units):
+        """Attach unit labels (``units.SI``, ``units.MM_N_TONNE``, a `UnitSystem`, a preset name
+        or None). Labels only: nothing is converted. Results from `solve_*` carry them, and plots
+        and tables use them."""
+        from .units import resolve
+        self._units = resolve(units)
+        return self
+
     def field(self, data, label=None):
         """Wrap a full-length vector (n_dof,) or matrix (n_dof, k) as an `FEField` that knows this
         system's DOF layout, so values can be read by name -- e.g. for results from the nonlinear
@@ -328,10 +346,15 @@ class FESystem:
             return data
         elem = self._blocks[0][1]
         mask = elem.translational_dof_mask
+        # values of a displacement-like field are in the length unit (rotational DOFs: radians);
+        # mode shapes are arbitrarily scaled, so they carry no unit
+        unit = None
+        if self._units is not None and label in ("displacement", "harmonic response"):
+            unit = self._units.length
         return FEField(data, n_nodes=len(self.mesh.nodes), dofs_per_node=self.npn,
                        dof_names=self.dof_names, aliases=elem.local_dof_aliases(),
                        translational=mask if mask is not None else (True,) * self.npn,
-                       mesh=self.mesh, label=label)
+                       mesh=self.mesh, label=label, units=unit)
 
     def _check_nodes(self, node_ids, who):
         """node_ids -> int array. `node_ids` may also be the NAME of a mesh node set (or a list of

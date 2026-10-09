@@ -67,6 +67,18 @@ Tests: `fea_engine/tests/test_newton_options_and_batch.py` (36 tests).
 | Docstrings | Short Parameters / Example headers added to `fix_dofs`, `add_nodal_force`, `assemble_mass`, `solve_modal`; the older design notes are kept below them under "Notes". `solve_static` and `assemble_stiffness` still have the long narrative only; moving the design history to a docs page is not done. |
 | Warnings | `tests/test_nonlinear_cantilever.py` docstring is now a raw string (no invalid-escape warning); the intended zero-load warning in `test_adaptivity` is filtered. |
 
+## 2e. Status: P3 implemented (v1.0.1, additive)
+
+Tests: `fea_engine/tests/test_units_and_plot.py` (19 tests).
+
+| Item | Result |
+|---|---|
+| Units | `fea_engine.units`: `UnitSystem` (labels only), presets `SI` and `MM_N_TONNE`, `resolve`, `check_consistent`. `Material.units` (optional, ignored by equality), `FESystem.units` / `set_units`. `solve_static` and `solve_harmonic` results carry the length unit (`U.units`, `U.unit_of("rz")` gives `"rad"`); mode shapes carry none. **Nothing is converted** and mixed-unit inputs are not detected unless both objects are labelled. |
+| Plotting | `FEField.plot(component=None, mode=0, ax=None, deform=False, scale=1.0, cmap, colorbar, show_mesh, title)` returns the Matplotlib axes: filled contour on 2-D meshes (quads split, higher-order uses corners, multi-block supported), line plot against x for beam/truss meshes, `deform=True` moves a 2-D mesh by `scale*(ux,uy)`. Complex fields plot the absolute value. 3-D meshes raise `NotImplementedError`. |
+| `to_dataframe` | already delivered in P1. |
+
+Not done from the original review: item C (one container class for multi-step results such as modal, nonlinear-path and transient histories) is still open; `system.field(history[-1])` is the current workaround.
+
 ## 3. Prioritised plan
 
 **P0: safety fixes, no API change.** Small, testable, backwards compatible.

@@ -110,7 +110,7 @@ from .elements import (Element, gauss_product, Quad4PlaneStress, Hex8Solid3D,
 from .solver import FESystem
 from .fields import FEField
 from .newton_options import NewtonOptions
-from . import batch
+from . import batch, units
 from .iterative_solvers import (
     reverse_cuthill_mckee, fill_in_count, permuted_solve,
     jacobi_preconditioner, ssor_preconditioner, incomplete_cholesky0,
@@ -158,7 +158,7 @@ __all__ = [
     "NodeToSegmentContact2D", "NodeToSegmentContact2DFriction",
     "closest_point_on_segment_2d", "find_contact_pairs_2d",
     "ELEMENT_REGISTRY",
-    "FESystem", "FEField", "NewtonOptions", "batch",
+    "FESystem", "FEField", "NewtonOptions", "batch", "units",
     "reverse_cuthill_mckee", "fill_in_count", "permuted_solve",
     "jacobi_preconditioner", "ssor_preconditioner", "incomplete_cholesky0",
     "preconditioned_cg", "jacobi_solve", "gauss_seidel_solve", "sor_solve",

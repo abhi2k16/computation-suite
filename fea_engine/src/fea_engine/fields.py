@@ -34,7 +34,7 @@ class FEField(np.ndarray):
     """ndarray of nodal DOF values with names. See the module docstring."""
 
     def __new__(cls, data, n_nodes=None, dofs_per_node=None, dof_names=None, aliases=None,
-                translational=None, mesh=None, label=None):
+                translational=None, mesh=None, label=None, units=None):
         obj = np.asarray(data).view(cls)
         obj._n_nodes = n_nodes
         obj._npn = dofs_per_node
@@ -43,12 +43,13 @@ class FEField(np.ndarray):
         obj._translational = None if translational is None else tuple(bool(t) for t in translational)
         obj._mesh = mesh
         obj.label = label
+        obj.units = units       # unit label of translational values, e.g. "m" (None = unlabelled)
         return obj
 
     def __array_finalize__(self, obj):
         if obj is None:
             return
-        for name in ("_n_nodes", "_npn", "_dof_names", "_aliases", "_translational", "_mesh", "label"):
+        for name in ("_n_nodes", "_npn", "_dof_names", "_aliases", "_translational", "_mesh", "label", "units"):
             setattr(self, name, getattr(obj, name, None if name != "_aliases" else {}))
 
     def __array_wrap__(self, out_arr, context=None, return_scalar=False):
@@ -62,7 +63,7 @@ class FEField(np.ndarray):
     def __reduce__(self):
         meta = dict(n_nodes=self._n_nodes, dofs_per_node=self._npn, dof_names=self._dof_names,
                     aliases=self._aliases, translational=self._translational, mesh=None,
-                    label=self.label)
+                    label=self.label, units=self.units)
         return (_rebuild_fefield, (np.asarray(self), meta))
 
     # ---- structure -------------------------------------------------------------------------
@@ -194,3 +195,127 @@ class FEField(np.ndarray):
         for j, n in enumerate(names):
             cols[n] = nod[:, j]
         return pd.DataFrame(cols)
+
+    # ---- units (labels only) -----------------------------------------------------------------
+    def unit_of(self, component):
+        """Unit label of one DOF: the field's length unit for translations, ``"rad"`` for
+        rotations, None when the field is unlabelled."""
+        self._require_nodal("unit_of")
+        j = self._dof_index(component, "unit_of")
+        if self.units is None:
+            return None
+        mask = self._translational
+        return self.units if (mask is None or mask[j]) else "rad"
+
+    # ---- plotting ----------------------------------------------------------------------------
+    def _triangles(self):
+        """Triangulation (n_tri, 3) of the attached 2-D mesh; quads are split into two triangles
+        and higher-order elements use their corner nodes."""
+        mesh = self._mesh
+        blocks = getattr(mesh, "blocks", None)
+        conns = list(blocks.values()) if blocks else [mesh.elements]
+        tris = []
+        for conn in conns:
+            conn = np.asarray(conn, dtype=int)
+            k = conn.shape[1]
+            if k in (3, 6):
+                tris.append(conn[:, :3])
+            elif k in (4, 8, 9):
+                tris.append(conn[:, [0, 1, 2]])
+                tris.append(conn[:, [0, 2, 3]])
+            else:
+                raise NotImplementedError(f"FEField.plot: no 2-D plot for elements with {k} nodes.")
+        return np.vstack(tris)
+
+    def plot(self, component=None, mode=0, ax=None, deform=False, scale=1.0, cmap="viridis",
+             colorbar=True, show_mesh=False, title=None):
+        """Plot one nodal quantity on the attached mesh and return the Matplotlib axes.
+
+        Parameters
+        ----------
+        component : str or int, optional
+            DOF to plot ("uy", "y", index). Default: the translation magnitude.
+        mode : int
+            Column to plot for (n_dof, k) fields such as mode shapes.
+        ax : matplotlib Axes, optional
+            Draw into this axes; a new figure is made when omitted.
+        deform : bool
+            2-D meshes: draw the mesh moved by ``scale * (ux, uy)``.
+        scale : float
+            Displacement amplification used with ``deform``.
+        cmap, colorbar, show_mesh, title
+            Usual Matplotlib presentation options.
+
+        Line-element meshes (beams, trusses) give a line plot of the value against x; 2-D meshes a filled contour;
+        3-D meshes are not supported yet. Complex fields are drawn as their absolute value.
+        Requires matplotlib and a mesh (a field that was pickled has none).
+        """
+        self._require_nodal("plot")
+        mesh = self._mesh
+        if mesh is None or getattr(mesh, "nodes", None) is None:
+            raise ValueError("FEField.plot: this field has no mesh attached (it was pickled or "
+                             "built without one). Re-create it with system.field(np.asarray(U)).")
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError as err:
+            raise ImportError("FEField.plot() needs matplotlib (pip install matplotlib).") from err
+        if self.ndim == 2:
+            if not 0 <= int(mode) < self.shape[1]:
+                raise ValueError(f"FEField.plot: mode {mode} out of range 0..{self.shape[1] - 1}.")
+            view = FEField(np.asarray(self)[:, int(mode)], self._n_nodes, self._npn, self._dof_names,
+                           self._aliases, self._translational, self._mesh, self.label, self.units)
+        elif self.ndim == 1:
+            view = self
+        else:
+            raise ValueError("FEField.plot: only 1-D or 2-D fields can be plotted.")
+
+        if component is None:
+            vals = view.magnitude()
+            name = "|u|"
+            unit = self.units
+        else:
+            vals = view.component(component)
+            j = view._dof_index(component, "plot")
+            name = (self._dof_names[j] if self._dof_names else f"dof {j}")
+            unit = view.unit_of(component)
+        if np.iscomplexobj(vals):
+            vals, name = np.abs(vals), f"|{name}|"
+        label = f"{name} [{unit}]" if unit else name
+
+        coords = np.asarray(mesh.nodes, dtype=float)
+        conns = list(mesh.blocks.values()) if getattr(mesh, "blocks", None) else [mesh.elements]
+        is_line = all(np.asarray(c).shape[1] == 2 for c in conns)      # beams / trusses
+        dim = 1 if is_line else int(getattr(mesh, "dim", coords.shape[1]))
+        if ax is None:
+            _, ax = plt.subplots()
+        if dim == 1:
+            if deform:
+                raise ValueError("FEField.plot: deform=True is only available for 2-D meshes.")
+            order = np.argsort(coords[:, 0])
+            ax.plot(coords[order, 0], vals[order], marker="o", ms=3)
+            ax.set_xlabel("x")
+            ax.set_ylabel(label)
+        elif dim == 2:
+            xy = coords[:, :2].copy()
+            if deform:
+                names = [n.lower() for n in (self._dof_names or ())]
+                if "ux" not in names or "uy" not in names:
+                    raise ValueError("FEField.plot: deform=True needs 'ux' and 'uy' DOFs.")
+                nod = np.asarray(view).reshape(self._n_nodes, self._npn)
+                disp = nod[:, [names.index("ux"), names.index("uy")]]
+                xy += scale * (disp.real if np.iscomplexobj(disp) else disp)
+            import matplotlib.tri as mtri
+            tri = mtri.Triangulation(xy[:, 0], xy[:, 1], self._triangles())
+            cs = ax.tricontourf(tri, vals, levels=14, cmap=cmap)
+            if show_mesh:
+                ax.triplot(tri, color="k", lw=0.3)
+            if colorbar:
+                ax.figure.colorbar(cs, ax=ax, label=label)
+            ax.set_aspect("equal")
+            ax.set_xlabel("x")
+            ax.set_ylabel("y")
+        else:
+            raise NotImplementedError("FEField.plot: 3-D meshes are not supported yet; "
+                                      "use to_dataframe() or export the mesh to a viewer.")
+        ax.set_title(title if title is not None else (self.label or "field"))
+        return ax

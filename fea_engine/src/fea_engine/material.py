@@ -15,7 +15,7 @@ No other module needs to change -- fea_engine.elements element classes
 just take whatever D their stiffness() expects as a plain array/tuple
 argument.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 
 
@@ -26,6 +26,8 @@ class Material:
     E: float
     nu: float
     rho: float = 0.0
+    # label only (see fea_engine.units): which unit system E and rho are expressed in
+    units: object = field(default=None, compare=False, repr=False)
 
     @property
     def G(self):

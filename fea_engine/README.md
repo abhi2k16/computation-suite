@@ -43,6 +43,14 @@
 > results = batch.map(build_and_solve, params, n_jobs=4)                  # ordered; backend="thread" for lambdas
 > ```
 
+> [!NOTE]
+> **Unit labels and plots (v1.0.1, additive).** Labels only, nothing is converted.
+> ```python
+> system.units = "SI"                       # or fea_engine.units.MM_N_TONNE
+> U = system.solve_static()                 # U.units == "m"
+> U.plot("uy", deform=True, scale=100)      # contour on the mesh, colour bar "uy [m]"
+> ```
+
 ## 🧭 Contents
 
 | | |
