@@ -38,6 +38,12 @@ class ReducedSystem:
     u_fixed: np.ndarray
     n_dof: int
     _system: object = field(default=None, repr=False, compare=False)
+    # linear constraints (None when there are none): dependent DOFs, u_slave = g - C u_free
+    slave: np.ndarray = field(default=None, repr=False, compare=False)
+    slave_C: object = field(default=None, repr=False, compare=False)
+    slave_g: np.ndarray = field(default=None, repr=False, compare=False)
+    _T: object = field(default=None, repr=False, compare=False)          # free_all -> free (independent)
+    _free_all: np.ndarray = field(default=None, repr=False, compare=False)
 
     @property
     def n_free(self):
@@ -52,6 +58,9 @@ class ReducedSystem:
         """Free-free block of another full matrix (e.g. ``M``, ``C``, a geometric stiffness)."""
         if self._system is not None:
             A = self._system._as_solve_matrix(A)
+        if self._T is not None:                       # constrained: T^T A_ff T
+            Aff = A[np.ix_(self._free_all, self._free_all)]
+            return self._T.T @ (Aff @ self._T)
         return A[np.ix_(self.free, self.free)]
 
     def expand(self, u_free, include_prescribed=True):
@@ -65,6 +74,11 @@ class ReducedSystem:
             raise ValueError(f"expected {self.n_free} free-DOF rows, got {u_free.shape[0]}")
         full = np.zeros((self.n_dof,) + u_free.shape[1:], dtype=np.result_type(u_free.dtype, float))
         full[self.free] = u_free
+        if self.slave is not None and len(self.slave):
+            dep = -(self.slave_C @ u_free)
+            if include_prescribed and u_free.ndim == 1:
+                dep = dep + self.slave_g
+            full[self.slave] = dep
         if include_prescribed and u_free.ndim == 1:
             full[self.fixed] = self.u_fixed
         return full

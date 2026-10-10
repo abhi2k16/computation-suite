@@ -176,6 +176,7 @@ def scatter_global_force(fe, connectivity, dofs_per_node, n_dof):
 
 
 def _pick_block(fesystem, block_name):
+    fesystem._require_plain_system("vectorized Reissner beam assembly")
     for name, formulation, connectivity in fesystem._blocks:
         if block_name is None or name == block_name:
             return name, formulation, connectivity

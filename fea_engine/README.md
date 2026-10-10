@@ -73,6 +73,18 @@
 > ```
 
 > [!NOTE]
+> **Springs, foundations, constraints and convergence studies (unreleased, additive).**
+> ```python
+> system.add_spring("tip", "uy", 5.0e6)                              # grounded spring
+> system.add_elastic_foundation("bottom", "uy", 2.0e8, thickness=0.02)   # Winkler / Robin: k (u - u_ref)
+> system.tie("right", "left", ["ux", "uy"], offset=(-1.0, 0.0))     # periodic ties
+> system.add_constraint([(7, "ux", 1.0), (12, "ux", -1.0)], 1e-4)   # u_7 - u_12 = 1e-4
+> U = system.solve_static()                                          # constraints eliminated exactly
+> study = fea_engine.convergence.run_study(tip_deflection, [8, 16, 32], exact=exact)
+> study.order                                                        # observed convergence order
+> ```
+
+> [!NOTE]
 > **Reduced system and ParaView export (unreleased, additive).**
 > ```python
 > rs = system.form_linear_system()          # constrained K, F; prescribed values already on the right-hand side

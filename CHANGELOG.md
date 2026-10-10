@@ -25,6 +25,19 @@ All notable changes to `fea_engine` and `rom_engine`. Format follows
   A constant coefficient reproduces the plain assembly. Linear assembly only; not with `vectorized=True`.
 - `FEField` accepts per-DOF unit labels (`dof_units`), so stress fields report `Pa` and moments `N*m`.
 
+- Springs, foundations and constraints (`fea_engine.boundary`): `add_spring` (grounded springs, optional
+  support displacement), `add_elastic_foundation` (Winkler / Robin term `k (u - u_ref)` on boundary edges or
+  faces, `k` constant or a function of position), `add_constraint` (general `sum c_i u_i = value`) and `tie`
+  (equal-DOF ties between node sets, with an offset for periodic boundaries). Springs and foundations live in
+  `K`, survive re-assembly and work in the nonlinear drivers. Constraints are eliminated exactly (the reduced
+  matrix stays symmetric positive definite); `solve_static`, `solve_modal` and `form_linear_system` honour
+  them, every other solver raises `NotImplementedError` instead of ignoring them.
+- `fea_engine.convergence` (`run_study`, `observed_order`, `pairwise_orders`, `richardson`) for mesh-convergence
+  studies, and an independent benchmark suite (`tests/test_benchmarks_convergence.py`): patch tests on all eight
+  continuum elements, exact pure-bending reproduction by Quad8/Tri6, observed convergence orders for Quad4, Tri3,
+  Euler-Bernoulli and Reissner beams and axial-bar vibration, and the large-deflection cantilever elastica checked
+  against a SciPy quadrature.
+
 ### Changed (fea_engine)
 - `FEField.magnitude()` raises a clear `ValueError` for a field with no translational components
   (previously it returned zeros); `FEField.plot()` of a scalar field draws its single component.

@@ -629,6 +629,8 @@ class FESystem:
         remembered = (D, dict(kwargs))
         try:
             self._assemble_stiffness_body(D, method, vectorized, kwargs)
+            if self._extra_K and (token[1] or not accumulate):    # springs / foundations survive re-assembly
+                self._apply_extra_K(self._extra_K)
         except BaseException:
             self._rollback_assembly("K", token)   # a failed re-assembly leaves the old matrix intact
             raise
@@ -848,7 +850,24 @@ class FESystem:
             c_kwargs = dict(kwargs)
             c_kwargs["state"] = self.contact_state[i]
             F_int[g] += celem.internal_force(elem_coords, u_elem, cmat, **c_kwargs)
+        self._reject_constraints("nonlinear analysis")
+        for g, ke in self._extra_K:                       # linear springs / foundations
+            F_int[g] += ke @ u_global[g]
         return F_int
+
+    def _reject_constraints(self, who):
+        if self._constraints:
+            raise NotImplementedError(
+                f"{who}: linear constraints (add_constraint / tie) are supported by solve_static and "
+                f"solve_modal only. Remove them with clear_constraints(), or impose the relation another way.")
+
+    def _require_plain_system(self, who):
+        """Guard for code paths that assemble from elements only (springs / foundations / constraints
+        would be silently ignored)."""
+        self._reject_constraints(who)
+        if self._extra_K:
+            raise NotImplementedError(f"{who} does not include springs / elastic foundations "
+                                      f"(add_spring / add_elastic_foundation).")
 
     def assemble_tangent_stiffness(self, u_global, mat, **kwargs):
         """Global tangent stiffness K_T(u_global) = d(F_int)/d(u), at
@@ -879,6 +898,9 @@ class FESystem:
             c_kwargs = dict(kwargs)
             c_kwargs["state"] = self.contact_state[i]
             K_T[np.ix_(g, g)] += celem.tangent_stiffness(elem_coords, u_elem, cmat, **c_kwargs)
+        self._reject_constraints("nonlinear analysis")
+        for g, ke in self._extra_K:                       # linear springs / foundations
+            K_T[np.ix_(g, g)] += ke
         return K_T
 
     def add_contact_element(self, elem, node_ids, mat):
@@ -1232,6 +1254,133 @@ class FESystem:
             for local_i, node_id in enumerate(facet_global_nodes):
                 self.F[self.npn * int(node_id) + dof_index] += share[local_i]
 
+    # ---- springs, elastic foundations, linear constraints (v1.1): see fea_engine.boundary ---------
+    _extra_K = ()          # [(global dofs, matrix)] re-applied after every stiffness (re)assembly
+    _constraints = ()      # [(dof array, coeff array, value)] eliminated in form_linear_system
+
+    def _register_stiffness(self, blocks):
+        self._extra_K = tuple(self._extra_K) + tuple(blocks)
+        if "K" in getattr(self, "_assembled", ()):
+            self._apply_extra_K(blocks)
+
+    def _apply_extra_K(self, blocks):
+        for g, ke in blocks:
+            self.K[np.ix_(g, g)] += ke
+
+    def add_spring(self, node_ids, dof_index, k, u_ref=0.0):
+        """Grounded linear spring(s): ``k`` added to the stiffness at each selected node and DOF.
+
+        Parameters
+        ----------
+        node_ids : node ids or node-set name(s)
+        dof_index : DOF name or index (or a list of them)
+        k : float or array, one stiffness per node
+        u_ref : float
+            Support displacement the spring is attached to (adds ``k * u_ref`` to the load).
+
+        Example
+        -------
+        >>> system.add_spring("tip", "uy", 5.0e6)    # doctest: +SKIP
+        """
+        from .boundary import spring_blocks
+        nodes = self._check_nodes(node_ids, "add_spring")
+        dofs = self._check_local_dofs(dof_index, "add_spring")
+        blocks = spring_blocks(self, nodes, dofs, k)
+        if u_ref:
+            for g, ke in blocks:
+                self.F[g] += ke[:, 0] * float(u_ref)
+        self._register_stiffness(blocks)
+
+    def add_elastic_foundation(self, where, dof_index, k, thickness=1.0, u_ref=0.0, quad_order=2):
+        """Winkler foundation / Robin boundary term ``traction = k (u - u_ref)`` on a boundary.
+
+        Parameters
+        ----------
+        where : node ids or node-set name(s) (all boundary facets with every node in the set are used),
+            or an explicit list of facets (tuples of node ids in ``facet_loads.list_facets`` order)
+        dof_index : DOF name or index (or a list of them)
+        k : float, or callable ``k(x)`` of the physical point -- stiffness per unit boundary length (2-D,
+            times ``thickness``) or area (3-D)
+        thickness : float, out-of-plane thickness for 2-D models
+        u_ref : float, displacement the foundation rests on
+
+        Example
+        -------
+        >>> system.add_elastic_foundation("bottom", "uy", 2.0e8, thickness=0.02)   # doctest: +SKIP
+        """
+        from .boundary import facets_on, foundation_blocks, _is_facet_list
+        dofs = self._check_local_dofs(dof_index, "add_elastic_foundation")
+        if _is_facet_list(where):
+            facets = [tuple(f) for f in where]
+            self._check_nodes([n for f in facets for n in f], "add_elastic_foundation")
+        else:
+            facets = facets_on(self, self._check_nodes(where, "add_elastic_foundation"))
+        if not facets:
+            raise ValueError("add_elastic_foundation: no element facet has all its nodes in the selection.")
+        blocks = foundation_blocks(self, facets, dofs, k, thickness, quad_order)
+        if u_ref:
+            for g, ke in blocks:
+                self.F[g] += ke @ np.full(len(g), float(u_ref))
+        self._register_stiffness(blocks)
+
+    def add_constraint(self, terms, value=0.0):
+        """General linear constraint ``sum_i c_i u_i = value``.
+
+        Parameters
+        ----------
+        terms : list of (node, dof, coefficient)
+        value : float, right-hand side
+
+        Example
+        -------
+        >>> system.add_constraint([(7, "ux", 1.0), (12, "ux", -1.0)])   # u_7 = u_12   # doctest: +SKIP
+
+        Constraints are eliminated exactly (see ``fea_engine.boundary``); supported by ``solve_static`` and
+        ``solve_modal``. Terms on prescribed DOFs move to the right-hand side.
+        """
+        if not terms:
+            raise ValueError("add_constraint: no terms given.")
+        dofs, coefs = [], []
+        for node, dof, c in terms:
+            n = self._check_nodes([node] if not isinstance(node, str) else node, "add_constraint")
+            if len(n) != 1:
+                raise ValueError("add_constraint: each term needs exactly one node.")
+            d = self._check_local_dofs(dof, "add_constraint")
+            if len(d) != 1:
+                raise ValueError("add_constraint: each term needs exactly one DOF.")
+            dofs.append(self.npn * int(n[0]) + int(d[0]))
+            coefs.append(float(c))
+        if len(set(dofs)) != len(dofs):
+            raise ValueError("add_constraint: a DOF appears twice in one constraint; merge its terms.")
+        if not np.any(np.asarray(coefs)):
+            raise ValueError("add_constraint: all coefficients are zero.")
+        self._constraints = tuple(self._constraints) + ((np.array(dofs), np.array(coefs), float(value)),)
+
+    def tie(self, slave_nodes, master_nodes, dof_indices, offset=None, tol=1e-8):
+        """Equal-DOF ties: ``u_slave = u_master`` for each slave node and the master node at
+        ``x_slave + offset`` (default: coincident nodes -- a glued interface; give a period vector for
+        periodic boundaries)."""
+        from scipy.spatial import cKDTree
+        s = self._check_nodes(slave_nodes, "tie")
+        m = self._check_nodes(master_nodes, "tie")
+        dofs = self._check_local_dofs(dof_indices, "tie")
+        off = np.zeros(self.mesh.nodes.shape[1]) if offset is None else np.asarray(offset, dtype=float)
+        tree = cKDTree(self.mesh.nodes[m])
+        dist, idx = tree.query(self.mesh.nodes[s] + off)
+        if np.any(dist > tol):
+            bad = s[np.argmax(dist)]
+            raise ValueError(f"tie: no master node within {tol:g} of slave node {int(bad)} (offset {off}).")
+        for sn, j in zip(s, idx):
+            mn = int(m[j])
+            if mn == int(sn):
+                continue
+            for d in dofs:
+                self.add_constraint([(int(sn), int(d), 1.0), (mn, int(d), -1.0)])
+
+    def clear_constraints(self):
+        """Remove all linear constraints added with ``add_constraint`` / ``tie``."""
+        self._constraints = ()
+
     @property
     def free_dofs(self):
         return np.array([d for d in range(self.n_dof) if d not in self.fixed_dofs])
@@ -1271,8 +1420,48 @@ class FESystem:
         Kmat = self._as_solve_matrix(K)
         Kff = Kmat[np.ix_(free, free)]
         Ff = Fv[free] - self._dirichlet_rhs_correction(Kmat, free, fixed, u_fixed)
+        if self._constraints:
+            return self._constrained_system(Kff, np.asarray(Ff, dtype=float), free, fixed, u_fixed)
         return ReducedSystem(K=Kff, F=np.asarray(Ff, dtype=float), free=free, fixed=fixed,
                              u_fixed=u_fixed, n_dof=self.n_dof, _system=self)
+
+    def _constrained_system(self, Kff, Ff, free, fixed, u_fixed):
+        """Eliminate the linear constraints from the free-DOF system (see fea_engine.boundary)."""
+        from scipy import sparse as sp
+        from .boundary import reduce_constraints
+        from .linear_system import ReducedSystem
+        rows = [dict(zip(d.tolist(), c.tolist())) for d, c, _ in self._constraints]
+        vals = [v for _, _, v in self._constraints]
+        slave, mat, g = reduce_constraints(rows, vals, dict(zip(fixed.tolist(), u_fixed.tolist())))
+        if slave.size == 0:
+            return ReducedSystem(K=Kff, F=Ff, free=free, fixed=fixed, u_fixed=u_fixed,
+                                 n_dof=self.n_dof, _system=self)
+        pos = {int(d): i for i, d in enumerate(free)}
+        slave_pos = np.array([pos[int(s)] for s in slave])
+        keep_mask = np.ones(len(free), dtype=bool)
+        keep_mask[slave_pos] = False
+        keep = free[keep_mask]
+        kpos = {int(d): i for i, d in enumerate(keep)}
+        r, c, v = list(np.flatnonzero(keep_mask)), list(range(len(keep))), [1.0] * len(keep)
+        cr, cc, cv = [], [], []
+        for i, s in enumerate(slave):
+            for m, coef in mat[int(s)].items():
+                if m not in kpos:
+                    raise ValueError(f"constraint refers to DOF {m}, which is prescribed or dependent.")
+                r.append(pos[int(s)]); c.append(kpos[m]); v.append(-coef)
+                cr.append(i); cc.append(kpos[m]); cv.append(coef)
+        T = sp.csr_matrix((v, (r, c)), shape=(len(free), len(keep)))
+        C = sp.csr_matrix((cv, (cr, cc)), shape=(len(slave), len(keep)))
+        gs = np.array([g[int(s)] for s in slave])
+        up = np.zeros(len(free))
+        up[slave_pos] = gs
+        Fr = T.T @ (Ff - Kff @ up)
+        Kr = T.T @ (Kff @ T)
+        if not self.sparse:
+            Kr = np.asarray(Kr.todense()) if sp.issparse(Kr) else np.asarray(Kr)
+        return ReducedSystem(K=Kr, F=np.asarray(Fr, dtype=float), free=keep, fixed=fixed, u_fixed=u_fixed,
+                             n_dof=self.n_dof, _system=self, slave=slave, slave_C=C, slave_g=gs,
+                             _T=T, _free_all=free)
 
     @property
     def fixed_dofs_array(self):
@@ -1825,6 +2014,11 @@ class FESystem:
         return U
 
     def solve_static(self, verbose=False, method=None, **method_kwargs):
+        if self._constraints:
+            if method is not None or self.backend != "scipy":
+                raise NotImplementedError("solve_static with linear constraints supports the default direct "
+                                          "scipy solve only (no method= or torch/auto backend).")
+            return self.form_linear_system().solve("displacement")
         U = self._solve_static_raw(verbose=verbose, method=method, **method_kwargs)
         return self.field(U, label="displacement")
 
@@ -1872,6 +2066,19 @@ class FESystem:
         if self.M is None:
             raise RuntimeError("call assemble_mass() first (the mass matrix M has not been assembled)")
         self._require_stiffness("this solve")
+        if self._constraints:
+            rs = self.form_linear_system(F=np.zeros(self.n_dof))
+            Kff, Mff = rs.K, rs.reduce_matrix(self.M)
+            if not self.sparse:
+                Kff, Mff = np.asarray(Kff), np.asarray(Mff)
+            if self.sparse:
+                from scipy.sparse.linalg import eigsh
+                w2, vecs = eigsh(Kff, k=n_modes, M=Mff, sigma=0, which="LM")
+            else:
+                w2, vecs = eigh(Kff, Mff)
+            w2 = np.clip(w2, 0, None)
+            modes = rs.expand(vecs[:, :n_modes], include_prescribed=False)
+            return np.sqrt(w2)[:n_modes] / (2 * np.pi), self.field(modes, label="mode shapes")
         free = self.free_dofs
         Kff = self._as_solve_matrix(self.K)[np.ix_(free, free)]
         Mff = self._as_solve_matrix(self.M)[np.ix_(free, free)]
@@ -2323,3 +2530,22 @@ class FESystem:
         S_out = np.abs(H)**2 * np.asarray(psd_input)
         sigma_out = np.sqrt(np.trapz(S_out, freqs_hz))
         return S_out, sigma_out
+
+
+# Linear constraints (add_constraint / tie) are eliminated in solve_static and solve_modal only. Every other
+# solver reads K, M and the fixed DOFs directly and would silently ignore them, so refuse instead.
+def _refuse_with_constraints(fn):
+    import functools
+
+    @functools.wraps(fn)
+    def wrapper(self, *args, **kwargs):
+        self._reject_constraints(fn.__name__)
+        return fn(self, *args, **kwargs)
+    return wrapper
+
+
+for _name in ("solve_linear_buckling", "solve_transient_implicit", "critical_timestep",
+              "critical_timestep_local", "solve_transient_explicit", "solve_modal_superposition",
+              "solve_harmonic", "solve_frequency_sweep", "solve_random_vibration"):
+    setattr(FESystem, _name, _refuse_with_constraints(getattr(FESystem, _name)))
+del _name

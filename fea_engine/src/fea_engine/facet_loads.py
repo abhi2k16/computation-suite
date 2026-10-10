@@ -260,6 +260,26 @@ def facet_quadrature(family, order=2):
     raise ValueError(f"facet_loads.facet_quadrature: unknown family {family!r}")
 
 
+def consistent_facet_mass(parent_dim, facet_coords, coefficient=1.0, quad_order=2):
+    """(n_facet, n_facet) matrix ``integral over the facet of c(x) N_a N_b``: the scalar building block of
+    a Robin / elastic-foundation boundary term (``c`` = foundation stiffness per area/length). ``coefficient``
+    is a number or a callable ``c(x)`` of the physical point. Same facet conventions as
+    :func:`consistent_facet_load_shares`."""
+    facet_coords = np.asarray(facet_coords, dtype=float)
+    n_facet = facet_coords.shape[0]
+    family = facet_family(parent_dim, n_facet)
+    shape_fn = _FACET_SHAPE_FNS[family]
+    pts, wts = facet_quadrature(family, quad_order)
+    out = np.zeros((n_facet, n_facet))
+    for p, w in zip(pts, wts):
+        N, dN = shape_fn(p)
+        dN = np.atleast_2d(dN)
+        measure = jacobian_measure(dN, facet_coords)
+        c = coefficient(N @ facet_coords) if callable(coefficient) else coefficient
+        out += c * measure * w * np.outer(N, N)
+    return out
+
+
 def consistent_facet_load_shares(parent_dim, facet_coords, traction, quad_order=2):
     """Returns an (n_facet_nodes,) array of consistent nodal load
     'shares' for a uniform scalar traction/pressure MAGNITUDE over one

@@ -117,7 +117,7 @@ from .solver import FESystem
 from .fields import FEField
 from .series import FieldSeries
 from .newton_options import NewtonOptions
-from . import batch, units, export, coefficients, recovery
+from . import batch, units, export, coefficients, recovery, boundary, convergence
 from .linear_system import ReducedSystem
 from .iterative_solvers import (
     reverse_cuthill_mckee, fill_in_count, permuted_solve,
@@ -167,7 +167,7 @@ __all__ = [
     "closest_point_on_segment_2d", "find_contact_pairs_2d",
     "ELEMENT_REGISTRY",
     "FESystem", "FEField", "FieldSeries", "NewtonOptions", "batch", "units",
-    "export", "ReducedSystem", "coefficients", "recovery",
+    "export", "ReducedSystem", "coefficients", "recovery", "boundary", "convergence",
     "reverse_cuthill_mckee", "fill_in_count", "permuted_solve",
     "jacobi_preconditioner", "ssor_preconditioner", "incomplete_cholesky0",
     "preconditioned_cg", "jacobi_solve", "gauss_seidel_solve", "sor_solve",
