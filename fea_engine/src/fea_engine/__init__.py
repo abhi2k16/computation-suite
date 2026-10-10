@@ -175,4 +175,4 @@ __all__ = [
     "RefinementRecord", "refine_triangle_mesh_longest_edge", "adaptive_refine_solve",
 ]
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"

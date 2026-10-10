@@ -1,0 +1,113 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Fast gate (about a minute): metadata, headers, imports and the newest feature tests.
+  quick:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e "./fea_engine[dev,plot]" -e "./rom_engine[dev]" pandas
+      - name: Every module has the copyright and SPDX header
+        run: |
+          python - <<'PY'
+          import pathlib, sys
+          bad = []
+          for p in pathlib.Path(".").rglob("*.py"):
+              if any(x in p.parts for x in (".git", "__pycache__", "build", "dist", ".venv", "venv")) or p.name == "setup.py":
+                  continue
+              head = p.read_text(encoding="utf-8").splitlines()[:4]
+              if not any("SPDX-License-Identifier: MIT" in l for l in head):
+                  bad.append(str(p))
+          print(f"{len(bad)} file(s) without SPDX header")
+          for b in bad:
+              print("  ", b)
+          sys.exit(1 if bad else 0)
+          PY
+      - name: Release metadata
+        run: |
+          pytest fea_engine/tests/test_release_metadata.py rom_engine/tests/test_release_metadata.py -q
+      - name: Newest feature tests
+        run: |
+          cd fea_engine
+          pytest tests/test_api_safety.py tests/test_named_api.py tests/test_newton_options_and_batch.py \
+                 tests/test_units_and_plot.py tests/test_field_series.py -q
+        env:
+          MPLBACKEND: Agg
+
+  # Full suites. Pinned to the versions the project is developed against, on both operating systems
+  # (the balanced-truncation failures that motivated state equilibration only showed up on one BLAS).
+  full:
+    needs: quick
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10", "3.12"]
+        include:
+          - os: ubuntu-latest
+            python-version: "3.10"
+            pins: "numpy==1.26.4 scipy==1.15.3"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e "./fea_engine[dev,plot]" -e "./rom_engine[dev]" pandas pytest-xdist
+          if [ -n "${{ matrix.pins }}" ]; then pip install ${{ matrix.pins }}; fi
+          python -c "import numpy, scipy; print('numpy', numpy.__version__, 'scipy', scipy.__version__)"
+      - name: fea_engine tests
+        run: |
+          cd fea_engine
+          pytest tests -q -rs -n auto
+      - name: rom_engine tests
+        run: |
+          cd rom_engine
+          pytest tests -q -rs -n auto
+
+  # Informational: newest NumPy/SciPy. A failure here does not block merges.
+  latest-numpy:
+    needs: quick
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 90
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install latest
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade -e "./fea_engine[dev,plot]" -e "./rom_engine[dev]" pandas pytest-xdist numpy scipy
+      - name: Tests
+        run: |
+          (cd fea_engine && pytest tests -q -rs -n auto)
+          (cd rom_engine && pytest tests -q -rs -n auto)

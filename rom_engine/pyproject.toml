@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rom_engine"
-version = "0.1.0"
+version = "0.2.0"
 description = "A small, from-scratch reduced-order-modeling package for structural engineering analysis: POD basis extraction, intrusive Galerkin projection, and affine parametric decomposition for fast many-query structural analysis."
 readme = "README.md"
 requires-python = ">=3.9"

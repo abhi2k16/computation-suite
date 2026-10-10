@@ -4,7 +4,7 @@
 
 **Reduced-order modeling for structural analysis: POD, Galerkin, affine, frequency-domain, state-space, nonlinear**
 
-![version](https://img.shields.io/badge/version-0.1.0-7c3aed?style=for-the-badge)
+![version](https://img.shields.io/badge/version-0.2.0-7c3aed?style=for-the-badge)
 ![status](https://img.shields.io/badge/status-alpha-f59e0b?style=for-the-badge)
 ![python](https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge)
 ![NumPy](https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge)

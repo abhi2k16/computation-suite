@@ -4,7 +4,7 @@
 
 **Finite element analysis for structural mechanics: linear, nonlinear, dynamic, contact, plasticity**
 
-![version](https://img.shields.io/badge/version-1.0.0-2563eb?style=for-the-badge)
+![version](https://img.shields.io/badge/version-1.0.1-2563eb?style=for-the-badge)
 ![status](https://img.shields.io/badge/status-beta-f59e0b?style=for-the-badge)
 ![python](https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge)
 ![NumPy](https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge)

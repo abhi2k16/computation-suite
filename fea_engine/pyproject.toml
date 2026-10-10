@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fea_engine"
-version = "1.0.0"
+version = "1.0.1"
 description = "A small, additive, from-scratch structural finite element analysis package (linear/nonlinear statics and dynamics, contact, plasticity, Gmsh-driven geometry)."
 readme = "README.md"
 requires-python = ">=3.9"

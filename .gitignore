@@ -37,3 +37,6 @@ tensormesh_comparative_analysis.md
 /fea_engine/plasticity_j2_uniaxial_loop.png
 /fea_engine/shell_verification.png
 /FEA_ENGINE_API_REVIEW.md
+
+# Written by the test suite on every run
+/fea_engine/tests/*.png

@@ -4,8 +4,8 @@
 
 **Getting started, concepts, worked examples, multi-core and GPU usage, performance**
 
-![fea_engine](https://img.shields.io/badge/fea__engine-1.0.0-2563eb?style=for-the-badge)
-![rom_engine](https://img.shields.io/badge/rom__engine-0.1.0-7c3aed?style=for-the-badge)
+![fea_engine](https://img.shields.io/badge/fea__engine-1.0.1-2563eb?style=for-the-badge)
+![rom_engine](https://img.shields.io/badge/rom__engine-0.2.0-7c3aed?style=for-the-badge)
 ![python](https://img.shields.io/badge/python-3.9+-3776ab?style=for-the-badge)
 ![NumPy](https://img.shields.io/badge/NumPy-1.22+-013243?style=for-the-badge)
 ![SciPy](https://img.shields.io/badge/SciPy-1.8+-0054a6?style=for-the-badge)
