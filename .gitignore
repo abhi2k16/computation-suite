@@ -37,7 +37,7 @@ tensormesh_comparative_analysis.md
 /fea_engine/plasticity_j2_uniaxial_loop.png
 /fea_engine/shell_verification.png
 /FEA_ENGINE_API_REVIEW.md
-# Article: track sources, experiments, results, figures and tables; ignore build output and private notes
+# Article (local only, not part of the repository)
 /paper/
 # Written by the test suite on every run
 /fea_engine/tests/*.png
