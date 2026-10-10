@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
-    { name = "Structural Mechanics & Computational Engineering Lab" },
+    { name = "Abhijeet", email = "abhijeetshandilya19@gmail.com" },
 ]
 dependencies = [
     "numpy>=1.22",
@@ -27,6 +27,9 @@ classifiers = [
 dev = ["pytest", "pytest-cov"]
 docs = ["sphinx", "sphinx-rtd-theme", "myst-parser"]
 fea = ["fea_engine"]
+
+[tool.setuptools]
+license-files = ["LICENSE"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
