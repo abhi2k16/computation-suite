@@ -15,6 +15,13 @@ from dataclasses import dataclass, field
 import numpy as np
 
 
+def _np(x):
+    """ndarray view of ``x``; torch tensors are detached and moved to the CPU first."""
+    if hasattr(x, "detach") and hasattr(x, "cpu"):
+        return x.detach().cpu().numpy()
+    return np.asarray(x)
+
+
 @dataclass
 class ReducedSystem:
     """Constrained linear system ``K u_free = F`` and the maps to and from the full DOF vector.
@@ -52,7 +59,7 @@ class ReducedSystem:
     # ------------------------------------------------------------------ maps
     def restrict(self, v):
         """Full vector (or matrix of column vectors) -> free-DOF part."""
-        return np.asarray(v)[self.free]
+        return _np(v)[self.free]
 
     def reduce_matrix(self, A):
         """Free-free block of another full matrix (e.g. ``M``, ``C``, a geometric stiffness)."""
@@ -69,7 +76,7 @@ class ReducedSystem:
         With ``include_prescribed=True`` the prescribed values are placed at the constrained DOFs
         (1-D input only). Pass ``False`` for modes and increments, which vanish there.
         """
-        u_free = np.asarray(u_free)
+        u_free = _np(u_free)
         if u_free.shape[0] != self.n_free:
             raise ValueError(f"expected {self.n_free} free-DOF rows, got {u_free.shape[0]}")
         full = np.zeros((self.n_dof,) + u_free.shape[1:], dtype=np.result_type(u_free.dtype, float))
@@ -91,11 +98,23 @@ class ReducedSystem:
         return full
 
     # ------------------------------------------------------------------ convenience
-    def solve(self, label="displacement"):
-        """Solve with the system's own static solver path (Cholesky, or sparse LU) and recover."""
+    def solve(self, label="displacement", backend="scipy", device="cpu", method="auto", tol=1e-8, max_iter=None):
+        """Solve and recover.
+
+        ``backend="scipy"`` (default) uses the system's own static path (Cholesky, or sparse LU).
+        ``backend="torch"`` uses PyTorch (optional dependency) on ``device`` (``"cpu"`` or ``"cuda"``), in
+        float64: ``method="dense"`` is a direct solve, ``method="cg"`` Jacobi-preconditioned conjugate
+        gradients (SPD only, raises if it does not converge), ``"auto"`` picks ``"dense"`` below 2000 free
+        DOFs and ``"cg"`` above. Constraints are already eliminated in ``K``, so both work with them.
+        """
         s = self._system
         if s is None:
             raise RuntimeError("this ReducedSystem has no parent FESystem; solve it yourself")
+        if backend == "torch":
+            uf = self._solve_torch(device, method, tol, max_iter)
+            return self.recover(uf, label=label)
+        if backend != "scipy":
+            raise ValueError(f"backend must be 'scipy' or 'torch', got {backend!r}.")
         if s.sparse:
             uf = s._sparse_lu_solve(self.K.tocsc(), self.F)
         else:
@@ -105,6 +124,39 @@ class ReducedSystem:
                 uf = s._eigen_solve(self.K, self.F)
         return self.recover(uf, label=label)
 
+    def _solve_torch(self, device, method, tol, max_iter):
+        from . import torch_sparse_solver as tss
+        tss._require_torch()
+        if method == "auto":
+            method = "dense" if self.n_free < 2000 else "cg"
+        if method == "dense":
+            return tss.torch_dense_solve(self.K, self.F, device=device)
+        if method == "cg":
+            uf, n_iter, ok = tss.torch_sparse_cg_solve(self.K, self.F, tol=tol, max_iter=max_iter, device=device)
+            if not ok:
+                raise RuntimeError(f"ReducedSystem.solve: CG did not converge in {n_iter} iterations "
+                                   f"(tol={tol}); K may not be SPD. Try method='dense'.")
+            return uf
+        raise ValueError(f"method must be 'auto', 'dense' or 'cg', got {method!r}.")
+
+    def to_torch(self, device="cpu", dtype=None, sparse=None):
+        """``(K, F)`` as torch tensors on ``device`` (float64 by default) for your own torch solver or
+        differentiable pipeline. ``K`` is a sparse CSR tensor when the system is sparse (or ``sparse=True``),
+        otherwise dense."""
+        from . import torch_sparse_solver as tss
+        tss._require_torch()
+        import torch
+        dtype = dtype or torch.float64
+        import scipy.sparse as sp
+        use_sparse = sp.issparse(self.K) if sparse is None else bool(sparse)
+        if use_sparse:
+            K = tss._scipy_csr_to_torch_sparse(tss._to_csr_scipy(self.K), device, dtype)
+        else:
+            Kd = self.K.toarray() if sp.issparse(self.K) else np.asarray(self.K)
+            K = torch.as_tensor(Kd, dtype=dtype, device=device)
+        F = torch.as_tensor(np.asarray(self.F, dtype=float), dtype=dtype, device=device)
+        return K, F
+
     def residual(self, u_free):
         """``K u_free - F`` for a candidate reduced solution."""
-        return self.K @ np.asarray(u_free) - self.F
+        return self.K @ _np(u_free) - self.F

@@ -488,7 +488,11 @@ U = rs.recover(u_free)                       # full FEField, prescribed values a
 Mff = rs.reduce_matrix(sys.M)                # reduce another matrix (mass, damping) the same way
 ```
 
-`rs.solve()` runs the package's own direct solve, and `rs.residual(u_free)` checks a candidate. This is the
+`rs.solve()` runs the package's own direct solve, and `rs.residual(u_free)` checks a candidate. With PyTorch
+installed, `rs.solve(backend="torch", device="cuda", method="cg")` solves on the GPU (float64; `method="dense"`
+or `"auto"` also available; constraints are already eliminated in `rs.K`), and `K, F = rs.to_torch()` hands the
+system to your own torch code. Stress recovery is batched by default; `system.stress(U, backend="torch")` runs it
+on torch, and `system.von_mises_tensor(U)` returns a differentiable tensor for optimisation. This is the
 counterpart of MFEM's `FormLinearSystem` / `RecoverFEMSolution`, and it is the natural entry point for
 feeding `rom_engine`.
 

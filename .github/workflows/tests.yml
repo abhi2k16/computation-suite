@@ -50,7 +50,8 @@ jobs:
           pytest tests/test_api_safety.py tests/test_named_api.py tests/test_newton_options_and_batch.py \
                  tests/test_units_and_plot.py tests/test_field_series.py \
                  tests/test_linear_system_and_export.py tests/test_coefficients_and_recovery.py \
-                 tests/test_supports_and_constraints.py tests/test_benchmarks_convergence.py -q
+                 tests/test_supports_and_constraints.py tests/test_benchmarks_convergence.py \
+                 tests/test_torch_recovery_and_linear_system.py -q
         env:
           MPLBACKEND: Agg
 
@@ -92,6 +93,29 @@ jobs:
         run: |
           cd rom_engine
           pytest tests -q -rs -n auto
+
+  # CPU-only PyTorch: exercises the optional torch paths (they skip elsewhere).
+  torch-cpu:
+    needs: quick
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -e "./fea_engine[dev,plot]" pandas
+      - name: Torch tests
+        run: |
+          cd fea_engine
+          pytest tests/test_torch_recovery_and_linear_system.py tests/test_torch_sparse_solver.py -q -rs
 
   # Informational: newest NumPy/SciPy. A failure here does not block merges.
   latest-numpy:

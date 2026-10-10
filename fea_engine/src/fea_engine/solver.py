@@ -410,21 +410,34 @@ class FESystem:
                        mesh=self.mesh, label=label, units=unit)
 
     # ---- derived results (v1.1): see fea_engine.recovery ------------------------------------
-    def stress(self, U=None, D=None, at="nodes"):
+    def stress(self, U=None, D=None, at="nodes", vectorized=True, backend="numpy", device="cpu"):
         """Stress components as an FEField (``at="elements"``: ndarray of element averages).
-        Uses the D given to the last ``assemble_stiffness`` (coefficients included) unless ``D=`` is passed."""
+        Uses the D given to the last ``assemble_stiffness`` (coefficients included) unless ``D=`` is passed.
+        ``vectorized=False`` uses the per-element reference loop; ``backend="torch"`` runs on ``device``."""
         from . import recovery
-        return recovery.stress(self, self.solve_static() if U is None else U, D, at)
+        return recovery.stress(self, self.solve_static() if U is None else U, D, at, vectorized, backend, device)
 
-    def strain(self, U=None, at="nodes"):
+    def strain(self, U=None, at="nodes", vectorized=True, backend="numpy", device="cpu"):
         """Strain components (engineering shear) as an FEField; see ``stress``."""
         from . import recovery
-        return recovery.strain(self, self.solve_static() if U is None else U, at)
+        return recovery.strain(self, self.solve_static() if U is None else U, at, vectorized, backend, device)
 
-    def von_mises(self, U=None, D=None, plane="stress", nu=None, at="nodes"):
+    def von_mises(self, U=None, D=None, plane="stress", nu=None, at="nodes", vectorized=True, backend="numpy",
+                  device="cpu"):
         """Von Mises stress as a scalar FEField (2-D: ``plane="stress"`` or ``"strain"`` with ``nu=``)."""
         from . import recovery
-        return recovery.von_mises(self, self.solve_static() if U is None else U, D, plane, nu, at)
+        return recovery.von_mises(self, self.solve_static() if U is None else U, D, plane, nu, at, vectorized,
+                                  backend, device)
+
+    def stress_tensor(self, U, D=None, device="cpu", at="nodes"):
+        """Differentiable stress as a torch tensor (requires torch); see ``recovery.stress_tensor``."""
+        from . import recovery
+        return recovery.stress_tensor(self, U, D, device, at)
+
+    def von_mises_tensor(self, U, D=None, device="cpu", plane="stress", nu=None, at="nodes"):
+        """Differentiable von Mises stress as a torch tensor (requires torch)."""
+        from . import recovery
+        return recovery.von_mises_tensor(self, U, D, device, plane, nu, at)
 
     def reactions(self, U=None):
         """Support reactions ``K U - F`` at the constrained DOFs as an FEField."""

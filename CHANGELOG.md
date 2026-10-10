@@ -7,6 +7,15 @@ All notable changes to `fea_engine` and `rom_engine`. Format follows
 ## Unreleased
 
 ### Added (fea_engine)
+- Batched stress recovery: `stress`, `strain` and `von_mises` evaluate each block with array operations
+  (`vectorized=True`, default). On a 100x100 Quad4 mesh this took 0.11 s against 20.7 s for the per-element loop
+  (8000 Hex8 elements: 0.22 s against 8.0 s). `vectorized=False` keeps the old loop, which is also used
+  automatically for blocks with position-dependent coefficients. Results agree to rounding.
+- Optional torch paths (torch is not required): `stress/strain/von_mises(..., backend="torch", device=)`,
+  differentiable `FESystem.stress_tensor(U)` / `von_mises_tensor(U)` that return torch tensors backpropagating to
+  `U`, `ReducedSystem.solve(backend="torch", device=, method="auto"|"dense"|"cg")` (works with constraints) and
+  `ReducedSystem.to_torch()`. `expand/recover/restrict/residual` accept torch tensors. Computation is float64.
+  Tests: `tests/test_torch_recovery_and_linear_system.py` (torch cases skip when torch is not installed).
 - `FESystem.form_linear_system(F=None, K=None)` returns a `ReducedSystem`: the constrained `K`, `F` (prescribed
   values already moved to the right-hand side), `restrict`, `expand`, `recover` (full `FEField`),
   `reduce_matrix(M)`, `solve()` and `residual()`. Use it to bring your own solver, preconditioner or ROM.
