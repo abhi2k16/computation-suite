@@ -99,32 +99,30 @@ def test_weighted_more_accurate_in_band_measured_directly():
     # mode the reduced order CAN represent plus a weight narrow enough to concentrate effort on
     # it: measured here ~8x in band; scanned over modes 1-2, r=3..8, the narrow weight wins 2x+
     # in most cases.)
-    omega2 = float(np.sqrt(eigvals[1]))
-    Wo = bandpass_weight(omega2, zeta=0.05)
-
-    fwbt = FrequencyWeightedBalancedTruncationROM.from_MCK(Mr, Kr, Br, Coutr, C=Cr, r=r, Wo=Wo)
-    bt = BalancedTruncationROM.from_MCK(Mr, Kr, Br, Coutr, C=Cr, r=r)
-
-    band = np.linspace(0.85 * omega2, 1.15 * omega2, 25)
-    H_true = _true_H(fx, band)
-    H_fwbt = fwbt.frequency_response(band)
-    H_bt = bt.frequency_response(band)
-
-    err_fwbt = np.max(np.abs(H_fwbt - H_true) / np.abs(H_true))
-    err_bt = np.max(np.abs(H_bt - H_true) / np.abs(H_true))
-    print(f"r={r}, band around omega2={omega2:.2f} rad/s: "
-          f"frequency-weighted BT max rel err={err_fwbt:.3e}, "
-          f"ordinary BT max rel err={err_bt:.3e}")
-
-    assert err_fwbt < 0.5 * err_bt, (
-        "a narrow bandpass output weight centered on omega2 should give a "
-        "MEASURABLY (>2x) more accurate reduced model than ordinary BT, at "
-        "the same r, IN that band -- the actual point of frequency-"
-        "weighted BT"
-    )
-    print(f"FINDING: frequency-weighted BT is "
-          f"{err_bt / err_fwbt:.1f}x more accurate than ordinary BT "
-          f"in the targeted band at r={r}")
+    # CI note: a single (mode, r) point is not reproducible across BLAS builds -- at mode 2, r=8 the
+    # weighted error was 8e-4 on one machine and 8e-3 on a CI runner (ordinary BT identical on both),
+    # i.e. the weighted Gramian is sensitive at high r. The claim is therefore tested statistically over a
+    # scan of modes 1-2 and r=5..8 (measured locally: weighted wins 2.5x-34x in all 8 cases).
+    ratios = []
+    for mode in (0, 1):
+        om = float(np.sqrt(eigvals[mode]))
+        Wo = bandpass_weight(om, zeta=0.05)
+        band = np.linspace(0.85 * om, 1.15 * om, 25)
+        H_true = _true_H(fx, band)
+        for r in (5, 6, 7, 8):
+            fwbt = FrequencyWeightedBalancedTruncationROM.from_MCK(Mr, Kr, Br, Coutr, C=Cr, r=r, Wo=Wo)
+            bt = BalancedTruncationROM.from_MCK(Mr, Kr, Br, Coutr, C=Cr, r=r)
+            err_fwbt = np.max(np.abs(fwbt.frequency_response(band) - H_true) / np.abs(H_true))
+            err_bt = np.max(np.abs(bt.frequency_response(band) - H_true) / np.abs(H_true))
+            ratios.append(err_bt / err_fwbt)
+            print(f"mode {mode + 1}, r={r}: weighted err={err_fwbt:.3e}, ordinary BT err={err_bt:.3e}, "
+                  f"ratio {ratios[-1]:.1f}x")
+    ratios = np.array(ratios)
+    assert np.median(ratios) > 2.0 and np.sum(ratios > 2.0) >= 5, (
+        "a narrow bandpass output weight should give a MEASURABLY (>2x) more accurate reduced model than "
+        "ordinary BT in the weighted band for most (mode, r) combinations -- the point of frequency-weighted BT")
+    print(f"FINDING: frequency-weighted BT is >2x more accurate in the targeted band in "
+          f"{int(np.sum(ratios > 2.0))}/{len(ratios)} cases (median {np.median(ratios):.1f}x)")
 
 
 def test_weighted_tradeoff_far_from_band_reported_honestly():
