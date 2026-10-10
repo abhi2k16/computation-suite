@@ -38,6 +38,6 @@ tensormesh_comparative_analysis.md
 /fea_engine/shell_verification.png
 /FEA_ENGINE_API_REVIEW.md
 # Article: track sources, experiments, results, figures and tables; ignore build output and private notes
-/paper
+/paper/
 # Written by the test suite on every run
 /fea_engine/tests/*.png
