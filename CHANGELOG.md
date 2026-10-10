@@ -8,8 +8,10 @@ All notable changes to `fea_engine` and `rom_engine`. Format follows
 
 ### Added (fea_engine)
 - Batched stress recovery: `stress`, `strain` and `von_mises` evaluate each block with array operations
-  (`vectorized=True`, default). On a 100x100 Quad4 mesh this took 0.11 s against 20.7 s for the per-element loop
-  (8000 Hex8 elements: 0.22 s against 8.0 s). `vectorized=False` keeps the old loop, which is also used
+  (`vectorized=True`, default). Measured speed-up over the per-element loop (best of repeats, 2-core CPU,
+  `paper/experiments/e2_recovery_speedup.py`): about 25x to 55x on Quad4 meshes of 100 to 3600 elements and
+  about 35x to 45x on Hex8 meshes of 216 to 2744 elements (run-to-run variation a few percent); 10,000 Quad4
+  elements take about 45 ms. `vectorized=False` keeps the old loop, which is also used
   automatically for blocks with position-dependent coefficients. Results agree to rounding.
 - Optional torch paths (torch is not required): `stress/strain/von_mises(..., backend="torch", device=)`,
   differentiable `FESystem.stress_tensor(U)` / `von_mises_tensor(U)` that return torch tensors backpropagating to
