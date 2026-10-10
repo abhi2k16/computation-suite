@@ -113,9 +113,16 @@ class TestBatchedMatchesLoop:
 
     def test_batched_is_faster(self):
         s, U = _quad_system(nx=40, ny=40)
-        t0 = time.perf_counter(); s.stress(U); fast = time.perf_counter() - t0
-        t0 = time.perf_counter(); s.stress(U, vectorized=False); slow = time.perf_counter() - t0
+        s.stress(U); s.stress(U, vectorized=False)          # warm-up: one-time caches, imports, thread pools
+        fast = min(self._time(lambda: s.stress(U)) for _ in range(3))
+        slow = min(self._time(lambda: s.stress(U, vectorized=False)) for _ in range(2))
         assert fast < slow
+
+    @staticmethod
+    def _time(fn):
+        t0 = time.perf_counter()
+        fn()
+        return time.perf_counter() - t0
 
 
 # ====================================================================== torch recovery
