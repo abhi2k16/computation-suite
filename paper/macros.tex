@@ -1,0 +1,58 @@
+% macros.tex -- preamble shared by main.tex.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{booktabs,array}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{positioning,fit,arrows.meta,calc,backgrounds}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+\usepackage[capitalise,noabbrev]{cleveref}
+
+% generated numbers (see experiments/make_tables.py)
+\input{tables/numbers}
+
+% code listings
+\lstdefinestyle{py}{language=Python,basicstyle=\ttfamily\footnotesize,keywordstyle=\color{blue!60!black},
+  commentstyle=\color{green!40!black},stringstyle=\color{red!50!black},showstringspaces=false,
+  frame=single,framerule=0.3pt,rulecolor=\color{black!30},xleftmargin=2pt,xrightmargin=2pt,
+  breaklines=true,columns=fullflexible,keepspaces=true}
+\lstset{style=py,captionpos=b}
+\usepackage[font=small,labelfont=bf]{caption}\captionsetup{justification=raggedright,singlelinecheck=false}
+
+% notation
+\newcommand{\K}{\bm{K}}
+\newcommand{\M}{\bm{M}}
+\newcommand{\C}{\bm{C}}
+\newcommand{\F}{\bm{F}}
+\newcommand{\vu}{\bm{u}}
+\newcommand{\pkg}[1]{\texttt{#1}}
+\newcommand{\fea}{\pkg{fea\_engine}}
+\newcommand{\rom}{\pkg{rom\_engine}}
+\newcommand{\fint}{\bm{f}_{\mathrm{int}}}
+\newcommand{\fext}{\bm{f}_{\mathrm{ext}}}
+\newcommand{\KT}{\K_{\mathrm{T}}}
+\newcommand{\Mat}[1]{\mathbf{#1}}
+% Set to the Zenodo DOI after archiving the release, e.g. \renewcommand{\zenodoDoi}{10.5281/zenodo.1234567}
+\newcommand{\zenodoDoi}{}\newcommand{\noDoi}{}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\emergencystretch=2em
+
+% Pseudocode: self-contained, so the paper does not depend on algorithm.sty / algpseudocode.sty being installed.
+\floatstyle{ruled}\newfloat{algorithm}{tbp}{loa}\floatname{algorithm}{Algorithm}
+\newcounter{algline}\newdimen\algindent\newdimen\algtmp
+\newenvironment{algorithmic}[1][]{\par\small\setcounter{algline}{0}\algindent=0pt\relax}{\par\smallskip}
+\newcommand{\State}{\par\noindent\stepcounter{algline}\algtmp=\algindent\advance\algtmp by 1.8em \hangindent=\algtmp \hangafter=1
+  \hspace*{\algindent}\makebox[1.8em][l]{\scriptsize\thealgline:}}
+\newcommand{\Require}{\par\noindent\hangindent=1.8em \hangafter=1 \textbf{Require:}\ }
+\newcommand{\Comment}[1]{\hfill$\triangleright$ #1}
+\newcommand{\For}[1]{\State\textbf{for} #1 \textbf{do}\global\advance\algindent by 1.4em\relax}
+\newcommand{\EndFor}{\global\advance\algindent by -1.4em\relax\State\textbf{end for}}

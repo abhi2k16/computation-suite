@@ -1,0 +1,26 @@
+\section{Derived results and spatially varying coefficients}\label{sec:recovery}
+
+\subsection{Stress and strain recovery}
+Displacements are the primary unknowns; strains and stresses are computed at integration points, $\bm\varepsilon_p=\bm B_p\vu_e$ and $\bm\sigma_p=\bm D(\bm x_p)\bm\varepsilon_p$, and then moved to the nodes.
+\fea{} uses a lumped $L^2$ projection with the linear (corner-node) shape functions $N_a$:
+\begin{equation}
+  \bm\sigma_a=\frac{\sum_{e\ni a}\sum_p N_a(\bm\xi_p)\,\bm\sigma_p\,\det\bm J_p\,w_p}{\sum_{e\ni a}\sum_p N_a(\bm\xi_p)\,\det\bm J_p\,w_p}.
+  \label{eq:l2}
+\end{equation}
+The weights are non-negative, so the nodal value is a weighted mean of integration-point values and cannot overshoot them; for constant-strain triangles and tetrahedra it reduces to the usual volume-weighted average.
+Mid-side nodes of quadratic elements are interpolated from the corner values, because projecting with a quadratic shape function (which integrates to zero or less at a corner) is ill-posed.
+This is simple and robust but is not a superconvergent recovery such as \cite{zienkiewicz1992spr}, and values on a boundary are smoothed estimates (compare \cite{hinton1974smoothing}, which also discusses smoothing of discontinuous finite element functions).
+The von~Mises equivalent stress is computed from the nodal components, for plane stress, plane strain (with Poisson's ratio) or 3-D,
+$\sigma_{\mathrm{vM}}=\sqrt{\tfrac32\,\bm s\!:\!\bm s}$ with $\bm s$ the deviatoric stress. Reactions at supports are $\bm R_c=\K_{cf}\vu_f+\K_{cc}\vu_c-\F_c$.
+
+Supported elements are the plane-stress triangles and quadrilaterals (Tri3, Tri6, Quad4, Quad8) and the 3-D solids (Tet4, Tet10, Hex8, Hex20) with full integration. Results are \texttt{FEField} objects, so they
+can be queried by node set and exported with the same interface as displacements.
+
+\subsection{Batched and differentiable recovery}
+The recovery loop over elements is expressed once as array operations on arrays of shape (elements, integration points, \dots), through a thin operations shim that dispatches to NumPy or PyTorch. The NumPy path
+replaces the per-element Python loop; the torch path additionally returns tensors that carry gradients with respect to the displacement vector, so quantities such as a maximum von~Mises stress can be differentiated.
+Coefficient fields that vary by position use the element loop; the torch path does not support coefficients. Measured speed-ups of the batched path are reported in \cref{sec:perf}.
+
+\subsection{Spatially varying coefficients}
+Material parameters, foundation stiffness and similar coefficients can be given as functions of the physical coordinate $\bm x$, evaluated at integration points; $\bm D(\bm x)$ in \eqref{eq:gauss} then varies within the element.
+Recovery uses the same coefficient, so stress is consistent with the stiffness that produced the displacement.

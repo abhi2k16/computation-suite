@@ -1,0 +1,112 @@
+\section{Nonlinear analysis}\label{sec:nonlinear}
+
+\subsection{Nonlinear equilibrium and Newton's method}
+For a geometrically or materially nonlinear structure the discrete equilibrium is
+$\bm r(\vu,\lambda)=\lambda\,\fext^{\mathrm{ref}}-\fint(\vu)=\bm 0$ on the free DOFs, with load factor $\lambda$. Each element supplies $\fint$ and its consistent tangent
+$\KT=\partial\fint/\partial\vu$; the base element class falls back to $\fint=\K_e\vu_e$ and $\KT=\K_e$, so linear elements run through the same drivers (and converge in one iteration).
+In the load-controlled driver, $\lambda$ increases over a prescribed array of load factors (a ramp by default, or any history including unloading). \Cref{alg:newton} gives one load step.
+
+\begin{algorithm}[t]
+\caption{One load step of incremental Newton--Raphson}\label{alg:newton}
+\begin{algorithmic}[1]
+\Require converged $\vu_n$, new load factor $\lambda$, tolerance $\epsilon$
+\State $\vu\gets\vu_n$;\quad $\mathrm{ref}\gets\max(\|\lambda(\fext^{\mathrm{ref}})_f\|,10^{-30})$
+\For{$k=1,\dots,k_{\max}$}
+  \State $\bm r\gets\lambda(\fext^{\mathrm{ref}})_f-\fint(\vu)_f$
+  \State \textbf{if} $\|\bm r\|<\epsilon\,\mathrm{ref}$ \textbf{or} $\|\bm r\|<\epsilon$ (plus optional step-size and energy tests) \textbf{then stop}
+  \State solve $\KT(\vu)_{ff}\,\delta\vu=\bm r$
+  \State (optional) Armijo backtracking on $\delta\vu$
+  \State $\vu\gets\vu+\delta\vu$;\quad update iteration-level internal state
+\EndFor
+\State commit element state variables at $\vu$ (history for plasticity)
+\end{algorithmic}
+\end{algorithm}
+
+The step-size and energy tests and the Armijo line search are off by default and are configured through the shared \texttt{NewtonOptions} object. Displacement control prescribes one DOF
+and records the reaction needed to hold it, which allows following paths with a limit load.
+
+\subsection{Path following}
+Near limit points the load-controlled iteration fails. \texttt{solve\_nonlinear\_arc\_length} implements the cylindrical arc-length method of Crisfield \cite{crisfield1981}
+(see also \cite{riks1979}), where the load factor is an unknown and each step satisfies
+\begin{equation}
+  \bm r(\vu,\lambda)=\bm 0,\qquad \|\Delta\vu\|^2=\Delta\ell^2 ,
+  \label{eq:arc}
+\end{equation}
+with $\Delta\vu$ the step increment over the free DOFs. Each iteration writes $\delta\vu=\delta\vu_r+\delta\lambda\,\delta\vu_F$ with $\delta\vu_F=\KT^{-1}\fext^{\mathrm{ref}}$,
+which turns the constraint into a quadratic in $\delta\lambda$; of the two roots, the one whose increment has the larger inner product with the increment accumulated so far in the step is taken, so the path
+keeps moving forward. The arc-length $\Delta\ell$ is fixed by the user and is not adapted.
+
+\texttt{solve\_nonlinear\_koiter\_newton} replaces the linear tangent predictor with a cubic one from an asymptotic expansion of the equilibrium path. Writing $\bm w=\vu-\vu_n$ and keeping terms up to third order,
+\begin{equation}
+  \bm L(\bm w)+\bm Q(\bm w,\bm w)+\bm C(\bm w,\bm w,\bm w)=\Delta\lambda\,\fext^{\mathrm{ref}},\qquad \bm L=\KT(\vu_n),
+  \label{eq:koiter}
+\end{equation}
+with $\bm Q,\bm C$ the quadratic and cubic terms of the Taylor series of $\fint$; $\bm w$ and $\Delta\lambda$ are expanded in a scalar perturbation parameter, and the resulting linear problems
+are solved with the factorised tangent. The coefficients of $\bm Q$ and $\bm C$ are extracted along the perturbation direction by central finite differences of $\fint$, with a probe length proportional to the
+step's displacement scale, so elements need only provide $\fint$. The implementation follows the Koiter--Newton method of Liang et al.\ \cite{liang2014koiternewton} for a single perturbation direction; a second
+driver adds a second direction built from a near-critical tangent mode when one is detected (mode interaction). Newton globalisation options (step-size test, line search) are not available in the Koiter--Newton correctors.
+
+\subsection{Elements for large rotations and strains}
+\paragraph{Trusses and beams.}
+\texttt{TrussTL2D} uses the Green--Lagrange strain $E=(l^2-L_0^2)/(2L_0^2)$ with current length $l$ and St~Venant--Kirchhoff stress $S=EE$ (modulus $E$), giving
+$\bm f=(SA/L_0)\,\bm d$ with $\bm d$ the current relative position; the tangent is the sum of a material and a geometric part.
+\texttt{Beam2DCorotational} and \texttt{Beam3DCorotational} follow the corotational idea of separating rigid-body motion from small local deformation \cite{crisfield1990corot}.
+\texttt{Beam2DReissner} is a two-node shear-deformable planar beam with exact strain measures in the Simo--Reissner sense \cite{simo1985beam}, with axial, shear and curvature strains $(\varepsilon,\gamma,\kappa)$
+computed from the current configuration, and a shear correction factor passed in the material tuple.
+
+\paragraph{Plasticity.}
+For small-strain J2 plasticity with linear isotropic hardening (yield stress $\sigma_y$, hardening modulus $H$), the update is the elastic-predictor, radial-return algorithm \cite{simo1985tangent,simo1998inelasticity}.
+Split the trial stress into volumetric and deviatoric parts, $\bm s^{\mathrm{tr}}=2\mu\,\mathrm{dev}(\bm\varepsilon-\bm\varepsilon^p_n)$. The yield function is
+$f=\|\bm s^{\mathrm{tr}}\|-\sqrt{\tfrac23}(\sigma_y+H\alpha_n)$. If $f\le0$ the step is elastic. Otherwise
+\begin{equation}
+  \Delta\gamma=\frac{f}{2\mu+\tfrac23H},\qquad
+  \bm s=\bm s^{\mathrm{tr}}-2\mu\,\Delta\gamma\,\bm n,\quad \bm n=\frac{\bm s^{\mathrm{tr}}}{\|\bm s^{\mathrm{tr}}\|},\qquad
+  \alpha=\alpha_n+\sqrt{\tfrac23}\,\Delta\gamma,
+  \label{eq:j2}
+\end{equation}
+a closed-form radial rescaling in deviatoric space with no local iteration. The algorithmic (consistent) tangent is obtained by differentiating the discrete update \cite{simo1985tangent}. The plane-stress variant
+needs a local iteration and is a separate routine, and a kinematic-hardening version exists for the 3-D element.
+State variables are evaluated afresh at every Newton iteration and committed only after a converged step.
+\texttt{Tet4NeoHookean} uses the compressible Neo-Hookean energy $W=\tfrac{\mu}{2}(\bar I_1-3)+\tfrac{\kappa}{2}(J-1)^2$ with $\bar I_1=J^{-2/3}\operatorname{tr}\bm C$, $J=\det\bm F$,
+$\bm C=\bm F^{\!\top}\bm F$, whose second Piola--Kirchhoff stress is
+$\bm S=\mu J^{-2/3}\bigl(\bm I-\tfrac13\operatorname{tr}(\bm C)\,\bm C^{-1}\bigr)+\kappa J(J-1)\bm C^{-1}$. It does not treat the incompressible limit, which requires a mixed formulation.
+
+\subsection{Nonlinear dynamics}
+Implicit nonlinear dynamics applies Newmark's method with Newton iteration in each step. With the Newmark relations for acceleration and velocity affine in the trial displacement $\bm d$,
+the residual and its exact derivative are
+\begin{equation}
+  \bm R(\bm d)=\M\bm a(\bm d)+\C\bm v(\bm d)+\fint(\bm d)-\fext(t+\Delta t),\qquad
+  \K_{\mathrm{eff}}(\bm d)=\KT(\bm d)+a_0\M+a_1\C ,
+  \label{eq:nl-newmark}
+\end{equation}
+so the effective matrix is re-factorised every iteration. For a linear element this reduces to the linear Newmark solver of \cref{sec:analysis} and Newton converges in one step.
+The explicit nonlinear integrator uses central differences on a lumped mass, so no Newton loop is needed and each step costs one internal-force evaluation.
+
+\subsection{Contact}
+\Cref{tab:contact} lists the contact formulations. Penalty contact is a unilateral spring on the penetration $\delta=\bm n\cdot\bm u-g_0$: $\bm f=k_p\max(\delta,0)\,\bm n$ with tangent $k_p\bm n\bm n^{\!\top}$ while active
+\cite{wriggers2006contact}. The Lagrange multiplier version enforces $\delta=0$ exactly through one extra unknown $\lambda$ by solving the bordered Newton system
+\begin{equation}
+  \begin{bmatrix}\KT&\bm n\\ \bm n^{\!\top}&0\end{bmatrix}
+  \begin{bmatrix}\delta\vu\\ \delta\lambda\end{bmatrix}=
+  \begin{bmatrix}\fext-\fint-\lambda\bm n\\ g_0-\bm n\cdot\vu\end{bmatrix},
+  \label{eq:kkt}
+\end{equation}
+after first checking whether the unconstrained step penetrates (active-set strategy). The augmented-Lagrangian version replaces the multiplier solve by Uzawa updates $\bar\lambda\leftarrow\max(\bar\lambda+k_p\delta,0)$
+on top of a penalty Newton solve, driving the penetration to zero for any $k_p$.
+
+\begin{table}[t]
+\centering\footnotesize
+\caption{Contact formulations and their scope.}\label{tab:contact}
+\begin{tabular}{>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{4.5cm}}
+\toprule
+Formulation & Implementation & Scope \\
+\midrule
+Penalty gap & \texttt{GapContactPenalty} (fixed normal), \texttt{GapContactCurvedFriction} (curved obstacle, Coulomb friction) & analytic rigid obstacle \\
+Node-to-segment & \texttt{NodeToSegmentContact2D}, \texttt{...Friction} & 2-D, both bodies deformable; broad-phase helper \texttt{find\_contact\_pairs\_2d} \\
+Lagrange multiplier & \texttt{solve\_contact\_\allowbreak lagrange\_\allowbreak static} & one contact node, monotonic engagement \\
+Augmented Lagrangian & \texttt{solve\_contact\_\allowbreak augmented\_\allowbreak lagrange\_\allowbreak static} & same scope as Lagrange \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The multiplier and augmented-Lagrangian solvers handle a single contact node. General multi-point contact uses the penalty elements.

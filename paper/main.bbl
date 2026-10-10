@@ -1,0 +1,397 @@
+\begin{thebibliography}{52}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Zienkiewicz et~al.(2013)Zienkiewicz, Taylor, and
+  Zhu]{zienkiewicz2013fem}
+O.~C. Zienkiewicz, R.~L. Taylor, and J.~Z. Zhu.
+\newblock \emph{The Finite Element Method: Its Basis and Fundamentals}.
+\newblock Butterworth-Heinemann, Oxford, 7 edition, 2013.
+\newblock ISBN 9781856176330.
+
+\bibitem[Bathe(2014)]{bathe2014fep}
+Klaus-J{\"u}rgen Bathe.
+\newblock \emph{Finite Element Procedures}.
+\newblock K. J. Bathe, Watertown, MA, 2 edition, 2014.
+\newblock ISBN 9780979004957.
+
+\bibitem[Benner et~al.(2015)Benner, Gugercin, and Willcox]{benner2015survey}
+Peter Benner, Serkan Gugercin, and Karen Willcox.
+\newblock A survey of projection-based model reduction methods for parametric
+  dynamical systems.
+\newblock \emph{SIAM Review}, 57\penalty0 (4):\penalty0 483--531, 2015.
+\newblock \doi{10.1137/130932715}.
+
+\bibitem[Hesthaven et~al.(2016)Hesthaven, Rozza, and Stamm]{hesthaven2016rb}
+Jan~S. Hesthaven, Gianluigi Rozza, and Benjamin Stamm.
+\newblock \emph{Certified Reduced Basis Methods for Parametrized Partial
+  Differential Equations}.
+\newblock SpringerBriefs in Mathematics. Springer, Cham, 2016.
+\newblock \doi{10.1007/978-3-319-22470-1}.
+
+\bibitem[Antoulas(2005)]{antoulas2005}
+Athanasios~C. Antoulas.
+\newblock \emph{Approximation of Large-Scale Dynamical Systems}.
+\newblock Advances in Design and Control. SIAM, Philadelphia, 2005.
+\newblock \doi{10.1137/1.9780898718713}.
+
+\bibitem[Harris et~al.(2020)Harris, Millman, van~der Walt,
+  et~al.]{harris2020numpy}
+Charles~R. Harris, K.~Jarrod Millman, St{\'e}fan~J. van~der Walt, et~al.
+\newblock Array programming with {NumPy}.
+\newblock \emph{Nature}, 585\penalty0 (7825):\penalty0 357--362, 2020.
+\newblock \doi{10.1038/s41586-020-2649-2}.
+
+\bibitem[Virtanen et~al.(2020)Virtanen, Gommers, Oliphant,
+  et~al.]{virtanen2020scipy}
+Pauli Virtanen, Ralf Gommers, Travis~E. Oliphant, et~al.
+\newblock {SciPy} 1.0: fundamental algorithms for scientific computing in
+  {Python}.
+\newblock \emph{Nature Methods}, 17\penalty0 (3):\penalty0 261--272, 2020.
+\newblock \doi{10.1038/s41592-019-0686-2}.
+
+\bibitem[Paszke et~al.(2019)Paszke, Gross, Massa, et~al.]{paszke2019pytorch}
+Adam Paszke, Sam Gross, Francisco Massa, et~al.
+\newblock {PyTorch}: An imperative style, high-performance deep learning
+  library.
+\newblock In \emph{Advances in Neural Information Processing Systems 32
+  (NeurIPS 2019)}, 2019.
+
+\bibitem[Logg et~al.(2012)Logg, Mardal, and Wells]{logg2012fenics}
+Anders Logg, Kent-Andre Mardal, and Garth Wells, editors.
+\newblock \emph{Automated Solution of Differential Equations by the Finite
+  Element Method: The {FEniCS} Book}, volume~84 of \emph{Lecture Notes in
+  Computational Science and Engineering}.
+\newblock Springer, Berlin, Heidelberg, 2012.
+\newblock \doi{10.1007/978-3-642-23099-8}.
+
+\bibitem[Baratta et~al.(2023)Baratta, Dean, Dokken, Habera, Hale, Richardson,
+  Rognes, Scroggs, Sime, and Wells]{baratta2023dolfinx}
+Igor~A. Baratta, Joseph~P. Dean, J{\o}rgen~S. Dokken, Michal Habera, Jack~S.
+  Hale, Chris~N. Richardson, Marie~E. Rognes, Matthew~W. Scroggs, Nathan Sime,
+  and Garth~N. Wells.
+\newblock {DOLFINx}: the next generation {FEniCS} problem solving environment.
+\newblock Preprint, Zenodo, version v1, 2023.
+\newblock Zenodo lists a later version (2025) of this record.
+
+\bibitem[Anderson et~al.(2021)Anderson, Andrej, Barker, Bramwell, Camier,
+  Cerveny, Dobrev, Dudouit, Fisher, Kolev, Pazner, Stowell, Tomov, Dahm,
+  Medina, and Zampini]{anderson2021mfem}
+Robert Anderson, Julian Andrej, Andrew Barker, Jamie Bramwell, Jean-Sylvain
+  Camier, Jakub Cerveny, Veselin Dobrev, Yohann Dudouit, Aaron Fisher, Tzanio
+  Kolev, Will Pazner, Mark Stowell, Vladimir Tomov, Johann Dahm, David Medina,
+  and Stefano Zampini.
+\newblock {MFEM}: A modular finite element methods library.
+\newblock \emph{Computers \& Mathematics with Applications}, 81:\penalty0
+  42--74, 2021.
+\newblock \doi{10.1016/j.camwa.2020.06.009}.
+
+\bibitem[Dadvand et~al.(2010)Dadvand, Rossi, and O{\~n}ate]{dadvand2010kratos}
+Pooyan Dadvand, Riccardo Rossi, and Eugenio O{\~n}ate.
+\newblock An object-oriented environment for developing finite element codes
+  for multi-disciplinary applications.
+\newblock \emph{Archives of Computational Methods in Engineering}, 17:\penalty0
+  253--297, 2010.
+\newblock \doi{10.1007/s11831-010-9045-2}.
+
+\bibitem[Gustafsson and McBain(2020)]{gustafsson2020skfem}
+Tom Gustafsson and G.~D. McBain.
+\newblock scikit-fem: A {Python} package for finite element assembly.
+\newblock \emph{Journal of Open Source Software}, 5\penalty0 (52):\penalty0
+  2369, 2020.
+\newblock \doi{10.21105/joss.02369}.
+
+\bibitem[Cimrman et~al.(2019)Cimrman, Luke{\v{s}}, and Rohan]{cimrman2019sfepy}
+Robert Cimrman, Vladim{\'\i}r Luke{\v{s}}, and Eduard Rohan.
+\newblock Multiscale finite element calculations in {Python} using {SfePy}.
+\newblock \emph{Advances in Computational Mathematics}, 45:\penalty0
+  1897--1921, 2019.
+\newblock \doi{10.1007/s10444-019-09666-0}.
+
+\bibitem[Zhu et~al.(2018)Zhu, McKenna, and Scott]{zhu2018openseespy}
+Minjie Zhu, Frank McKenna, and Michael~H. Scott.
+\newblock {OpenSeesPy}: {Python} library for the {OpenSees} finite element
+  framework.
+\newblock \emph{SoftwareX}, 7:\penalty0 6--11, 2018.
+\newblock \doi{10.1016/j.softx.2017.10.009}.
+
+\bibitem[{CAMLab, ETH Z{\"u}rich}(2026)]{tensormesh2026}
+{CAMLab, ETH Z{\"u}rich}.
+\newblock {TensorMesh}: a differentiable finite element library for {PyTorch}.
+\newblock Software, release v0.2.0,
+  \url{https://github.com/camlab-ethz/TensorMesh}, 2026.
+
+\bibitem[Wen et~al.(2026)Wen, Chi, Yu, Moseley, Michelis, Ren, Sun, and
+  Mishra]{wen2026tensorgalerkin}
+Shizheng Wen, Mingyuan Chi, Tianwei Yu, Ben Moseley, Mike~Yan Michelis, Pu~Ren,
+  Hao Sun, and Siddhartha Mishra.
+\newblock Learning, solving and optimizing {PDEs} with {TensorGalerkin}: an
+  efficient high-performance {Galerkin} assembly algorithm, 2026.
+
+\bibitem[Milk et~al.(2016)Milk, Rave, and Schindler]{milk2016pymor}
+Ren{\'e} Milk, Stephan Rave, and Felix Schindler.
+\newblock {pyMOR} -- generic algorithms and interfaces for model order
+  reduction.
+\newblock \emph{SIAM Journal on Scientific Computing}, 38\penalty0
+  (5):\penalty0 S194--S216, 2016.
+\newblock \doi{10.1137/15M1026614}.
+
+\bibitem[Hughes(1980)]{hughes1980bbar}
+Thomas J.~R. Hughes.
+\newblock Generalization of selective integration procedures to anisotropic and
+  nonlinear media.
+\newblock \emph{International Journal for Numerical Methods in Engineering},
+  15\penalty0 (9):\penalty0 1413--1418, 1980.
+\newblock \doi{10.1002/nme.1620150914}.
+
+\bibitem[Dvorkin and Bathe(1984)]{dvorkin1984}
+Eduardo~N. Dvorkin and Klaus-J{\"u}rgen Bathe.
+\newblock A continuum mechanics based four-node shell element for general
+  non-linear analysis.
+\newblock \emph{Engineering Computations}, 1\penalty0 (1):\penalty0 77--88,
+  1984.
+\newblock \doi{10.1108/eb023562}.
+
+\bibitem[Newmark(1959)]{newmark1959}
+Nathan~M. Newmark.
+\newblock A method of computation for structural dynamics.
+\newblock \emph{Journal of the Engineering Mechanics Division, ASCE},
+  85\penalty0 (3):\penalty0 67--94, 1959.
+\newblock \doi{10.1061/JMCEA3.0000098}.
+
+\bibitem[Crisfield(1981)]{crisfield1981}
+M.~A. Crisfield.
+\newblock A fast incremental/iterative solution procedure that handles
+  ``snap-through''.
+\newblock \emph{Computers \& Structures}, 13\penalty0 (1--3):\penalty0 55--62,
+  1981.
+\newblock \doi{10.1016/0045-7949(81)90108-5}.
+
+\bibitem[Riks(1979)]{riks1979}
+E.~Riks.
+\newblock An incremental approach to the solution of snapping and buckling
+  problems.
+\newblock \emph{International Journal of Solids and Structures}, 15\penalty0
+  (7):\penalty0 529--551, 1979.
+\newblock \doi{10.1016/0020-7683(79)90081-7}.
+
+\bibitem[Liang et~al.(2014)Liang, Ruess, and Abdalla]{liang2014koiternewton}
+Ke~Liang, Martin Ruess, and Mostafa Abdalla.
+\newblock The {Koiter--Newton} approach using von {K{\'a}rm{\'a}n} kinematics
+  for buckling analyses of imperfection sensitive structures.
+\newblock \emph{Computer Methods in Applied Mechanics and Engineering},
+  279:\penalty0 440--468, 2014.
+\newblock \doi{10.1016/j.cma.2014.07.008}.
+
+\bibitem[Crisfield(1990)]{crisfield1990corot}
+M.~A. Crisfield.
+\newblock A consistent co-rotational formulation for non-linear,
+  three-dimensional, beam-elements.
+\newblock \emph{Computer Methods in Applied Mechanics and Engineering},
+  81\penalty0 (2):\penalty0 131--150, 1990.
+\newblock \doi{10.1016/0045-7825(90)90106-V}.
+
+\bibitem[Simo(1985)]{simo1985beam}
+J.~C. Simo.
+\newblock A finite strain beam formulation. the three-dimensional dynamic
+  problem. part {I}.
+\newblock \emph{Computer Methods in Applied Mechanics and Engineering},
+  49:\penalty0 55--70, 1985.
+\newblock \doi{10.1016/0045-7825(85)90050-7}.
+
+\bibitem[Simo and Taylor(1985)]{simo1985tangent}
+J.~C. Simo and R.~L. Taylor.
+\newblock Consistent tangent operators for rate-independent elastoplasticity.
+\newblock \emph{Computer Methods in Applied Mechanics and Engineering},
+  48\penalty0 (1):\penalty0 101--118, 1985.
+\newblock \doi{10.1016/0045-7825(85)90070-2}.
+
+\bibitem[Simo and Hughes(1998)]{simo1998inelasticity}
+J.~C. Simo and T.~J.~R. Hughes.
+\newblock \emph{Computational Inelasticity}, volume~7 of
+  \emph{Interdisciplinary Applied Mathematics}.
+\newblock Springer, New York, 1998.
+\newblock \doi{10.1007/b98904}.
+
+\bibitem[Wriggers(2006)]{wriggers2006contact}
+Peter Wriggers.
+\newblock \emph{Computational Contact Mechanics}.
+\newblock Springer, Berlin, Heidelberg, 2 edition, 2006.
+\newblock \doi{10.1007/978-3-540-32609-0}.
+
+\bibitem[Zienkiewicz and Zhu(1992)]{zienkiewicz1992spr}
+O.~C. Zienkiewicz and J.~Z. Zhu.
+\newblock The superconvergent patch recovery and a posteriori error estimates.
+  part 1: The recovery technique.
+\newblock \emph{International Journal for Numerical Methods in Engineering},
+  33\penalty0 (7):\penalty0 1331--1364, 1992.
+\newblock \doi{10.1002/nme.1620330702}.
+
+\bibitem[Hinton and Campbell(1974)]{hinton1974smoothing}
+E.~Hinton and J.~S. Campbell.
+\newblock Local and global smoothing of discontinuous finite element functions
+  using a least squares method.
+\newblock \emph{International Journal for Numerical Methods in Engineering},
+  8\penalty0 (3):\penalty0 461--480, 1974.
+\newblock \doi{10.1002/nme.1620080303}.
+
+\bibitem[Berkooz et~al.(1993)Berkooz, Holmes, and Lumley]{berkooz1993pod}
+Gal Berkooz, Philip Holmes, and John~L. Lumley.
+\newblock The proper orthogonal decomposition in the analysis of turbulent
+  flows.
+\newblock \emph{Annual Review of Fluid Mechanics}, 25:\penalty0 539--575, 1993.
+
+\bibitem[Besselink et~al.(2013)Besselink, Tabak, Lutowska, van~de Wouw,
+  Nijmeijer, Rixen, Hochstenbach, and Schilders]{besselink2013comparison}
+B.~Besselink, U.~Tabak, A.~Lutowska, N.~van~de Wouw, H.~Nijmeijer, D.~J. Rixen,
+  M.~E. Hochstenbach, and W.~H.~A. Schilders.
+\newblock A comparison of model reduction techniques from structural dynamics,
+  numerical mathematics and systems and control.
+\newblock \emph{Journal of Sound and Vibration}, 332\penalty0 (19):\penalty0
+  4403--4422, 2013.
+\newblock \doi{10.1016/j.jsv.2013.03.025}.
+
+\bibitem[Huynh et~al.(2007)Huynh, Rozza, Sen, and Patera]{huynh2007scm}
+D.~B.~P. Huynh, G.~Rozza, S.~Sen, and A.~T. Patera.
+\newblock A successive constraint linear optimization method for lower bounds
+  of parametric coercivity and inf-sup stability constants.
+\newblock \emph{Comptes Rendus Math{\'e}matique}, 345\penalty0 (8):\penalty0
+  473--478, 2007.
+\newblock \doi{10.1016/j.crma.2007.09.019}.
+
+\bibitem[Bai and Su(2005)]{bai2005soar}
+Zhaojun Bai and Yangfeng Su.
+\newblock {SOAR}: A second-order {Arnoldi} method for the solution of the
+  quadratic eigenvalue problem.
+\newblock \emph{SIAM Journal on Matrix Analysis and Applications}, 26\penalty0
+  (3):\penalty0 640--659, 2005.
+\newblock \doi{10.1137/S0895479803438523}.
+
+\bibitem[Moore(1981)]{moore1981}
+B.~C. Moore.
+\newblock Principal component analysis in linear systems: Controllability,
+  observability, and model reduction.
+\newblock \emph{IEEE Transactions on Automatic Control}, 26\penalty0
+  (1):\penalty0 17--32, 1981.
+\newblock \doi{10.1109/TAC.1981.1102568}.
+
+\bibitem[Enns(1984)]{enns1984}
+Dale~F. Enns.
+\newblock Model reduction with balanced realizations: An error bound and a
+  frequency weighted generalization.
+\newblock In \emph{Proceedings of the 23rd IEEE Conference on Decision and
+  Control}, pages 127--132, Las Vegas, NV, 1984.
+\newblock \doi{10.1109/CDC.1984.272286}.
+
+\bibitem[Glover(1984)]{glover1984}
+Keith Glover.
+\newblock All optimal {Hankel}-norm approximations of linear multivariable
+  systems and their {$L^\infty$}-error bounds.
+\newblock \emph{International Journal of Control}, 39\penalty0 (6):\penalty0
+  1115--1193, 1984.
+
+\bibitem[Liu and Anderson(1989)]{liu1989spa}
+Yi~Liu and Brian D.~O. Anderson.
+\newblock Singular perturbation approximation of balanced systems.
+\newblock \emph{International Journal of Control}, 50\penalty0 (4):\penalty0
+  1379--1405, 1989.
+
+\bibitem[Mayo and Antoulas(2007)]{mayo2007loewner}
+A.~J. Mayo and A.~C. Antoulas.
+\newblock A framework for the solution of the generalized realization problem.
+\newblock \emph{Linear Algebra and its Applications}, 425:\penalty0 634--662,
+  2007.
+
+\bibitem[Georgiou(2005)]{georgiou2005}
+Ioannis~T. Georgiou.
+\newblock Advanced proper orthogonal decomposition tools: Using reduced order
+  models to identify normal modes of vibration and slow invariant manifolds in
+  the dynamics of planar nonlinear rods.
+\newblock \emph{Nonlinear Dynamics}, 41\penalty0 (1--3):\penalty0 69--110,
+  2005.
+\newblock \doi{10.1007/s11071-005-2793-0}.
+
+\bibitem[Farhat et~al.(2015)Farhat, Chapman, and Avery]{farhat2015ecsw}
+Charbel Farhat, Todd Chapman, and Philip Avery.
+\newblock Structure-preserving, stability, and accuracy properties of the
+  energy-conserving sampling and weighting method for the hyper reduction of
+  nonlinear finite element dynamic models.
+\newblock \emph{International Journal for Numerical Methods in Engineering},
+  102\penalty0 (5):\penalty0 1077--1110, 2015.
+
+\bibitem[Lawson and Hanson(1995)]{lawson1995lsq}
+Charles~L. Lawson and Richard~J. Hanson.
+\newblock \emph{Solving Least Squares Problems}, volume~15 of \emph{Classics in
+  Applied Mathematics}.
+\newblock SIAM, Philadelphia, 1995.
+\newblock \doi{10.1137/1.9781611971217}.
+
+\bibitem[Chaturantabut and Sorensen(2010)]{chaturantabut2010deim}
+Saifon Chaturantabut and Danny~C. Sorensen.
+\newblock Nonlinear model reduction via discrete empirical interpolation.
+\newblock \emph{SIAM Journal on Scientific Computing}, 32\penalty0
+  (5):\penalty0 2737--2764, 2010.
+
+\bibitem[Drma{\v{c}} and Gugercin(2016)]{drmac2016qdeim}
+Zlatko Drma{\v{c}} and Serkan Gugercin.
+\newblock A new selection operator for the discrete empirical interpolation
+  method -- improved a priori error bound and extensions.
+\newblock \emph{SIAM Journal on Scientific Computing}, 38\penalty0
+  (2):\penalty0 A631--A648, 2016.
+\newblock \doi{10.1137/15M1019271}.
+
+\bibitem[Hollkamp and Gordon(2008)]{hollkamp2008ice}
+J.~J. Hollkamp and R.~W. Gordon.
+\newblock Reduced-order models for nonlinear response prediction: Implicit
+  condensation and expansion.
+\newblock \emph{Journal of Sound and Vibration}, 318\penalty0 (4--5):\penalty0
+  1139--1153, 2008.
+\newblock \doi{10.1016/j.jsv.2008.04.035}.
+
+\bibitem[Mignolet et~al.(2013)Mignolet, Przekop, Rizzi, and
+  Spottswood]{mignolet2013review}
+M.~P. Mignolet, A.~Przekop, S.~A. Rizzi, and S.~M. Spottswood.
+\newblock A review of indirect/non-intrusive reduced order modeling of
+  nonlinear geometric structures.
+\newblock \emph{Journal of Sound and Vibration}, 332\penalty0 (10):\penalty0
+  2437--2460, 2013.
+
+\bibitem[He et~al.(2023)He, Yang, Li, Pang, Kan, and Song]{he2023mfsnlrom}
+Xiwang He, Liangliang Yang, Kunpeng Li, Yong Pang, Ziyun Kan, and Xueguan Song.
+\newblock A novel geometric nonlinear reduced order modeling method using
+  multi-fidelity surrogate for real-time structural analysis.
+\newblock \emph{Structural and Multidisciplinary Optimization}, 66\penalty0
+  (11):\penalty0 233, 2023.
+\newblock \doi{10.1007/s00158-023-03689-4}.
+
+\bibitem[Kerschen et~al.(2009)Kerschen, Peeters, Golinval, and
+  Vakakis]{kerschen2009nnm}
+G.~Kerschen, M.~Peeters, J.~C. Golinval, and A.~F. Vakakis.
+\newblock Nonlinear normal modes, part {I}: A useful framework for the
+  structural dynamicist.
+\newblock \emph{Mechanical Systems and Signal Processing}, 23\penalty0
+  (1):\penalty0 170--194, 2009.
+\newblock \doi{10.1016/j.ymssp.2008.04.002}.
+
+\bibitem[Keller(1977)]{keller1977}
+Herbert~B. Keller.
+\newblock Numerical solution of bifurcation and nonlinear eigenvalue problems.
+\newblock In Paul~H. Rabinowitz, editor, \emph{Applications of Bifurcation
+  Theory}, pages 359--384. Academic Press, New York, 1977.
+
+\bibitem[Guyan(1965)]{guyan1965}
+Robert~J. Guyan.
+\newblock Reduction of stiffness and mass matrices.
+\newblock \emph{AIAA Journal}, 3\penalty0 (2):\penalty0 380, 1965.
+\newblock \doi{10.2514/3.2874}.
+
+\bibitem[Craig and Bampton(1968)]{craig1968}
+Roy~R. Craig and Mervyn C.~C. Bampton.
+\newblock Coupling of substructures for dynamic analyses.
+\newblock \emph{AIAA Journal}, 6\penalty0 (7):\penalty0 1313--1319, 1968.
+\newblock \doi{10.2514/3.4741}.
+
+\end{thebibliography}

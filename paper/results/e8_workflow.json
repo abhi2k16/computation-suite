@@ -1,0 +1,28 @@
+{
+  "experiment": "e8_workflow",
+  "environment": {
+    "python": "3.10.12",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "processor": "x86_64",
+    "cpu_count": 2,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "torch": null,
+    "fea_engine": "1.0.1",
+    "rom_engine": "0.2.0",
+    "git_commit": "ac90d0b",
+    "OMP_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null
+  },
+  "data": {
+    "f_hz": [
+      897.12072623548,
+      3248.1269305045844,
+      3429.8358187494805
+    ],
+    "vm_max": 62072105.85222104,
+    "max_error": 6.971985739333718e-05,
+    "passed": true
+  }
+}

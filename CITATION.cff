@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "computation-suite: fea_engine and rom_engine"
+type: software
+authors:
+  - family-names: "Kumar"
+    given-names: "Abhijeet"
+version: "fea_engine 1.0.1, rom_engine 0.2.0"
+license: MIT
+repository-code: "https://github.com/abhi2k16/fea-rom-computation-suite"
+abstract: >-
+  Two MIT-licensed Python packages for structural finite element analysis (fea_engine)
+  and reduced-order modelling (rom_engine), depending only on NumPy and SciPy, with an
+  optional PyTorch backend.
+keywords:
+  - finite element method
+  - model order reduction
+  - structural mechanics
+  - Python
+# After the arXiv paper appears, add:
+# preferred-citation:
+#   type: article
+#   title: "A verification-first Python toolkit for structural finite element analysis and reduced-order modelling: fea_engine and rom_engine"
+#   authors: [{family-names: "Kumar", given-names: "Abhijeet"}]
+#   year: 2026
+#   notes: "arXiv:XXXX.XXXXX"

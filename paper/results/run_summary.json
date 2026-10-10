@@ -1,0 +1,47 @@
+[
+  {
+    "script": "e0_inventory",
+    "returncode": 0,
+    "seconds": 11.6
+  },
+  {
+    "script": "e1_rom_speedup",
+    "returncode": 0,
+    "seconds": 11.4
+  },
+  {
+    "script": "e2_recovery_speedup",
+    "returncode": 0,
+    "seconds": 51.3
+  },
+  {
+    "script": "e3_cms",
+    "returncode": 0,
+    "seconds": 3.7
+  },
+  {
+    "script": "e4_ecsw",
+    "returncode": 0,
+    "seconds": 59.7
+  },
+  {
+    "script": "e5_verification",
+    "returncode": 0,
+    "seconds": 5.9
+  },
+  {
+    "script": "e7_quickstart",
+    "returncode": 0,
+    "seconds": 2.1
+  },
+  {
+    "script": "e8_workflow",
+    "returncode": 0,
+    "seconds": 2.2
+  },
+  {
+    "script": "make_tables",
+    "returncode": 0,
+    "seconds": 0.4
+  }
+]

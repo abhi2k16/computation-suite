@@ -1,0 +1,15 @@
+\section{Reproducibility and availability}\label{sec:avail}
+
+\paragraph{Software.}
+\fea{} (version \feaVersion{}) and \rom{} (version \romVersion{}) are released under the MIT licence at \url{https://github.com/abhi2k16/fea-rom-computation-suite}. Both packages require Python 3.9 or later with NumPy 1.22+ and SciPy 1.8+; Matplotlib, meshio and PyTorch are optional.
+Each package installs from its directory with \texttt{pip install}. \ifx\zenodoDoi\noDoi\todo{archive the release on Zenodo, then set \texttt{\textbackslash zenodoDoi} in \texttt{macros.tex}.}\else The release described here is archived on Zenodo, \url{https://doi.org/\zenodoDoi}.\fi
+
+\paragraph{Tests.}
+The repository has \feaTests{} tests for \fea{} and \romTests{} for \rom{}, run with \texttt{pytest}. A GitHub Actions workflow runs them (including a torch-CPU job); it is currently set to manual dispatch.
+
+\paragraph{Reproducing this paper.}
+The repository directory \texttt{paper/experiments/} contains one script per experiment. \texttt{run\_all.py} runs them in separate processes, writes JSON results with the software and hardware environment to \texttt{paper/results/}, figures to \texttt{paper/figures/}, and the LaTeX tables and number macros to \texttt{paper/tables/}.
+The text refers to measurements only through these macros. The inventory counts of \cref{sec:arch} (lines, files, tests, registered elements) come from \texttt{e0\_inventory.py}. The GPU experiment \texttt{e6\_torch\_backend.py} must be run on a machine with PyTorch.
+
+\paragraph{Citation of methods.}
+The methods in \cref{sec:rom} are published by others and are cited there; the implementations were written for this package, and the docstrings state where a variant differs from the published form.

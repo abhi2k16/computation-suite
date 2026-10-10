@@ -1,0 +1,44 @@
+{
+  "experiment": "e0_inventory",
+  "environment": {
+    "python": "3.10.12",
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "processor": "x86_64",
+    "cpu_count": 2,
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "torch": null,
+    "fea_engine": "1.0.1",
+    "rom_engine": "0.2.0",
+    "git_commit": "ac90d0b",
+    "OMP_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null
+  },
+  "data": {
+    "fea_src": {
+      "files": 50,
+      "lines": 27061
+    },
+    "rom_src": {
+      "files": 38,
+      "lines": 13196
+    },
+    "fea_tests_code": {
+      "files": 102,
+      "lines": 22250
+    },
+    "rom_tests_code": {
+      "files": 54,
+      "lines": 11348
+    },
+    "fea_tests_collected": 1144,
+    "rom_tests_collected": 463,
+    "elements_registered": 29,
+    "constitutive_registered": 6,
+    "fea_public_names": 142,
+    "rom_public_names": 117,
+    "fea_version": "1.0.1",
+    "rom_version": "0.2.0"
+  }
+}

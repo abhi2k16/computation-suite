@@ -1,0 +1,10 @@
+\begin{tabular}{rrrrrr}
+\toprule
+free DOF & SciPy & torch CG cpu & torch dense cpu & torch CG cuda & torch dense cuda \\
+\midrule
+1088 & 4.8 & 25.6 & 11.6 & 66.8 & 40.4 \\
+4224 & 47.2 & 92.9 & 436.4 & 234.3 & 879.5 \\
+16640 & 363.1 & 247.1 & -- & 383.4 & -- \\
+66048 & 2070.4 & 2284.7 & -- & 836.0 & -- \\
+\bottomrule
+\end{tabular}

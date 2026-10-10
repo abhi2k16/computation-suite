@@ -1,0 +1,52 @@
+\section{Boundary conditions and constraints}\label{sec:constraints}
+
+\subsection{Prescribed DOFs}
+Let the DOFs be partitioned into free ($f$) and prescribed ($c$) sets. With prescribed values $\vu_c$, the reduced static system is
+\begin{equation}
+  \K_{ff}\vu_f=\F_f-\K_{fc}\vu_c .
+  \label{eq:dirichlet}
+\end{equation}
+\texttt{FESystem.form\_linear\_system} returns this system as a \texttt{ReducedSystem}, which stores $\K_{ff}$, the right-hand side, the index sets and the prescribed values,
+and which can expand a reduced solution back to a full-length \texttt{FEField}. The same object is the interface used by iterative solvers and by the torch backend (\cref{sec:arch}).
+
+\subsection{Springs and elastic foundations}
+A grounded spring of stiffness $k$ on DOF $i$ adds $k$ to $K_{ii}$ (and $k\,u_{\mathrm{ref}}$ to $F_i$ if the spring rests at $u_{\mathrm{ref}}$). A Winkler foundation, or Robin boundary term,
+$\bm t=k(\bm u-\bm u_{\mathrm{ref}})$ on a boundary $\Gamma_k$ contributes
+\begin{equation}
+  \K_k=\int_{\Gamma_k}k\,\bm N^{\!\top}\bm N\,\mathrm d\Gamma,\qquad
+  \F_k=\int_{\Gamma_k}k\,\bm N^{\!\top}\bm u_{\mathrm{ref}}\,\mathrm d\Gamma,
+  \label{eq:robin}
+\end{equation}
+evaluated over the element facets whose nodes all lie in the selected node set. The stiffness $k$ may be a function of position. These terms are stored and re-applied whenever
+the stiffness matrix is re-assembled, so the order of calls does not matter.
+
+\subsection{Linear multi-point constraints}
+General constraints $\sum_i c_i u_i=g$, and equal-DOF ties between node pairs (including periodic boundaries via an offset vector), are eliminated exactly rather than imposed by penalty or multipliers.
+Writing all constraints as $\bm C\vu_f=\bm g$, the code selects one dependent DOF per independent constraint by Gauss--Jordan elimination with full pivoting (largest coefficient) and expresses it through the others, which
+yields
+\begin{equation}
+  \vu_f=\bm T\,\vu_r+\vu_p,\qquad
+  \K_r=\bm T^{\!\top}\K_{ff}\bm T,\qquad
+  \F_r=\bm T^{\!\top}\bigl(\F_f-\K_{ff}\vu_p\bigr),
+  \label{eq:elim}
+\end{equation}
+where $\vu_r$ are the retained DOFs, $\bm T$ is sparse, and $\vu_p$ is a particular solution that carries the constraint values. If $\K_{ff}$ is symmetric positive definite, so is $\K_r$ whenever $\bm T$
+has full column rank, which holds by construction. Chains of constraints and constraints that involve prescribed DOFs are handled in the same pass.
+\Cref{alg:elim} summarises the procedure; modal analysis reduces the mass matrix with the same $\bm T$, $\M_r=\bm T^{\!\top}\M_{ff}\bm T$.
+
+\begin{algorithm}[t]
+\caption{Exact elimination of linear constraints}\label{alg:elim}
+\begin{algorithmic}[1]
+\Require $\K_{ff},\F_f$, constraint rows $(\bm c_k,g_k)$, prescribed values $\vu_c$
+\State substitute prescribed DOFs into each constraint (moves terms to $g_k$)
+\State \textbf{for} each constraint: pick the dependent DOF with the largest $|c|$ (full pivoting); express it through the remaining DOFs; redundant but consistent constraints are dropped, \textbf{raise an error} if equations conflict
+\State build $\bm T$ (identity on retained DOFs, $-c_j/c_s$ on rows of dependent DOFs) and $\vu_p$
+\State $\K_r\gets\bm T^{\!\top}\K_{ff}\bm T$;\quad $\F_r\gets\bm T^{\!\top}(\F_f-\K_{ff}\vu_p)$
+\State solve $\K_r\vu_r=\F_r$;\quad $\vu_f\gets\bm T\vu_r+\vu_p$
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Current limits.}
+Constraints are supported by the static and modal solvers; the transient, harmonic, buckling and nonlinear drivers raise \texttt{NotImplementedError} rather than ignore them.
+Springs and foundations enter $\K$ and are therefore seen by all linear solvers, but the nonlinear drivers do not include them yet and also raise an error.
+Reaction forces at constraints are not reported; \texttt{reactions} covers prescribed supports only.

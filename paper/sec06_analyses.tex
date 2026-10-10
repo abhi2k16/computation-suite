@@ -1,0 +1,34 @@
+\section{Linear analysis types}\label{sec:analysis}
+
+\paragraph{Static.}
+$\K_{ff}\vu_f=\F_f-\K_{fc}\vu_c$ \eqref{eq:dirichlet} is solved by sparse LU, dense Cholesky-type solves, or iterative methods (conjugate gradient and others, via \texttt{method=}).
+For sparse systems the factorisation is available for reuse across right-hand sides, which the batched solver exploits (\cref{sec:perf}).
+
+\paragraph{Modal.}
+Natural frequencies and mode shapes solve the generalised eigenproblem
+\begin{equation}
+  \K_{ff}\bm\phi=\omega^2\M_{ff}\bm\phi,\qquad f=\omega/2\pi,
+  \label{eq:eig}
+\end{equation}
+by a dense solver for dense systems and by shift-invert Lanczos at $\sigma=0$ for sparse ones, which targets the lowest modes. Eigenvectors are mass-normalised.
+
+\paragraph{Linear buckling.}
+For a reference state with geometric stiffness $\K_\sigma$ (built from a reference axial force, tension positive), the critical load factors $\lambda$ solve
+$(\K+\lambda\K_\sigma)\bm\phi=\bm 0$, that is $\K\bm\phi=\lambda\,(-\K_\sigma)\bm\phi$, which has the same structure as \eqref{eq:eig}.
+The result is meaningful only when $-\K_{\sigma,ff}$ is positive definite (a purely compressive reference state).
+
+\paragraph{Harmonic response and random vibration.}
+At a driving frequency $\Omega$ the code solves $(\K-\Omega^2\M+\mathrm i\Omega\C)\bm U=\bm F_0$ directly for the complex amplitude; at $\Omega=0$ this reduces to the static solve.
+Random vibration is built on the harmonic sweep: with the transfer function $H(f)$ from a unit load pattern to an output DOF, the output power spectral density is
+$S_{\mathrm{out}}(f)=|H(f)|^2S_{\mathrm{in}}(f)$ and the RMS response is $\sigma=\bigl(\int S_{\mathrm{out}}\,\mathrm df\bigr)^{1/2}$, integrated by the trapezoidal rule.
+
+\paragraph{Transient.}
+Implicit integration uses the Newmark-$\beta$ family \cite{newmark1959}. With displacement predictors, the effective stiffness for \eqref{eq:sd} is
+\begin{equation}
+  \K_{\mathrm{eff}}=\K+a_0\M+a_1\C,\qquad a_0=\frac{1}{\beta\Delta t^2},\quad a_1=\frac{\gamma}{\beta\Delta t},
+  \label{eq:keff}
+\end{equation}
+which for the default $\beta=\tfrac14,\gamma=\tfrac12$ (average acceleration) is unconditionally stable for linear systems. For a linear system $\K_{\mathrm{eff}}$ is constant, and
+it is factorised once before the time loop. Explicit integration is the central-difference recursion on a lumped mass matrix, stable for $\Delta t\le2/\omega_{\max}$; \texttt{critical\_timestep}
+computes $\omega_{\max}$ from the full spectrum, and a local estimate from element wave speeds is provided for large systems. Modal superposition integrates $n$ decoupled single-DOF equations with a given damping ratio per mode and
+reconstructs $\vu(t)=\bm\Phi\bm q(t)$.

@@ -1,0 +1,20 @@
+\section{Usage and workflow}\label{sec:usage}
+
+\subsection{From a model to a validated reduced model}
+\Cref{lst:quick} builds the full model and a first reduced model. The workflow then has three further steps that are typical for use of the two packages together: analyse the full model, test the reduced model on loads it was not trained on, and decide
+from the measured error whether the basis is adequate. \Cref{lst:workflow} does this for the plate of \cref{sec:arch}.
+
+\lstinputlisting[caption={Continuation of \cref{lst:quick}: modal analysis, von Mises stress, and validation of the reduced model on held-out loads (\texttt{paper/listings/workflow.py}).},label={lst:workflow}]{listings/workflow.py}
+
+The first natural frequency of the plate is \wfFirstHz{}~Hz and the maximum nodal von~Mises stress under the quick-start tip load is \wfVmMax{}~MPa. The held-out loads are sinusoidal tip tractions $a\sin(\pi y)$, whose shape is not a polynomial and so is not in the span of the training loads of \cref{lst:quick}.
+On three such loads the 8-mode reduced model has a maximum relative error of \wfErr{} in the displacement field, so the check \wfPassed{} its tolerance of $10^{-2}$. This out-of-sample error is the number to report for the reduced model; the \qsErr{} of \cref{sec:arch} is not.
+If the check fails, \texttt{convergence\_study} and \texttt{select\_basis\_size} give the error against the number of modes, and the basis can be rebuilt from more or better chosen snapshots.
+
+\subsection{Other common patterns}
+The documentation and tests in the repository show the remaining patterns; we list them so that the reader knows what exists, not to demonstrate them here.
+Named DOFs and node sets avoid index arithmetic in boundary conditions (\texttt{fix\_dofs("root", ["ux","uy"])}). Nonlinear problems run through the drivers of \cref{sec:nonlinear} with a shared \texttt{NewtonOptions} object. \texttt{fea\_engine.batch.map} runs a function over a list of parameter sets.
+Results export to ParaView through VTK/XDMF writers for fields and for time series. A reduced model built for one structure can be reused with matrices from another source because \rom{} only needs arrays.
+
+\subsection{Extending the packages}
+New elements, materials, loads and solvers are added as classes rather than as edits to existing code. An element is a subclass of the base element class that implements the methods of \cref{sec:arch}; the registries make it available to the assembler, and the same test pattern (a comparison with an independent reference) is expected for it.
+New reduction methods in \rom{} follow the same array-level convention, taking and returning plain arrays.

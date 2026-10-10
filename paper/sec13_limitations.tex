@@ -1,0 +1,29 @@
+\section{Limitations and outlook}\label{sec:limits}
+
+We list the limits that are known from the code and from the experiments, grouped by area. They define the scope in which the results of this paper apply.
+
+\paragraph{Scope of the finite element part.}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item Linear constraints are supported by the static and modal solvers only. Springs and foundations are not included in the nonlinear drivers. Constraint reaction forces are not reported (\cref{sec:constraints}).
+  \item Stress recovery covers plane-stress triangles and quadrilaterals and 3-D solids with full integration; boundary values are smoothed estimates and the recovery is not superconvergent (\cref{sec:recovery}). The torch recovery does not support position-dependent coefficients.
+  \item \texttt{Shell4MITC} is a flat-facet element with classic MITC4 behaviour; membrane locking in coarse curved meshes is not treated. The director-based shell implements the linear stiffness only (\cref{sec:fe}).
+  \item Plasticity is small-strain J2. The Neo-Hookean element is a 4-node tetrahedron and does not treat the incompressible limit (\cref{sec:nonlinear}).
+  \item The Lagrange-multiplier and augmented-Lagrangian contact solvers handle a single contact node with monotonic engagement. General contact uses penalty elements and 2-D node-to-segment elements.
+  \item The arc-length step is fixed and not adapted. The Koiter--Newton drivers use finite-difference Taylor coefficients and have no step-size test or line search in their correctors.
+  \item The implementation is serial and in NumPy/SciPy. The package is not designed for distributed-memory parallelism or for models with millions of DOF. The torch backend uses a dense solve below 2\,000 free DOF and Jacobi-preconditioned conjugate gradients above, and raises an error if the iteration does not converge.
+\end{itemize}
+
+\paragraph{Scope of the reduction part.}
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item Certified bounds come from a Weyl-type construction and a successive-constraint linear program applied to $\bm A^{\mathsf H}\bm A$; the natural-norm variant for non-coercive operators is not implemented, and bounds can be loose far from reference frequencies (\cref{sec:rom:param}).
+  \item Optimal Hankel-norm approximation is single-input single-output only. NNM backbones are for undamped autonomous systems.
+  \item The ICE and Shi--Mei constructors are the same regression with different names, and the surrogate models need full-order training solves whose number and placement are the user's choice (\cref{sec:rom:nl}).
+  \item The neural-operator, latent-ODE, encoder, ensemble and differentiable-correction components are experimental and are not evaluated here.
+\end{itemize}
+
+\paragraph{Scope of the evidence.}
+Verification covers the cases of \cref{sec:verif} on simple geometries. Performance numbers come from one small CPU machine and, for the torch backend, one consumer GPU machine; they compare only with the packages' own reference paths and exclude offline cost for ROMs (\cref{sec:perf}). No comparison with other software was made.
+The code has one author, and the test suite measures agreement with the references used by that author.
+
+\paragraph{Outlook.}
+The extensions most useful to users, in our view, are constraint support in the transient and nonlinear solvers, general multi-point contact, a sparse-direct option for the torch backend, and a systematic comparison with existing libraries on shared benchmarks. We have not committed to a schedule.

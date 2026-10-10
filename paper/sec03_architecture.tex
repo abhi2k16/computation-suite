@@ -1,0 +1,89 @@
+\section{Software architecture}\label{sec:arch}
+
+\subsection{Package layout}
+The repository contains two independently installable packages (\cref{fig:arch}).
+\fea{} has \feaFiles{} source files and \rom{} has \romFiles{} (counts from \texttt{experiments/e0\_inventory.py}).
+The public API exports \feaPublic{} names from \fea{} and \romPublic{} from \rom{}.
+\rom{} does not import \fea{}; the only contract between them is the set of plain arrays that
+\texttt{FESystem} exposes.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\small, node distance=5mm and 7mm,
+  box/.style={draw, rounded corners=2pt, minimum height=7mm, align=center, fill=blue!5},
+  grp/.style={draw, dashed, rounded corners=4pt, inner sep=4mm},
+  arr/.style={-{Latex[length=2mm]}, thick}]
+  \node[box] (mesh) {Mesh,\\named sets};
+  \node[box, right=of mesh] (elem) {Elements\\(\nElements{})};
+  \node[box, right=of elem] (mat) {Constitutive\\models (\nConstitutive{})};
+  \node[box, below=of elem, minimum width=4.5cm] (sys) {\texttt{FESystem}: assembly, BCs, constraints};
+  \node[box, below=of sys, xshift=-2.7cm] (ana) {Static, modal,\\harmonic, transient};
+  \node[box, below=of sys, xshift=2.7cm] (nl) {Newton, arc-length,\\nonlinear dynamics};
+  \node[box, below=of ana, xshift=2.7cm] (res) {\texttt{FEField}, \texttt{FieldSeries}, recovery};
+  \node[box, right=34mm of sys, fill=orange!10] (arr) {$\K,\M,\C,\F$\\plain arrays};
+  \node[box, below=14mm of arr, fill=orange!10, minimum width=4.2cm] (rom) {POD, Krylov, BT, CMS,\\hyper-reduction, NNM};
+  \draw[arr] (mesh) -- (sys); \draw[arr] (elem) -- (sys); \draw[arr] (mat) -- (elem);
+  \draw[arr] (sys) -- (ana); \draw[arr] (sys) -- (nl);
+  \draw[arr] (ana) -- (res); \draw[arr] (nl) -- (res);
+  \draw[arr] (sys) -- (arr); \draw[arr] (arr) -- (rom);
+  \begin{scope}[on background layer]
+    \node[grp, fit=(mesh)(elem)(mat)(sys)(ana)(nl)(res), label={[anchor=north west]north west:\fea}] {};
+    \node[grp, fit=(rom), label={[anchor=north west]north west:\rom}, inner sep=4mm] {};
+  \end{scope}
+\end{tikzpicture}
+\caption{Package structure. \rom{} sees only arrays; \texttt{FESystem} supplies them, but any other source can too.}
+\label{fig:arch}
+\end{figure}
+
+\subsection{The \texttt{FESystem} pipeline}
+A model is built in five steps: create a mesh with named node sets; choose an element and constitutive matrix;
+assemble $\K$ and $\M$; apply constraints and loads; run an analysis. Elements and constitutive models are held in registries
+(\nElements{} and \nConstitutive{} entries), so new ones can be added without changing the assembler.
+Assembly follows the standard element-by-element scatter into sparse matrices \cite{zienkiewicz2013fem,bathe2014fep}, with a
+vectorised path for elements whose kernels can be batched.
+
+\subsection{Element interface}
+Every element implements the same methods. With $\bm N$ the shape functions and $\bm B$ the strain--displacement matrix,
+\begin{equation}
+  \K_e=\int_{\Omega_e}\bm B^{\!\top}\bm D\,\bm B\,\mathrm{d}\Omega,\qquad
+  \M_e=\int_{\Omega_e}\rho\,\bm N^{\!\top}\bm N\,\mathrm{d}\Omega,
+  \label{eq:elem}
+\end{equation}
+evaluated by Gauss quadrature in the methods \texttt{shape\_and\_derivs}, \texttt{B\_matrix}, \texttt{stiffness} and \texttt{mass}.
+Nonlinear analysis additionally uses \texttt{internal\_force} and \texttt{tangent\_stiffness}, which return $\bm f_{\mathrm{int}}(\vu_e)$
+and $\partial\bm f_{\mathrm{int}}/\partial\vu_e$. Because all elements share this interface, the analysis layer does not branch on element type.
+
+\subsection{Results and the safe interface}
+Solver calls return result objects rather than bare vectors: \texttt{FEField} holds a nodal field with named components (for example
+\texttt{"ux"}, \texttt{"uy"}) and can be queried by node set, and \texttt{FieldSeries} holds a sequence of such fields over time or load steps.
+DOFs are addressed by name, quantities carry units where the API supports it, and the nonlinear solvers take a \texttt{NewtonOptions}
+object instead of loose keyword arguments. The purpose is to turn common indexing errors (wrong DOF number, wrong component) into early
+exceptions. Bare-array access remains available for performance-critical code.
+
+\subsection{The FE/ROM boundary}
+\rom{} classes such as \texttt{PodBasis} and \texttt{GalerkinROM} take $\K,\M,\F$ as SciPy sparse matrices or NumPy arrays.
+A reduced system is returned as a \texttt{ReducedSystem}, which is itself a small set of matrices and can be solved, time-stepped,
+or exported. Keeping the boundary at the array level means the same reduction code works on matrices from \fea{}, from a different
+FE package, or from a lumped model.
+
+\subsection{Optional PyTorch layer}
+With PyTorch installed, linear systems can be solved on the CPU or GPU, and stress, strain and von~Mises fields can be recovered with
+differentiable tensor operations. The solver selects a dense factorisation for fewer than 2000 free DOF and a Jacobi-preconditioned
+conjugate gradient method otherwise, and raises an error if CG does not converge. All torch computations use double precision.
+The recovery code is written once against a small operations shim that targets either NumPy or torch.
+If PyTorch is absent, nothing else changes.
+
+\subsection{Verification-first development}
+Each element and solver is accompanied by tests that compare against analytical solutions or independent computations
+(patch tests, beam theory, the elastica, and so on; \cref{sec:verif}). The suite runs \feaTests{} tests for \fea{} and \romTests{}
+for \rom{}. We note that passing tests is evidence of correctness for the cases tested and not a proof for others; the limits are
+listed in \cref{sec:limits}.
+
+\subsection{A first example}
+\Cref{lst:quick} builds a cantilever plate of \qsDof{} DOF (\qsFree{} free), solves it, constructs an \qsModes{}-mode POD basis from
+snapshots of tip-traction loads, and solves the reduced model. The relative tip-deflection error between the full and reduced
+models is \qsErr{} (the tip deflection is \qsTip{}~m). This error is small only because the test load lies in the span of
+the snapshot loads; it is a consistency check of the pipeline and not a measure of ROM accuracy for unseen loads (see
+\cref{sec:usage} for an out-of-sample test).
+
+\lstinputlisting[caption={Quick-start: full model, POD basis and Galerkin reduction (\texttt{paper/listings/quickstart.py}).},label={lst:quick}]{listings/quickstart.py}
