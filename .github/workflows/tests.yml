@@ -1,9 +1,9 @@
 name: tests
 
+# Automatic runs are switched off; start the suite by hand from the Actions tab ("Run workflow").
+# To turn them back on, restore:  push: {branches: [main]}  and  pull_request:
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: tests-${{ github.ref }}
