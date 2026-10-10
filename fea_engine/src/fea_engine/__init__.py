@@ -39,6 +39,8 @@ fields           : FEField -- the ndarray-subclass solution vector returned by t
 newton_options   : NewtonOptions -- shared tol/max_iter/line_search settings for the nonlinear drivers
 batch            : batch.map(fn, items, n_jobs=...) for parameter sweeps and load cases
 series           : FieldSeries -- multi-step results (load path, time history, modes) with one access style
+linear_system    : ReducedSystem -- FESystem.form_linear_system(): constrained K, F plus recover()
+export           : export.write_vtu / write_series -- ParaView (.vtu, .pvd) output of meshes and results
 iterative_solvers: Wave 8 items 36-40 (docs/consolidated_future_roadmap.md) --
                     fill-reducing reordering, preconditioners, conjugate
                     gradients, classical stationary iterations, and geometric
@@ -115,7 +117,8 @@ from .solver import FESystem
 from .fields import FEField
 from .series import FieldSeries
 from .newton_options import NewtonOptions
-from . import batch, units
+from . import batch, units, export
+from .linear_system import ReducedSystem
 from .iterative_solvers import (
     reverse_cuthill_mckee, fill_in_count, permuted_solve,
     jacobi_preconditioner, ssor_preconditioner, incomplete_cholesky0,
@@ -164,6 +167,7 @@ __all__ = [
     "closest_point_on_segment_2d", "find_contact_pairs_2d",
     "ELEMENT_REGISTRY",
     "FESystem", "FEField", "FieldSeries", "NewtonOptions", "batch", "units",
+    "export", "ReducedSystem",
     "reverse_cuthill_mckee", "fill_in_count", "permuted_solve",
     "jacobi_preconditioner", "ssor_preconditioner", "incomplete_cholesky0",
     "preconditioned_cg", "jacobi_solve", "gauss_seidel_solve", "sor_solve",

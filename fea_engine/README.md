@@ -61,6 +61,15 @@
 > system.modal_series(5).at(120.0)                                # mode closest to 120 Hz
 > ```
 
+> [!NOTE]
+> **Reduced system and ParaView export (unreleased, additive).**
+> ```python
+> rs = system.form_linear_system()          # constrained K, F; prescribed values already on the right-hand side
+> U = rs.recover(my_solver(rs.K, rs.F))     # full FEField; rs.reduce_matrix(system.M) for other matrices
+> fea_engine.export.write_vtu("beam.vtu", U)                  # open in ParaView
+> fea_engine.export.write_series("run/disp", path)            # run/disp.pvd + run/disp_0000.vtu ...
+> ```
+
 ## 🧭 Contents
 
 | | |

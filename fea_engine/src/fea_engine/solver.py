@@ -1189,6 +1189,44 @@ class FESystem:
     def free_dofs(self):
         return np.array([d for d in range(self.n_dof) if d not in self.fixed_dofs])
 
+    def form_linear_system(self, F=None, K=None):
+        """Reduced linear system ``K_ff u_f = F_f - K_fc u_c`` as a ``ReducedSystem``.
+
+        Parameters
+        ----------
+        F : ndarray, optional
+            Full load vector; defaults to the assembled ``self.F``.
+        K : matrix, optional
+            Full stiffness; defaults to ``self.K`` (pass a tangent or a modified matrix to reuse
+            the constraint handling).
+
+        Returns
+        -------
+        ReducedSystem
+            ``.K``, ``.F`` (reduced), ``.recover(u_free)`` (full ``FEField`` with prescribed
+            values), ``.reduce_matrix(M)``, ``.solve()``.
+
+        Example
+        -------
+        >>> rs = system.form_linear_system()                      # doctest: +SKIP
+        >>> u = rs.recover(scipy.sparse.linalg.cg(rs.K, rs.F)[0])  # doctest: +SKIP
+        """
+        from .linear_system import ReducedSystem
+        if K is None:
+            self._require_stiffness("form_linear_system")
+            K = self.K
+        Fv = self.F if F is None else np.asarray(F, dtype=float)
+        if Fv.shape != (self.n_dof,):
+            raise ValueError(f"F must have shape ({self.n_dof},), got {Fv.shape}")
+        free = self.free_dofs
+        fixed = self.fixed_dofs_array
+        u_fixed = self._fixed_dof_values_array(fixed)
+        Kmat = self._as_solve_matrix(K)
+        Kff = Kmat[np.ix_(free, free)]
+        Ff = Fv[free] - self._dirichlet_rhs_correction(Kmat, free, fixed, u_fixed)
+        return ReducedSystem(K=Kff, F=np.asarray(Ff, dtype=float), free=free, fixed=fixed,
+                             u_fixed=u_fixed, n_dof=self.n_dof, _system=self)
+
     @property
     def fixed_dofs_array(self):
         """Wave 16 item 131 -- `fixed_dofs` (a set) in a fixed, sorted

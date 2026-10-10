@@ -41,12 +41,15 @@ jobs:
           PY
       - name: Release metadata
         run: |
-          pytest fea_engine/tests/test_release_metadata.py rom_engine/tests/test_release_metadata.py -q
+          # Separate runs: both files share a basename and the test dirs are not packages.
+          pytest fea_engine/tests/test_release_metadata.py -q
+          pytest rom_engine/tests/test_release_metadata.py -q
       - name: Newest feature tests
         run: |
           cd fea_engine
           pytest tests/test_api_safety.py tests/test_named_api.py tests/test_newton_options_and_batch.py \
-                 tests/test_units_and_plot.py tests/test_field_series.py -q
+                 tests/test_units_and_plot.py tests/test_field_series.py \
+                 tests/test_linear_system_and_export.py -q
         env:
           MPLBACKEND: Agg
 

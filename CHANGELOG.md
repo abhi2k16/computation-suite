@@ -4,6 +4,16 @@ All notable changes to `fea_engine` and `rom_engine`. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/) (`rom_engine` is pre-1.0, so minor releases may change behaviour).
 
+## Unreleased
+
+### Added (fea_engine)
+- `FESystem.form_linear_system(F=None, K=None)` returns a `ReducedSystem`: the constrained `K`, `F` (prescribed
+  values already moved to the right-hand side), `restrict`, `expand`, `recover` (full `FEField`),
+  `reduce_matrix(M)`, `solve()` and `residual()`. Use it to bring your own solver, preconditioner or ROM.
+- `fea_engine.export.write_vtu` and `write_series`: ParaView/VisIt output (`.vtu`, `.pvd` time series) of meshes
+  and `FEField` / `FieldSeries` results (vectors, rotations, mode shapes, complex fields, extra point and
+  cell data; ASCII or base64 binary). NumPy only.
+
 ## fea_engine 1.0.1
 
 ### Changed (behaviour you may notice)
