@@ -160,8 +160,7 @@ class TestConsistentFacetLoadShares:
         y = N2 * 1.0
         dx = np.gradient(x, s)
         dy = np.gradient(y, s)
-        ref_length = np.trapezoid(np.sqrt(dx ** 2 + dy ** 2), s) if hasattr(np, "trapezoid") \
-            else np.trapz(np.sqrt(dx ** 2 + dy ** 2), s)
+        ref_length = (getattr(np, "trapezoid", None) or np.trapz)(np.sqrt(dx ** 2 + dy ** 2), s)
         print(f"  independent fine-resolution reference length = {ref_length:.6f}")
 
         assert totals[10] == pytest.approx(ref_length, abs=1e-3)

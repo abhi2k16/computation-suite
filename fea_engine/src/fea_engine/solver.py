@@ -49,6 +49,8 @@ __author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import warnings
 
 import numpy as np
+# np.trapz was renamed np.trapezoid in NumPy 2.0 and later removed; NumPy 1.x has only trapz.
+_trapezoid = getattr(np, "trapezoid", None) or np.trapz
 from scipy.linalg import eigh
 
 
@@ -2528,7 +2530,7 @@ class FESystem:
         U = self.solve_frequency_sweep(Omega_array, F0_pattern)
         H = U[:, output_dof]
         S_out = np.abs(H)**2 * np.asarray(psd_input)
-        sigma_out = np.sqrt(np.trapz(S_out, freqs_hz))
+        sigma_out = np.sqrt(_trapezoid(S_out, freqs_hz))
         return S_out, sigma_out
 
 

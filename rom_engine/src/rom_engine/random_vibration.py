@@ -31,6 +31,8 @@ __author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 
+# np.trapz was renamed np.trapezoid in NumPy 2.0 and later removed; NumPy 1.x has only trapz.
+_trapezoid = getattr(np, "trapezoid", None) or np.trapz
 def psd_response(rom_freq, freqs_hz, psd_input, F0_pattern, output_dofs):
     """Random-vibration (PSD) response of a FrequencyROM, at one or
     several output DOFs.
@@ -77,7 +79,7 @@ def psd_response(rom_freq, freqs_hz, psd_input, F0_pattern, output_dofs):
 
     H = rom_freq.frequency_response(omega_array, F0_pattern, output_dofs=dofs)   # (n_freq, n_out)
     S_out = np.abs(H) ** 2 * psd_input[:, None]                                   # (n_freq, n_out)
-    sigma_out = np.sqrt(np.trapz(S_out, freqs_hz, axis=0))                        # (n_out,)
+    sigma_out = np.sqrt(_trapezoid(S_out, freqs_hz, axis=0))                        # (n_out,)
 
     if scalar_output:
         return S_out[:, 0], float(sigma_out[0])

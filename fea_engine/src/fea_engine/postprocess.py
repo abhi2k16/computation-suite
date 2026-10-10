@@ -19,6 +19,8 @@ __author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
 
 
+# np.trapz was renamed np.trapezoid in NumPy 2.0 and later removed; NumPy 1.x has only trapz.
+_trapezoid = getattr(np, "trapezoid", None) or np.trapz
 def modal_participation_factors(mode_shapes_free, Mff, influence_vector):
     """L_i = phi_i^T M r, where r is the spatial 'influence vector'
     (e.g. a unit vector in the excited DOF direction for base
@@ -43,7 +45,7 @@ def effective_modal_mass(mode_shapes_free, Mff, influence_vector):
 def variance_from_psd(freqs, S):
     """Response variance (= RMS^2) from a one-sided PSD via trapezoidal
     integration over frequency (Hz). General for any DOF/PSD shape."""
-    return np.trapz(S, freqs)
+    return _trapezoid(S, freqs)
 
 
 def rms_from_psd(freqs, S):

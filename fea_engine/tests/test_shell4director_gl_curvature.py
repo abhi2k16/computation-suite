@@ -24,6 +24,8 @@ Checks:
 """
 __author__ = "Abhijeet <abhijeetshandilya19@gmail.com>"
 import numpy as np
+# np.trapz was renamed np.trapezoid in NumPy 2.0 and later removed; NumPy 1.x has only trapz.
+_trapezoid = getattr(np, "trapezoid", None) or np.trapz
 import pytest
 from scipy.integrate import solve_bvp
 
@@ -121,7 +123,7 @@ def _elastica_ratio(a):
     sol = solve_bvp(lambda s, y: np.vstack([y[1], -a * np.cos(y[0])]), lambda ya, yb: np.array([ya[0], yb[1]]),
                     np.linspace(0, 1, 400), np.zeros((2, 400)), tol=1e-10, max_nodes=50000)
     ss = np.linspace(0, 1, 4000)
-    return np.trapz(np.sin(sol.sol(ss)[0]), ss) / (a / 3)
+    return _trapezoid(np.sin(sol.sol(ss)[0]), ss) / (a / 3)
 
 
 def test_cantilever_stiffening_matches_elastica_at_24_degrees():
