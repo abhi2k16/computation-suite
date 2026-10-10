@@ -114,6 +114,15 @@ def _field_arrays(field, name=None):
     for c in range(ncols):
         suffix = f"_mode{c}" if ncols > 1 else ""
         parts = {}
+        if field._npn == 1:                             # scalar field (von Mises, temperature, ...)
+            val = nod[:, 0, c]
+            key = f"{base}{suffix}"
+            if np.iscomplexobj(val):
+                out.update({key + "_re": np.ascontiguousarray(val.real),
+                            key + "_im": np.ascontiguousarray(val.imag), key + "_abs": np.abs(val)})
+            else:
+                out[key] = np.ascontiguousarray(val)
+            continue
         vec = np.zeros((field._n_nodes, 3), dtype=nod.dtype)
         for slot, j in enumerate(trans[:3]):
             vec[:, slot] = nod[:, j, c]

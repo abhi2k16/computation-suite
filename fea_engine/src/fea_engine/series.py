@@ -89,7 +89,7 @@ class FieldSeries:
     def _wrap(self, row):
         t = self._template
         return FEField(row, t._n_nodes, t._npn, t._dof_names, t._aliases, t._translational,
-                       t._mesh, self.label, t.units)
+                       t._mesh, self.label, t.units, t._dof_units)
 
     def __getitem__(self, i):
         if isinstance(i, slice):

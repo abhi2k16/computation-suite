@@ -37,8 +37,9 @@ class FEField(np.ndarray):
     """ndarray of nodal DOF values with names. See the module docstring."""
 
     def __new__(cls, data, n_nodes=None, dofs_per_node=None, dof_names=None, aliases=None,
-                translational=None, mesh=None, label=None, units=None):
+                translational=None, mesh=None, label=None, units=None, dof_units=None):
         obj = np.asarray(data).view(cls)
+        obj._dof_units = None if dof_units is None else tuple(dof_units)   # per-DOF unit labels (stress, reactions)
         obj._n_nodes = n_nodes
         obj._npn = dofs_per_node
         obj._dof_names = tuple(dof_names) if dof_names is not None else None
@@ -52,7 +53,7 @@ class FEField(np.ndarray):
     def __array_finalize__(self, obj):
         if obj is None:
             return
-        for name in ("_n_nodes", "_npn", "_dof_names", "_aliases", "_translational", "_mesh", "label", "units"):
+        for name in ("_n_nodes", "_npn", "_dof_names", "_aliases", "_translational", "_mesh", "label", "units", "_dof_units"):
             setattr(self, name, getattr(obj, name, None if name != "_aliases" else {}))
 
     def __array_wrap__(self, out_arr, context=None, return_scalar=False):
@@ -66,7 +67,7 @@ class FEField(np.ndarray):
     def __reduce__(self):
         meta = dict(n_nodes=self._n_nodes, dofs_per_node=self._npn, dof_names=self._dof_names,
                     aliases=self._aliases, translational=self._translational, mesh=None,
-                    label=self.label, units=self.units)
+                    label=self.label, units=self.units, dof_units=self._dof_units)
         return (_rebuild_fefield, (np.asarray(self), meta))
 
     # ---- structure -------------------------------------------------------------------------
@@ -172,6 +173,9 @@ class FEField(np.ndarray):
         if mask is None:
             mask = (True,) * self._npn
         idx = [j for j, t in enumerate(mask) if t]
+        if not idx:
+            raise ValueError(f"FEField.magnitude: field {self.label!r} has no translational components "
+                             f"(its components are {list(self._dof_names or [])}); pick one by name.")
         data = self.nodal[:, idx]
         mag = np.sqrt(np.sum(np.abs(data) ** 2, axis=1))
         ids = self._node_ids(nodes, "magnitude")
@@ -205,6 +209,8 @@ class FEField(np.ndarray):
         rotations, None when the field is unlabelled."""
         self._require_nodal("unit_of")
         j = self._dof_index(component, "unit_of")
+        if self._dof_units is not None:
+            return self._dof_units[j] or None
         if self.units is None:
             return None
         mask = self._translational
@@ -266,12 +272,15 @@ class FEField(np.ndarray):
             if not 0 <= int(mode) < self.shape[1]:
                 raise ValueError(f"FEField.plot: mode {mode} out of range 0..{self.shape[1] - 1}.")
             view = FEField(np.asarray(self)[:, int(mode)], self._n_nodes, self._npn, self._dof_names,
-                           self._aliases, self._translational, self._mesh, self.label, self.units)
+                           self._aliases, self._translational, self._mesh, self.label, self.units,
+                           self._dof_units)
         elif self.ndim == 1:
             view = self
         else:
             raise ValueError("FEField.plot: only 1-D or 2-D fields can be plotted.")
 
+        if component is None and view._npn == 1:
+            component = 0                                    # scalar field (von Mises, ...): plot its one DOF
         if component is None:
             vals = view.magnitude()
             name = "|u|"

@@ -49,7 +49,7 @@ jobs:
           cd fea_engine
           pytest tests/test_api_safety.py tests/test_named_api.py tests/test_newton_options_and_batch.py \
                  tests/test_units_and_plot.py tests/test_field_series.py \
-                 tests/test_linear_system_and_export.py -q
+                 tests/test_linear_system_and_export.py tests/test_coefficients_and_recovery.py -q
         env:
           MPLBACKEND: Agg
 

@@ -407,6 +407,28 @@ class FESystem:
                        translational=mask if mask is not None else (True,) * self.npn,
                        mesh=self.mesh, label=label, units=unit)
 
+    # ---- derived results (v1.1): see fea_engine.recovery ------------------------------------
+    def stress(self, U=None, D=None, at="nodes"):
+        """Stress components as an FEField (``at="elements"``: ndarray of element averages).
+        Uses the D given to the last ``assemble_stiffness`` (coefficients included) unless ``D=`` is passed."""
+        from . import recovery
+        return recovery.stress(self, self.solve_static() if U is None else U, D, at)
+
+    def strain(self, U=None, at="nodes"):
+        """Strain components (engineering shear) as an FEField; see ``stress``."""
+        from . import recovery
+        return recovery.strain(self, self.solve_static() if U is None else U, at)
+
+    def von_mises(self, U=None, D=None, plane="stress", nu=None, at="nodes"):
+        """Von Mises stress as a scalar FEField (2-D: ``plane="stress"`` or ``"strain"`` with ``nu=``)."""
+        from . import recovery
+        return recovery.von_mises(self, self.solve_static() if U is None else U, D, plane, nu, at)
+
+    def reactions(self, U=None):
+        """Support reactions ``K U - F`` at the constrained DOFs as an FEField."""
+        from . import recovery
+        return recovery.reactions(self, U)
+
     def _check_nodes(self, node_ids, who):
         """node_ids -> int array. `node_ids` may also be the NAME of a mesh node set (or a list of
         names). Raises a clear ValueError for an empty selection (typically a
@@ -604,13 +626,20 @@ class FESystem:
                 f"assemble_stiffness: unknown method={method!r} -- expected "
                 f"'full' (default), 'reduced', or 'hourglass_stabilized'.")
         token = self._begin_assembly("K", accumulate, "assemble_stiffness")
+        remembered = (D, dict(kwargs))
         try:
             self._assemble_stiffness_body(D, method, vectorized, kwargs)
         except BaseException:
             self._rollback_assembly("K", token)   # a failed re-assembly leaves the old matrix intact
             raise
+        self._stiffness_args = remembered   # lets stress()/strain() reuse the assembled D
 
     def _assemble_stiffness_body(self, D, method, vectorized, kwargs):
+        from . import coefficients as _cf
+        use_coef = _cf.has_coefficient(D, *kwargs.values())
+        if vectorized and use_coef:
+            raise ValueError("assemble_stiffness: coefficients (fea_engine.coefficients) are not supported "
+                             "with vectorized=True; use the default per-element assembly.")
         if vectorized:
             if method != "full":
                 raise ValueError(
@@ -634,8 +663,13 @@ class FESystem:
             return
         for name, formulation, connectivity in self._blocks:
             block_D = self._per_block_arg(D, name)
-            for elem_conn in connectivity:
+            for i_el, elem_conn in enumerate(connectivity):
                 elem_coords = self.mesh.nodes[elem_conn]
+                if use_coef:
+                    ke = _cf.stiffness(formulation, elem_coords, block_D, kwargs, i_el, method)
+                    g = self._global_dofs(elem_conn)
+                    self.K[np.ix_(g, g)] += ke
+                    continue
                 if method == "full":
                     ke = formulation.stiffness(elem_coords, block_D, **kwargs)
                 elif method == "reduced":
@@ -670,12 +704,18 @@ class FESystem:
             self.M = self._zeros_matrix()
         token = self._begin_assembly("M", accumulate, "assemble_mass")
         try:
+            from . import coefficients as _cf
+            use_coef = _cf.has_coefficient(rho_or_matrix, *kwargs.values())
             for name, formulation, connectivity in self._blocks:
                 block_rho = self._per_block_arg(rho_or_matrix, name)
-                for elem_conn in connectivity:
+                for i_el, elem_conn in enumerate(connectivity):
                     elem_coords = self.mesh.nodes[elem_conn]
-                    me = self._element_matrix(formulation, "mass", elem_coords, block_rho,
-                                              kwargs, "assemble_mass")
+                    if use_coef:
+                        me = _cf.mass(formulation, elem_coords, block_rho, kwargs, i_el,
+                                      lambda f, k, c, r, kw: self._element_matrix(f, k, c, r, kw, "assemble_mass"))
+                    else:
+                        me = self._element_matrix(formulation, "mass", elem_coords, block_rho,
+                                                  kwargs, "assemble_mass")
                     g = self._global_dofs(elem_conn)
                     self.M[np.ix_(g, g)] += me
         except BaseException:
@@ -693,12 +733,19 @@ class FESystem:
             self.M_lumped = self._zeros_matrix()
         token = self._begin_assembly("M_lumped", accumulate, "assemble_lumped_mass")
         try:
+            from . import coefficients as _cf
+            use_coef = _cf.has_coefficient(rho_or_matrix, *kwargs.values())
             for name, formulation, connectivity in self._blocks:
                 block_rho = self._per_block_arg(rho_or_matrix, name)
-                for elem_conn in connectivity:
+                for i_el, elem_conn in enumerate(connectivity):
                     elem_coords = self.mesh.nodes[elem_conn]
-                    me = self._element_matrix(formulation, "lumped_mass", elem_coords, block_rho,
-                                              kwargs, "assemble_lumped_mass")
+                    if use_coef:
+                        me = _cf.mass(formulation, elem_coords, block_rho, kwargs, i_el,
+                                      lambda f, k, c, r, kw: self._element_matrix(f, k, c, r, kw, "assemble_lumped_mass"),
+                                      kind="lumped_mass")
+                    else:
+                        me = self._element_matrix(formulation, "lumped_mass", elem_coords, block_rho,
+                                                  kwargs, "assemble_lumped_mass")
                     g = self._global_dofs(elem_conn)
                     self.M_lumped[np.ix_(g, g)] += me
         except BaseException:

@@ -62,6 +62,17 @@
 > ```
 
 > [!NOTE]
+> **Derived results and graded materials (unreleased, additive).**
+> ```python
+> from fea_engine import coefficients as cf
+> D = cf.from_material(lambda x: Material(E=70e9 * (1 + 2 * x[1]), nu=0.3), D_plane_stress, at="gauss")
+> system.assemble_stiffness(D, thickness=0.02)         # E grows with height; also rho and thickness
+> U = system.solve_static()
+> S, vm, R = system.stress(U), system.von_mises(U), system.reactions(U)    # FEFields
+> S.plot("sxx"); R.component("uy", nodes="root").sum()
+> ```
+
+> [!NOTE]
 > **Reduced system and ParaView export (unreleased, additive).**
 > ```python
 > rs = system.form_linear_system()          # constrained K, F; prescribed values already on the right-hand side

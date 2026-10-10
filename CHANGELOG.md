@@ -14,6 +14,22 @@ All notable changes to `fea_engine` and `rom_engine`. Format follows
   and `FEField` / `FieldSeries` results (vectors, rotations, mode shapes, complex fields, extra point and
   cell data; ASCII or base64 binary). NumPy only.
 
+- Derived results as `FEField`s: `FESystem.stress`, `strain`, `von_mises` and `reactions`. Stress is computed
+  at the integration points with the assembled `D` (coefficients included) and projected to the nodes;
+  `at="elements"` gives element averages. Supported: Quad4/Quad8/Tri3/Tri6 plane stress and
+  Hex8/Hex20/Tet4/Tet10 solids. `reactions` returns `K U - F` at constrained DOFs, with force and moment units.
+- `fea_engine.coefficients`: material, density and thickness that vary in space. `by_position(fn, at=)`,
+  `by_element(values)` and `from_material(fn, builder, at=)` are accepted by `assemble_stiffness`,
+  `assemble_mass` and `assemble_lumped_mass`. `at="centroid"` (default, any element) is piecewise constant;
+  `at="gauss"` evaluates at integration points for the supported plane-stress and solid elements.
+  A constant coefficient reproduces the plain assembly. Linear assembly only; not with `vectorized=True`.
+- `FEField` accepts per-DOF unit labels (`dof_units`), so stress fields report `Pa` and moments `N*m`.
+
+### Changed (fea_engine)
+- `FEField.magnitude()` raises a clear `ValueError` for a field with no translational components
+  (previously it returned zeros); `FEField.plot()` of a scalar field draws its single component.
+- The vtk export writes one-DOF fields as scalars.
+
 ## fea_engine 1.0.1
 
 ### Changed (behaviour you may notice)
