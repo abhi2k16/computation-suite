@@ -62,6 +62,18 @@ Reference, Multi-core/CPU/GPU usage, Performance, and pointers for going deeper.
   transient (implicit/explicit), harmonic, and random-vibration solves;
   geometric/material/contact nonlinearity with four different nonlinear
   drivers (monotonic, displacement-control, arc-length, transient).
+- **Results you can read by name.** Solutions are `FEField` arrays that
+  know their DOFs, nodes, units and mesh: `U.component("uy", nodes="tip")`
+  instead of `U[2*i+1]`, plus `stress`, `von_mises` and `reactions` as
+  fields of the same kind, `FieldSeries` for load paths and time histories,
+  one-line plots, and ParaView export. Plain NumPy indexing still works.
+- **Boundary conditions beyond "fixed".** Named DOFs and node sets, springs,
+  Winkler/Robin elastic foundations, general linear constraints and periodic
+  ties, and material, density or thickness that vary in space.
+- **Checked against theory.** An independent benchmark suite (patch tests on
+  all eight continuum elements, exact pure-bending, observed convergence
+  orders, vibration and large-deflection references) plus a small
+  `convergence` module for your own mesh studies.
 - **A genuinely broad reduced-order-modeling toolbox.** Linear
   intrusive projection (POD/Galerkin/affine/frequency), classical
   systems-and-control MOR (Krylov, balanced truncation), non-intrusive
@@ -219,8 +231,19 @@ python examples/main.py     # runs 8 problems end to end against closed-form ref
 
 ```bash
 python -c "import rom_engine; print(rom_engine.__version__)"
-pip install -e ".[fea,dev]" && pytest tests/ -q      # 187 tests, validated against real fea_engine models
+pip install -e ".[fea,dev]" && pytest tests/ -q      # 462 tests, validated against real fea_engine models
 ```
+
+To run a package's full test suite, from inside its folder (`pytest-xdist` runs the tests in parallel and
+is optional; drop `-n auto` without it):
+
+```bash
+pip install pytest-xdist
+cd fea_engine && python -m pytest tests -q -rs -n auto     # ~1100 tests, about 10 minutes on a laptop
+cd ../rom_engine && python -m pytest tests -q -rs -n auto  # ~460 tests, about 2 minutes
+```
+
+A few tests skip when an optional dependency is missing (for example `meshio`); `-rs` lists them with the reason.
 
 Minimal install + smoke test for both packages together:
 
@@ -391,6 +414,57 @@ distributed load types (`TimeHistoryLoad`, `HarmonicLoad`, `PSDLoad`)
 are covered in "Time Integration" and "Solvers" below, since which load
 type you use is tied to which `solve_*` call you're driving.
 
+**Names instead of indices.** Every element has named DOFs (`sys.dof_names`
+gives `('ux', 'uy')` for plane stress, `('uy', 'rz')` for an Euler-Bernoulli
+beam), and meshes keep named node sets:
+
+```python
+mesh.select_nodes(x=0.0, name="root")            # register a node set by coordinate
+mesh.select_nodes(x=0.4, name="tip")
+sys.fix_dofs("root", ["ux", "uy"])               # names, indices or a mix; set names or node ids
+sys.add_nodal_force("tip", "uy", -2e4)
+```
+
+Bad input fails loudly: an empty selection, a node outside the mesh or a DOF the element does not have
+raises a `ValueError` that names the problem, and a rejected call leaves no half-applied constraints.
+A repeated `assemble_stiffness` replaces the matrix (with a one-time warning); pass `accumulate=True` to
+add on purpose.
+
+**Prescribed displacement.** `sys.fix_dofs("tip", ["ux"], value=1e-4)` prescribes a nonzero value in
+`solve_static` (and `form_linear_system`); the nonlinear drivers treat it as zero, so use
+`solve_nonlinear_displacement_control` there.
+
+**Springs.** `sys.add_spring("tip", "uy", 5.0e6)` attaches a grounded spring to every node of the set
+(`u_ref=` places the support at a displacement). With the plate above, the tip deflection drops from
+-1.77e-4 m to -1.35e-4 m.
+
+**Elastic foundation (Winkler / Robin).** `sys.add_elastic_foundation("bottom", "uy", k, thickness=0.02)`
+adds the boundary term `k (u - u_ref)` over every element edge (2-D) or face (3-D) whose nodes lie in the
+set. `k` is a number or a function of position, `u_ref=` is the displacement the foundation rests on, and
+you can pass explicit facets instead of a node set.
+
+**Linear constraints.** `sys.add_constraint([(node, dof, coefficient), ...], value)` imposes
+`sum c_i u_i = value`, and `sys.tie(slave_nodes, master_nodes, dofs, offset=...)` ties matching nodes (use
+the period as `offset` for periodic boundaries):
+
+```python
+a = mesh.select_nodes(x=0.4, y=0.0)[0]           # the two tip corners
+b = mesh.select_nodes(x=0.4, y=0.2)[0]
+sys.add_constraint([(a, "ux", 1.0), (b, "ux", -1.0)])      # u_a = u_b: the end face stays flat in x
+U = sys.solve_static()                           # tip deflection becomes -7.5e-5 m (stiffer)
+sys.clear_constraints()
+```
+
+Constraints are eliminated exactly, so the reduced system stays symmetric positive definite (no multipliers,
+no penalty error), chains of constraints work, and terms on prescribed DOFs move to the right-hand side.
+Inconsistent constraints raise a `ValueError`.
+
+> [!NOTE]
+> Springs and foundations become part of the stiffness matrix, so every solver sees them, the nonlinear
+> drivers included, and they survive re-assembly. Constraints are supported by `solve_static`,
+> `solve_modal` and `form_linear_system`; the other solvers (transient, harmonic, buckling, nonlinear) raise
+> `NotImplementedError` instead of silently ignoring them. `reactions` reports the `fix_dofs` supports only.
+
 <a id="s-15"></a>
 
 ## 🧮 Solvers
@@ -402,6 +476,21 @@ thickness=...)` and `sys.assemble_stiffness(D)` have already run.
 ```python
 U = sys.solve_static()
 ```
+
+**Bring your own solver: the reduced linear system.** `sys.form_linear_system()` hands you the constrained
+system (fixed DOFs removed, prescribed values and linear constraints already folded into the right-hand
+side) so you can use any solver, preconditioner or reduced model without redoing the bookkeeping:
+
+```python
+rs = sys.form_linear_system()                # rs.K, rs.F: the free-DOF system (168 x 168 for the plate above)
+u_free = my_solver(rs.K, rs.F)               # any solver you like
+U = rs.recover(u_free)                       # full FEField, prescribed values and constrained DOFs filled in
+Mff = rs.reduce_matrix(sys.M)                # reduce another matrix (mass, damping) the same way
+```
+
+`rs.solve()` runs the package's own direct solve, and `rs.residual(u_free)` checks a candidate. This is the
+counterpart of MFEM's `FormLinearSystem` / `RecoverFEMSolution`, and it is the natural entry point for
+feeding `rom_engine`.
 
 **Choosing a solve backend — SciPy (default) vs PyTorch, CPU vs GPU:**
 
@@ -480,6 +569,153 @@ psd_load = PSDLoad(LoadPattern(node_ids, dof_index), freqs_hz, psd_input)
 F0_unit = psd_load.force_vector(sys.n_dof, sys.npn)
 S_out, sigma = sys.solve_random_vibration(freqs_hz, psd_input, F0_unit, output_dof=target_dof)
 ```
+
+<a id="s-15a"></a>
+
+## 📊 Results as fields: stress, reactions, series, units, plots, export
+
+`solve_static`, `solve_modal` (mode shapes) and `solve_harmonic` return an `FEField`: an ordinary `ndarray`
+(slicing, arithmetic, norms and saving behave exactly as before) that also knows its DOF names, node count,
+mesh and unit label. For any result you computed some other way, `sys.field(vector)` wraps it.
+
+```python
+sys.units = "SI"                                    # unit LABELS only: nothing is converted ("MM_N_TONNE" also exists)
+U = sys.solve_static()                              # FEField, U.units == "m"
+U.component("uy", nodes="tip").mean()               # -1.772e-04: named access, node-set names or node ids
+U.nodal                                             # (n_nodes, dofs_per_node) view
+U.magnitude(nodes="tip")                            # |translation| per node
+U.to_dataframe()                                    # pandas table with coordinates (needs pandas)
+U.plot("uy", deform=True, scale=100)                # contour on the mesh; beams give a line plot (needs matplotlib)
+```
+
+**Derived results are fields too.** Stress is computed at the integration points with the `D` you assembled
+(spatially varying coefficients included) and projected to the nodes:
+
+```python
+S  = sys.stress(U)                  # components sxx, syy, sxy (2-D) or sxx, syy, szz, sxy, syz, sxz (3-D)
+vm = sys.von_mises(U)               # scalar field "von_mises" (2-D: plane="stress", or "strain" with nu=)
+e  = sys.strain(U)                  # exx, eyy, gxy (engineering shear)
+R  = sys.reactions(U)               # K U - F at the fixed DOFs, zero elsewhere
+
+S.component("sxx").max()            # 5.49e+07 Pa for the plate above; S.unit_of("sxx") == "Pa"
+vm.component("von_mises").max()     # 5.24e+07 Pa
+R.component("uy", nodes="root").sum()    # +20000.0 N: balances the -2e4 N tip load
+sys.stress(U, at="elements")        # (n_elements, 3) element averages, handy for cell data
+```
+
+Supported for stress and strain: Quad4, Quad8, Tri3, Tri6 plane stress and Hex8, Hex20, Tet4, Tet10 solids.
+Nodal values on a boundary are smoothed estimates, not exact boundary stresses (the method is described in
+`fea_engine.recovery`'s docstring).
+
+**Load paths and time histories.** `FieldSeries` wraps a `(n_steps, n_dof)` history so it reads the same way:
+
+```python
+path = sys.series(history, steps=load_factors, step_name="load factor")
+path.history("uy", "tip", reduce="mean")        # the load-displacement curve as an array
+path.at(0.5).component("uy", "tip").mean()      # the step nearest 0.5
+sys.modal_series(5).at(120.0)                   # the mode closest to 120 Hz
+```
+
+The drivers' own return values are unchanged; `series` is a wrapper you opt into.
+
+**Export to ParaView.** No dependency beyond NumPy:
+
+```python
+fea_engine.export.write_vtu("plate", {"u": U, "stress": S, "vm": vm, "R": R})   # plate.vtu
+fea_engine.export.write_series("run/disp", path)                                 # run/disp.pvd + run/disp_0000.vtu ...
+```
+
+Translations are written as one 3-component vector named after the field, other DOFs and stress components
+as scalars, mode shapes as one array per mode, complex fields as `_re` / `_im` / `_abs`. Quadratic elements
+are drawn through their corner nodes by default (correct for every node ordering); `high_order="native"`
+writes true quadratic cells and assumes VTK's node order, so check Tet10 and Hex20 on a small model first.
+
+<a id="s-15b"></a>
+
+## 🧪 Spatially varying materials
+
+Material, density and thickness normally take one value for the whole mesh (or one per block). A coefficient
+makes any of them depend on position:
+
+```python
+from fea_engine import coefficients as cf
+
+# Young's modulus grows 3x from bottom to top; the constitutive matrix is rebuilt from the local material
+D = cf.from_material(lambda x: Material(E=70e9 * (1 + 2 * x[1] / 0.2), nu=0.3, rho=2700.0),
+                     D_plane_stress, at="gauss")
+sys.assemble_stiffness(D, thickness=0.02)
+sys.assemble_mass(cf.by_position(lambda x: 2700.0 * (1 + x[1] / 0.2) * np.eye(2), at="gauss"), thickness=0.02)
+
+# a tapered plate, and one value per element (for example from a topology-optimisation density field)
+sys.assemble_stiffness(D_plane_stress(mat), thickness=cf.by_position(lambda x: 0.02 * (1 - 0.5 * x[0] / 0.4)))
+sys.assemble_stiffness(cf.by_element([D_plane_stress(m) for m in element_materials]), thickness=0.02)
+```
+
+`at="centroid"` (the default) evaluates once per element, so the coefficient is piecewise constant and works
+with every element. `at="gauss"` evaluates at each integration point, which integrates a smoothly graded
+material properly inside each element; it is available for the Quad4, Quad8, Tri3, Tri6, Hex8, Hex20, Tet4
+and Tet10 elements with full integration. A constant coefficient reproduces the plain assembly. Stress
+recovery re-uses the coefficient that was assembled, so `sys.stress(U)` is consistent without extra
+arguments. Coefficients cover linear assembly only (not `vectorized=True`, and not the nonlinear drivers).
+
+<a id="s-15c"></a>
+
+## 🔁 Parameter sweeps and shared solver options
+
+**One options object for every nonlinear driver.** `NewtonOptions` carries the convergence settings
+(`tol`, `max_iter`, `du_tol`, `energy_tol`, `line_search`, `verbose`) and every nonlinear and contact driver
+accepts it as `options=`. Fields the chosen driver does not have are ignored, and an explicit keyword always
+wins over the options object:
+
+```python
+opts = NewtonOptions(tol=1e-9, max_iter=40)
+lf, hist = solve_nonlinear_static(sys, mat, n_steps=10, options=opts)
+lf, hist = solve_nonlinear_arc_length(sys, mat, delta_L=0.05, n_steps=40, options=opts)
+```
+
+**Independent runs in parallel.** `fea_engine.batch.map` runs a function over a list of cases, in order,
+serially or on threads or processes, and can collect failures instead of stopping:
+
+```python
+tips = fea_engine.batch.map(solve_case, [-1e4, -2e4, -4e4], n_jobs=4, backend="process")
+# [-8.86e-05, -1.77e-04, -3.54e-04]   (linear in the load, as it must be)
+out = fea_engine.batch.map(solve_case, loads, on_error="collect")     # failed items come back as batch.Failed
+```
+
+With `backend="process"` the function must be defined at module level (a Windows requirement); threads accept
+closures. A failure is reported with the index of the item that caused it.
+
+<a id="s-15d"></a>
+
+## 📏 Benchmarks and convergence studies
+
+The package is checked against references that do not come from itself (`fea_engine/tests/test_benchmarks_convergence.py`):
+
+| Check | Reference | Result |
+|---|---|---|
+| Patch test, distorted meshes | exact linear displacement field | all eight continuum elements, error about 1e-15 |
+| Pure bending of a beam | exact elasticity solution | Quad8 and Tri6 exact; Quad4 and Tri3 converge at second order |
+| Cantilever vibration | closed-form Euler-Bernoulli frequencies | fourth-order convergence |
+| Fixed-free bar vibration | closed-form axial frequencies | second-order convergence |
+| Shear-flexible beam | Timoshenko tip deflection | second-order convergence |
+| Large deflection | cantilever elastica, SciPy quadrature | 0.30172 and 0.05643 of the length |
+
+For your own mesh studies, `fea_engine.convergence` measures the observed order:
+
+```python
+from fea_engine import convergence as cv
+study = cv.run_study(lambda n: tip_ratio(n), [8, 16, 32], exact=1.0)     # tip_ratio(n): your solve at n elements
+print(study)
+#   n        h          value          error      order
+#   8       0.125      0.88888889    1.1111e-01
+#  16      0.0625      0.96955903    3.0441e-02     1.87
+#  32     0.03125      0.99218914    7.8109e-03     1.96
+# fitted order 1.915
+```
+
+That table is the Quad4 beam in pure bending: it is too stiff on a coarse mesh (bending locking) and then
+converges at second order. Without `exact=` the error is measured against the finest level.
+`cv.richardson(h1, u1, h2, u2, order)` extrapolates to zero element size.
 
 <a id="s-16"></a>
 
@@ -1376,7 +1612,8 @@ items 135/136 for the full record.
 # 📘 API Reference
 
 A compact pointer table — the full per-function reference lives in each
-package's own `README.md`.
+package's own `README.md`, and `API_REFERENCE.md` lists every public name with its signature.
+`CHANGELOG.md` records what changed in each release.
 
 <a id="s-33"></a>
 
@@ -1388,7 +1625,15 @@ package's own `README.md`.
 | `mesh.py` | `Mesh`, `MultiBlockMesh`, structured mesh generators, quality checks, plotting |
 | `geometry.py` | Dimension-driven `build_system()` shortcut (`geometry/gmsh_engine.py`, Gmsh-driven meshing/CAD import, was removed -- see `fea_engine/README.md`'s "Removed: Gmsh support") |
 | `elements/` | Every registered `Element` subclass; see "Elements and quadrature" above |
-| `solver.py` | `FESystem` — assembly, boundary conditions, `solve_static`/`solve_modal`/`solve_frequency_sweep`/`solve_random_vibration` |
+| `solver.py` | `FESystem` — assembly, boundary conditions, `solve_static`/`solve_modal`/`solve_frequency_sweep`/`solve_random_vibration`, plus `stress`/`strain`/`von_mises`/`reactions`, `form_linear_system`, `add_spring`/`add_elastic_foundation`/`add_constraint`/`tie` |
+| `fields.py`, `series.py` | `FEField` (named, unit-aware solution arrays with `.plot`) and `FieldSeries` (load paths, time histories, modes) |
+| `recovery.py` | Stress, strain, von Mises and reactions as `FEField`s |
+| `boundary.py` | Springs, Winkler/Robin foundations, linear constraints and ties (`facets_on` lists boundary facets) |
+| `coefficients.py` | `by_position`, `by_element`, `from_material`: material, density and thickness that vary in space |
+| `linear_system.py` | `ReducedSystem` — the constrained `K`, `F` with `recover` / `reduce_matrix` |
+| `export.py` | `write_vtu`, `write_series` — ParaView output |
+| `newton_options.py`, `batch.py`, `units.py` | `NewtonOptions`, `batch.map`, unit labels (`SI`, `MM_N_TONNE`) |
+| `convergence.py` | `run_study`, `observed_order`, `richardson` for mesh-convergence studies |
 | `nonlinear_solver.py` | The four nonlinear drivers, plus `solve_transient_explicit_nonlinear` |
 | `loads.py` | `LoadPattern`, `TimeHistoryLoad`, `HarmonicLoad`, `PSDLoad` |
 | `damping.py` | `RayleighDamping` and calibration helpers |
@@ -1700,8 +1945,10 @@ every number above.
   quadratic meshing.
 - `fea_engine/docs/consolidated_future_roadmap.md` — the full
   development history with full validation detail.
+- `API_REFERENCE.md` — every public name with its exact signature and verified examples.
+- `CHANGELOG.md` — what changed in each release of both packages.
 - `rom_engine/README.md` — the full module reference and every
-  validation result (all 208 tests summarized).
+  validation result.
 - `rom_engine/examples/` — the six complete, runnable scripts listed in
   the Example Gallery above.
 - `rom_engine/examples/gallery/` — the numbered `rom_01_...`–`rom_06_...`
