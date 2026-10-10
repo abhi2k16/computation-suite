@@ -42,7 +42,16 @@ a wrapper around a commercial solver.
 
 ## 🎨 At a glance
 
-### How the pieces fit together
+### Workflow overview
+
+<div align="center">
+<img src="docs/images/architecture.png" alt="How fea_engine and rom_engine fit together: model definition, FESystem, analyses and results in fea_engine; snapshots, reduced basis, reduced models and fast online use in rom_engine; K, M, C, F passed as plain arrays; optional PyTorch" width="900">
+</div>
+
+`fea_engine` turns a model definition into assembled matrices through `FESystem` and runs the analyses. Its only output to `rom_engine` is a set of plain arrays `K, M, C, F`, so `rom_engine` also accepts matrices from any other source. `rom_engine` builds a basis from full-order snapshots once (offline) and then evaluates reduced models per query (online). The dashed arrow is the check of a reduced model against the full model on unseen inputs (`validate_rom`). PyTorch is optional and used by both packages. This is the same figure as Figure 1 of the accompanying paper; its LaTeX source is `docs/images/architecture.tex`.
+
+### Package map
+
 
 ```mermaid
 flowchart TB
