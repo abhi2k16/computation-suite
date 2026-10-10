@@ -22,10 +22,12 @@ import shutil
 import subprocess
 import sys
 import tarfile
+import tempfile
 from pathlib import Path
 
 PAPER = Path(__file__).resolve().parent
-OUT = PAPER / "arxiv_submission"
+FINAL = PAPER / "arxiv_submission"
+OUT = Path(tempfile.mkdtemp(prefix="arxiv_build_"))   # built outside the project: a PDF open in a viewer cannot block it
 MAX_MB = 50.0
 
 
@@ -35,9 +37,6 @@ def sh(cmd, cwd, env=None):
 
 
 def flat_copy():
-    if OUT.exists():
-        shutil.rmtree(OUT, ignore_errors=True)       # a PDF open in a viewer on Windows cannot be deleted
-    OUT.mkdir(exist_ok=True)
     for f in ["main.tex", "macros.tex"] + sorted(p.name for p in PAPER.glob("sec*.tex")):
         text = (PAPER / f).read_text(encoding="utf-8")
         text = re.sub(r"(\\input\{)tables/", r"\1", text)
@@ -117,6 +116,12 @@ def main():
         ok &= good
         print(f"[{'ok' if good else 'FIX'}] {name}: {got} (want {want})")
     tgz, files = archive()
+    FINAL.mkdir(exist_ok=True)
+    for f in sorted(OUT.iterdir()):
+        try:
+            shutil.copy(f, FINAL / f.name)
+        except OSError as exc:
+            print(f"could not update {f.name} in arxiv_submission/ ({exc}); close it if it is open in a viewer")
     print(f"archive {tgz.name}: {len(files)} files")
     print("files:", " ".join(files))
     return 0 if ok else 1
