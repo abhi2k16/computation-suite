@@ -38,27 +38,6 @@ tensormesh_comparative_analysis.md
 /fea_engine/shell_verification.png
 /FEA_ENGINE_API_REVIEW.md
 # Article: track sources, experiments, results, figures and tables; ignore build output and private notes
-/paper/arxiv_submission/
-/paper/arxiv_submission.tar.gz
-/paper/*.aux
-/paper/*.log
-/paper/*.blg
-/paper/*.out
-/paper/*.toc
-/paper/main.pdf
-/paper/PLAN.md
-/paper/CLAIMS.md
-/paper/ARXIV_CHECKLIST.md
-/paper/figures/
-/paper/tables/
-/paper/notes/
-/paper/experiments/
-/paper/figures_and_tables/
-/paper/figures_and_tables.zip
-/paper/figures_and_tables.tar.gz
-/paper/figures_and_tables.tar
-/paper/figures_and_tables.tar.xz
-/paper/figures_and_tables.7z
-
+/paper
 # Written by the test suite on every run
 /fea_engine/tests/*.png
